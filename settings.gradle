@@ -1,2 +1,10 @@
+include ':features:common:presentation'
+include ':features:common:featureTesting'
+include ':features:settings:featurteTesting'
+include ':features:settings:presentation'
+include ':features:home:presentation'
+include ':features:common:localTesting'
+include ':features:locationWeather:featureTest'
+include ':features:common:uiTesting'
 include ':app'
 rootProject.name = "Pagoda"
