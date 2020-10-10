@@ -1,10 +1,19 @@
+// Common modules
 include ':features:common:presentation'
 include ':features:common:featureTesting'
-include ':features:settings:featurteTesting'
-include ':features:settings:presentation'
-include ':features:home:presentation'
 include ':features:common:localTesting'
-include ':features:locationWeather:featureTest'
 include ':features:common:uiTesting'
+
+// Settings feature
+include ':features:settings:featureTesting'
+include ':features:settings:presentation'
+
+// Home feature
+include ':features:home:presentation'
+
+// Location weather feature
+include ':features:locationWeather:featureTest'
+
+// App module
 include ':app'
 rootProject.name = "Pagoda"

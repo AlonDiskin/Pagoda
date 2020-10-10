@@ -1,4 +1,4 @@
-package com.diskin.alon.pagoda.settings.featurtetesting
+package com.diskin.alon.pagoda.settings.featuretesting
 
 import androidx.test.filters.MediumTest
 import com.mauriciotogneri.greencoffee.GreenCoffeeConfig
@@ -12,13 +12,13 @@ import org.robolectric.annotation.LooperMode
 import java.util.*
 
 /**
- * Step definitions runner for 'User change unit system' scenario.
+ * Step definitions runner for 'App define default data unit type' scenario.
  */
 @RunWith(ParameterizedRobolectricTestRunner::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(sdk = [28])
 @MediumTest
-class WeatherUnitsChangedStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTest(scenario) {
+class DefaultDataUnitStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTest(scenario) {
 
     companion object {
         @JvmStatic
@@ -26,8 +26,8 @@ class WeatherUnitsChangedStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTest
         fun data(): Collection<Array<Any>> {
             val res = ArrayList<Array<Any>>()
             val scenarioConfigs = GreenCoffeeConfig()
-                .withFeatureFromAssets("data_units_type_configuration.feature")
-                .withTags("@unit-system-changed")
+                .withFeatureFromAssets("data_units_type_selection.feature")
+                .withTags("@default-unit-defined")
                 .scenarios()
 
             for (scenarioConfig in scenarioConfigs) {
@@ -40,6 +40,6 @@ class WeatherUnitsChangedStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTest
 
     @Test
     fun test() {
-        start(WeatherUnitsChangedSteps())
+        start(DefaultDataUnitSteps())
     }
 }

@@ -1,7 +1,6 @@
-package com.diskin.alon.pagoda.settings.featurtetesting
+package com.diskin.alon.pagoda.settings.featuretesting
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import androidx.test.core.app.ApplicationProvider
 
