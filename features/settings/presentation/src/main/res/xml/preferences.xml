@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<androidx.preference.PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <ListPreference
+    <androidx.preference.ListPreference
         app:defaultValue="@string/pref_units_default_value"
         app:dialogTitle="@string/pref_units_dialog_title"
         app:key="@string/pref_units_key"

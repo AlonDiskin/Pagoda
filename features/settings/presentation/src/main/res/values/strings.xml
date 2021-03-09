@@ -8,6 +8,7 @@
     <string name="pref_units_imperial_value">imperial</string>
     <string name="pref_units_metric_entry">\u2103</string>
     <string name="pref_units_imperial_entry">\u2109</string>
+    <string name="settings_label">Settings</string>
 
     <string-array name="pref_units_list_entries">
         <item>@string/pref_units_metric_entry</item>

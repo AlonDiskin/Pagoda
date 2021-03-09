@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "799904641486",
+    "project_id": "pagoda-cce36",
+    "storage_bucket": "pagoda-cce36.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:799904641486:android:ba7db71b391d0de505fb9f",
+        "android_client_info": {
+          "package_name": "com.diskin.alon.pagoda"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "799904641486-5uoqeci2blm6cg812b9g4t9n5eb5k78b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB-qoI1Kt1j0if2AUwxntvVH_H1nbB5xoo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "799904641486-5uoqeci2blm6cg812b9g4t9n5eb5k78b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

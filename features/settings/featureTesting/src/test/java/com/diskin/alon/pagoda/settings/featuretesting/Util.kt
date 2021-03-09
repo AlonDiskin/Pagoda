@@ -1,7 +1,7 @@
 package com.diskin.alon.pagoda.settings.featuretesting
 
 import android.content.Context
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import androidx.test.core.app.ApplicationProvider
 
 fun clearSharedPrefs() {

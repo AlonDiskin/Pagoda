@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#6200EE</color>
-    <color name="colorPrimaryDark">#3700B3</color>
-    <color name="colorAccent">#3F51B5</color>
-    <color name="colorActionModeBackground">#6200EE</color>
-    <color name="colorActionMenuTextColor">@android:color/white</color>
+    <color name="colorPrimary">#1e88e5</color>
+    <color name="colorPrimaryDark">#1e88e5</color>
+    <color name="colorAccent">#bb86fc</color>
+    <color name="colorSurface">#42a5f5</color>
+    <color name="colorOnSurface">#FFFFFF</color>
+    <color name="colorOnPrimary">#FFFFFF</color>
+    <color name="colorBackground">#1e88e5</color>
+    <color name="colorOnBackground">#FFFFFF</color>
+    <color name="colorOnSecondary">#FFFFFF</color>
 </resources>

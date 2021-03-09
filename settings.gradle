@@ -1,4 +1,14 @@
-// Common modules
+include ':features:weatherInfo:errors'
+include ':features:common:appServices'
+include ':features:weatherInfo:di'
+include ':features:common:events'
+include ':features:weatherInfo:infrastructure'
+include ':features:common:util'
+include ':features:common:instrumentationTesting'
+include ':features:weatherInfo:data'
+include ':features:weatherInfo:appServices'
+include ':features:weatherInfo:domain'
+include ':features:weatherInfo:presentation'// Common modules
 include ':features:common:presentation'
 include ':features:common:featureTesting'
 include ':features:common:localTesting'
@@ -12,7 +22,7 @@ include ':features:settings:presentation'
 include ':features:home:presentation'
 
 // Location weather feature
-include ':features:locationWeather:featureTest'
+include ':features:weatherInfo:featureTesting'
 
 // App module
 include ':app'
