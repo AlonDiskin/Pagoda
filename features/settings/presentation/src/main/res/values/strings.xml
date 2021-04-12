@@ -1,0 +1,22 @@
+<resources>
+    <string name="title_settings_activity">Settings</string>
+    <string name="pref_units_default_value">@string/pref_units_metric_value</string>
+    <string name="pref_units_dialog_title">Units type</string>
+    <string name="pref_units_key">unit_type</string>
+    <string name="pref_units_title">Unit type</string>
+    <string name="pref_units_metric_value">metric</string>
+    <string name="pref_units_imperial_value">imperial</string>
+    <string name="pref_units_metric_entry">\u2103</string>
+    <string name="pref_units_imperial_entry">\u2109</string>
+    <string name="settings_label">Settings</string>
+
+    <string-array name="pref_units_list_entries">
+        <item>@string/pref_units_metric_entry</item>
+        <item>@string/pref_units_imperial_entry</item>
+    </string-array>
+    <string-array name="pref_units_list_values">
+        <item>@string/pref_units_metric_value</item>
+        <item>@string/pref_units_imperial_value</item>
+    </string-array>
+
+</resources>

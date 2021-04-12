@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="weather"
+            type="com.diskin.alon.pagoda.weatherinfo.appservices.model.LocationWeatherDto" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/uvIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_margin="@dimen/item_margin"
+            app:srcCompat="@drawable/ic_uv_index_24" />
+
+        <TextView
+            android:id="@+id/uvLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="UV index"
+            android:layout_marginStart="@dimen/item_margin"
+            android:textAppearance="?attr/textAppearanceSubtitle1"
+            app:layout_constraintBottom_toBottomOf="@+id/uvIcon"
+            app:layout_constraintStart_toEndOf="@+id/uvIcon"
+            app:layout_constraintTop_toTopOf="@+id/uvIcon" />
+
+        <TextView
+            android:id="@+id/uvValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?attr/textAppearanceSubtitle1"
+            android:layout_margin="@dimen/item_margin"
+            tools:text="Low"
+            app:setUvIndex="@{weather.uvIndex}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/humidityIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/item_margin"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/uvIcon"
+            app:srcCompat="@drawable/ic_twotone_humidity_24" />
+
+        <TextView
+            android:id="@+id/humidityLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Humidity"
+            android:layout_marginStart="@dimen/item_margin"
+            android:textAppearance="?attr/textAppearanceSubtitle1"
+            app:layout_constraintStart_toEndOf="@+id/humidityIcon"
+            app:layout_constraintTop_toTopOf="@+id/humidityIcon" />
+
+        <TextView
+            android:id="@+id/humidityValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="45%"
+            app:setHumidity="@{weather.humidity}"
+            android:textAppearance="?attr/textAppearanceSubtitle1"
+            android:layout_margin="@dimen/item_margin"
+            app:layout_constraintBottom_toBottomOf="@+id/humidityLabel"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/humidityLabel" />
+
+        <ImageView
+            android:id="@+id/windSpeedIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/item_margin"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/humidityIcon"
+            app:srcCompat="@drawable/ic_wind_speed_24" />
+
+        <TextView
+            android:id="@+id/windSpeedLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Wind speed"
+            android:layout_marginStart="@dimen/item_margin"
+            android:textAppearance="?attr/textAppearanceSubtitle1"
+            app:layout_constraintBottom_toBottomOf="@+id/windSpeedIcon"
+            app:layout_constraintStart_toEndOf="@+id/windSpeedIcon"
+            app:layout_constraintTop_toTopOf="@+id/windSpeedIcon" />
+
+        <TextView
+            android:id="@+id/windSpeedValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="10 km/h"
+            app:setWindSpeed="@{weather}"
+            android:textAppearance="?attr/textAppearanceSubtitle1"
+            android:layout_margin="@dimen/item_margin"
+            app:layout_constraintBottom_toBottomOf="@+id/windSpeedLabel"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/windSpeedLabel" />
+
+        <ImageView
+            android:id="@+id/sunriseIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/item_margin"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/windSpeedIcon"
+            app:srcCompat="@drawable/ic_max_temp_24" />
+
+        <TextView
+            android:id="@+id/sunriseLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sunrise"
+            android:layout_marginStart="@dimen/item_margin"
+            android:textAppearance="?attr/textAppearanceSubtitle1"
+            app:layout_constraintBottom_toBottomOf="@+id/sunriseIcon"
+            app:layout_constraintStart_toEndOf="@+id/sunriseIcon"
+            app:layout_constraintTop_toTopOf="@+id/sunriseIcon" />
+
+        <TextView
+            android:id="@+id/sunriseValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="05:45"
+            app:setTime="@{weather.sunrise}"
+            android:textAppearance="?attr/textAppearanceSubtitle1"
+            android:layout_margin="@dimen/item_margin"
+            app:layout_constraintBottom_toBottomOf="@+id/sunriseLabel"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/sunriseLabel" />
+
+        <ImageView
+            android:id="@+id/sunsetIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/item_margin"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/sunriseIcon"
+            app:srcCompat="@drawable/ic_min_temp_24" />
+
+        <TextView
+            android:id="@+id/sunsetLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sunset"
+            android:layout_marginStart="@dimen/item_margin"
+            android:textAppearance="?attr/textAppearanceSubtitle1"
+            app:layout_constraintBottom_toBottomOf="@+id/sunsetIcon"
+            app:layout_constraintStart_toEndOf="@+id/sunsetIcon"
+            app:layout_constraintTop_toTopOf="@+id/sunsetIcon" />
+
+        <TextView
+            android:id="@+id/sunsetValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="18:36"
+            android:textAppearance="?attr/textAppearanceSubtitle1"
+            android:layout_margin="@dimen/item_margin"
+            app:layout_constraintBottom_toBottomOf="@+id/sunsetLabel"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:setTime="@{weather.sunset}"
+            app:layout_constraintTop_toTopOf="@+id/sunsetLabel" />
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/item_margin"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/sunsetIcon" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

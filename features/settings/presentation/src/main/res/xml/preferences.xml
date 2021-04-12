@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.preference.PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.preference.ListPreference
+        app:defaultValue="@string/pref_units_default_value"
+        app:dialogTitle="@string/pref_units_dialog_title"
+        app:key="@string/pref_units_key"
+        app:entries="@array/pref_units_list_entries"
+        app:entryValues="@array/pref_units_list_values"
+        app:title="@string/pref_units_title"
+        app:useSimpleSummaryProvider="true"
+        tools:summary="\u2103"/>
+</androidx.preference.PreferenceScreen>
