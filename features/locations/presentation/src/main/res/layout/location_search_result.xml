@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="location"
+            type="com.diskin.alon.pagoda.locations.appservices.model.LocationSearchResult" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/locationName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/item_margin"
+            android:layout_marginTop="8dp"
+            android:textAppearance="?attr/textAppearanceHeadline6"
+            android:textSize="18sp"
+            android:text="@{location.name}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Los Angeles"/>
+
+        <TextView
+            android:id="@+id/locationCountry"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?attr/textAppearanceBody2"
+            app:layout_constraintStart_toStartOf="@+id/locationName"
+            app:layout_constraintTop_toBottomOf="@+id/locationName"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:setLocationCountry="@{location.country}"
+            android:layout_marginBottom="8dp"
+            tools:text="United States"/>
+
+        <TextView
+            android:id="@+id/locationState"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?attr/textAppearanceBody2"
+            app:setLocationState="@{location.state}"
+            app:layout_constraintBottom_toBottomOf="@+id/locationCountry"
+            app:layout_constraintStart_toEndOf="@+id/locationCountry"
+            tools:text=", CA"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

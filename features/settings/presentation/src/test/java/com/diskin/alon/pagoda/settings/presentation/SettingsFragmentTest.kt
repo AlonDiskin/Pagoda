@@ -5,8 +5,6 @@ import android.content.SharedPreferences
 import android.os.Looper
 import androidx.fragment.app.testing.FragmentScenario
 import androidx.lifecycle.ViewModelLazy
-import androidx.navigation.Navigation
-import androidx.navigation.testing.TestNavHostController
 import androidx.preference.ListPreference
 import androidx.preference.PreferenceManager
 import androidx.preference.get
@@ -45,9 +43,6 @@ class SettingsFragmentTest {
     // Collaborators
     private val viewModel = mockk<SettingsViewModel>()
 
-    // Test nav controller
-    private val navController = TestNavHostController(ApplicationProvider.getApplicationContext())
-
     @Before
     fun setUp() {
         // Reset shared prefs settings
@@ -57,30 +52,9 @@ class SettingsFragmentTest {
         mockkConstructor(ViewModelLazy::class)
         every { anyConstructed<ViewModelLazy<*>>().value } returns viewModel
 
-        // Setup test nav controller
-        navController.setGraph(R.navigation.settings_nav_graph)
-
         // Launch fragment under test
         scenario = FragmentScenario.launchInContainer(SettingsFragment::class.java,
             null, R.style.Theme_AppCompat_Light_DarkActionBar,null)
-
-        // Set the NavController property on the fragment with test controller
-        scenario.onFragment {
-            Navigation.setViewNavController(
-                it.requireView(),
-                navController)
-        }
-    }
-
-    @Test
-    fun showSettingsTitleWhenResumed() {
-        // Given a resumed fragment
-
-        // Then fragment should show settings title in containing activity appbar
-        val context = ApplicationProvider.getApplicationContext<Context>()
-        val appName = context.getString(R.string.settings_label)
-
-        assertThat(navController.currentDestination?.label).isEqualTo(appName)
     }
 
     @Test

@@ -9,5 +9,8 @@ interface AppNavGraphProvider {
     fun getAppNavGraph(): Int
 
     @IdRes
-    fun getSettingsGraphId(): Int
+    fun getSettingsDestId(): Int
+
+    @IdRes
+    fun getSearchLocationsDestId(): Int
 }

@@ -17,6 +17,13 @@ android {
         testInstrumentationRunner "com.diskin.alon.pagoda.runner.TestRunner"
         testInstrumentationRunnerArguments clearPackageData: 'true'
         multiDexEnabled true
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments += ["room.schemaLocation":
+                                      "$projectDir/schemas".toString()]
+            }
+        }
     }
 
     buildTypes {
@@ -49,6 +56,11 @@ android {
         exclude 'META-INF/presentation_debug.kotlin_module'
         exclude 'META-INF/presentation_release.kotlin_module'
         exclude 'META-INF/appServices.kotlin_module'
+        exclude 'META-INF/domain.kotlin_module'
+        exclude 'META-INF/di_debug.kotlin_module'
+        exclude 'META-INF/data_debug.kotlin_module'
+        exclude 'META-INF/di_release.kotlin_module'
+        exclude 'META-INF/data_release.kotlin_module'
     }
 }
 
@@ -66,6 +78,7 @@ dependencies {
     implementation project(':features:settings:presentation')
     implementation project(':features:common:presentation')
     implementation project(':features:weatherInfo:di')
+    implementation project(':features:locations:di')
 
     // Multidex
     implementation 'androidx.multidex:multidex:2.0.1'
@@ -77,6 +90,14 @@ dependencies {
     // Retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.6.2'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.9.1'
+
+    // Room
+    implementation "androidx.room:room-runtime:$room_version"
+    implementation "androidx.room:room-rxjava2:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+
+    // Gson
+    implementation 'com.google.code.gson:gson:2.8.6'
 
     // Instrumentation testing
     androidTestImplementation project(':features:common:uiTesting')
@@ -96,4 +117,5 @@ dependencies {
     androidTestImplementation  "com.google.dagger:hilt-android-testing:$hilt_version"
     kaptAndroidTest "com.google.dagger:hilt-android-compiler:$hilt_version"
     androidTestImplementation "joda-time:joda-time:$joda_version"
+    androidTestImplementation 'io.mockk:mockk-android:1.10.3-jdk8'
 }

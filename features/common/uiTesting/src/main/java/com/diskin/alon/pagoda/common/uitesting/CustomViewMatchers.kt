@@ -2,6 +2,8 @@ package com.diskin.alon.pagoda.common.uitesting
 
 import android.view.View
 import android.widget.TextClock
+import androidx.annotation.StringRes
+import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.matcher.BoundedMatcher
 import org.hamcrest.Description
@@ -52,6 +54,46 @@ fun withTimeFormat12(format: String): Matcher<View> {
 
         override fun matchesSafely(item: TextClock): Boolean {
             return item.format12Hour.toString() == format
+        }
+    }
+}
+
+fun withSearchViewHint(hint: String): Matcher<View> {
+    return object : BoundedMatcher<View, SearchView>(SearchView::class.java) {
+        override fun describeTo(description: Description) {
+            description.appendText("with hint:${hint}")
+        }
+
+        override fun matchesSafely(item: SearchView): Boolean {
+            return item.queryHint == hint
+        }
+    }
+}
+
+fun withSearchViewHint(@StringRes id: Int): Matcher<View> {
+    return object : BoundedMatcher<View, SearchView>(SearchView::class.java) {
+        private var hint = ""
+
+        override fun describeTo(description: Description) {
+            description.appendText("with hint:${hint}")
+        }
+
+        override fun matchesSafely(item: SearchView): Boolean {
+            val context = item.context!!
+            hint = context.getString(id)
+            return item.queryHint == hint
+        }
+    }
+}
+
+fun withSearchViewQuery(query: String): Matcher<View> {
+    return object : BoundedMatcher<View, SearchView>(SearchView::class.java) {
+        override fun describeTo(description: Description) {
+            description.appendText("with search query:${query}")
+        }
+
+        override fun matchesSafely(item: SearchView): Boolean {
+            return item.query.toString() == query
         }
     }
 }

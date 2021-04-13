@@ -33,7 +33,7 @@ inline fun <reified T : Fragment> launchFragmentInHiltContainer(
 
     ).putExtra(key, themeResId)
 
-     return ActivityScenario.launch<HiltTestActivity>(startActivityIntent).onActivity { activity ->
+    return ActivityScenario.launch<HiltTestActivity>(startActivityIntent).onActivity { activity ->
         val fragment: Fragment = factory?.instantiate(T::class.java.classLoader!!, T::class.java.name) ?: activity.supportFragmentManager.fragmentFactory.instantiate(
             T::class.java.classLoader!!,
             T::class.java.name

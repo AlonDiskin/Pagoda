@@ -9,8 +9,9 @@ import androidx.fragment.app.FragmentActivity
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnitRunner
+import com.diskin.alon.pagoda.R
+import com.diskin.alon.pagoda.common.uitesting.DataBindingIdlingResource
 import com.diskin.alon.pagoda.home.presentation.MainActivity
-import com.diskin.alon.pagoda.util.DataBindingIdlingResource
 import com.diskin.alon.pagoda.util.NetworkUtil
 import com.squareup.rx2.idler.Rx2Idler
 import dagger.hilt.android.testing.HiltTestApplication
@@ -30,7 +31,10 @@ class TestRunner : AndroidJUnitRunner() {
 
             override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
                 if(activity is MainActivity) {
-                    dataBindingIdlingResource = DataBindingIdlingResource(activity as FragmentActivity)
+                    dataBindingIdlingResource = DataBindingIdlingResource(
+                        activity as FragmentActivity,
+                        app.getString(R.string.idling_resource_recycler_view_tag)
+                    )
                     IdlingRegistry.getInstance().register(dataBindingIdlingResource)
                 }
             }

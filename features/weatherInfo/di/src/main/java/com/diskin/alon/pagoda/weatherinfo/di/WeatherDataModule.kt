@@ -5,11 +5,12 @@ import com.diskin.alon.pagoda.common.presentation.Model
 import com.diskin.alon.pagoda.common.presentation.ModelDispatcher
 import com.diskin.alon.pagoda.common.presentation.ModelRequest
 import com.diskin.alon.pagoda.common.util.Mapper
-import com.diskin.alon.pagoda.weatherinfo.presentation.model.CurrentWeatherModelRequest
 import com.diskin.alon.pagoda.weatherinfo.appservices.model.LocationWeatherDto
 import com.diskin.alon.pagoda.weatherinfo.appservices.usecase.GetCurrentWeatherUseCase
 import com.diskin.alon.pagoda.weatherinfo.appservices.usecase.LocationWeatherMapper
 import com.diskin.alon.pagoda.weatherinfo.domain.LocationWeather
+import com.diskin.alon.pagoda.weatherinfo.presentation.model.CurrentWeatherModelRequest
+import com.diskin.alon.pagoda.weatherinfo.presentation.util.WeatherInfoModel
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -22,6 +23,7 @@ abstract class WeatherDataModule {
 
     companion object {
 
+        @WeatherInfoModel
         @Provides
         fun provideModelDispatcherMap(
             getWeatherUseCase: GetCurrentWeatherUseCase

@@ -8,7 +8,11 @@ class AppNavigator @Inject constructor() : AppNavGraphProvider {
         return R.navigation.app_nav_graph
     }
 
-    override fun getSettingsGraphId(): Int {
-        return R.id.action_weatherFragment_to_settings
+    override fun getSettingsDestId(): Int {
+        return R.id.action_weatherFragment_to_settingsFragment
+    }
+
+    override fun getSearchLocationsDestId(): Int {
+        return R.id.action_weatherFragment_to_searchLocationFragment
     }
 }

@@ -1,6 +1,7 @@
 package com.diskin.alon.pagoda.userjourney
 
 import androidx.test.filters.LargeTest
+import com.diskin.alon.pagoda.di.AppDataModule
 import com.diskin.alon.pagoda.di.AppNetworkingModule
 import com.diskin.alon.pagoda.util.NetworkUtil
 import com.diskin.alon.pagoda.weatherinfo.di.WeatherInfoNetworkingModule
@@ -19,7 +20,7 @@ import org.junit.runners.Parameterized
  * Step definitions runner for 'User check location temperature in different unit system' scenario.
  */
 @HiltAndroidTest
-@UninstallModules(AppNetworkingModule::class,WeatherInfoNetworkingModule::class)
+@UninstallModules(AppNetworkingModule::class,WeatherInfoNetworkingModule::class, AppDataModule::class)
 @RunWith(Parameterized::class)
 @LargeTest
 class BrowseLocationTempStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTest(scenario) {

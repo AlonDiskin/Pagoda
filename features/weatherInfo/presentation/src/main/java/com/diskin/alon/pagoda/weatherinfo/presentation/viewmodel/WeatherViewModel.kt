@@ -9,6 +9,7 @@ import com.diskin.alon.pagoda.common.presentation.RxViewModel
 import com.diskin.alon.pagoda.common.presentation.UpdateViewData
 import com.diskin.alon.pagoda.weatherinfo.presentation.model.CurrentWeatherModelRequest
 import com.diskin.alon.pagoda.weatherinfo.appservices.model.LocationWeatherDto
+import com.diskin.alon.pagoda.weatherinfo.presentation.util.WeatherInfoModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -20,7 +21,7 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class WeatherViewModel @Inject constructor(
-    private val model: Model
+    @WeatherInfoModel private val model: Model
 ) : RxViewModel() {
 
     private val weatherSubject = BehaviorSubject.createDefault(Unit)

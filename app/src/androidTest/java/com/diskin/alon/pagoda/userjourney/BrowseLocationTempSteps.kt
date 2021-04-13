@@ -6,8 +6,7 @@ import androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.RootMatchers.isDialog
-import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.espresso.matcher.ViewMatchers.*
 import com.diskin.alon.pagoda.R
 import com.diskin.alon.pagoda.util.DeviceUtil
 import com.diskin.alon.pagoda.util.FileUtil
@@ -44,6 +43,7 @@ class BrowseLocationTempSteps(private val server: MockWebServer) : GreenCoffeeSt
     @When("^User select different weather units system$")
     fun user_select_different_weather_units_system() {
         // Select imperial units from app settings
+        // Currently (4.2021)  openActionBarOverflowOrOptionsMenu method fail sometimes
         openActionBarOverflowOrOptionsMenu(ApplicationProvider.getApplicationContext())
         onView(withText(R.string.title_settings))
             .perform(click())
