@@ -3,14 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/test_locations_nav_grap"
-    app:startDestination="@id/homeFragment">
+    app:startDestination="@id/searchLocationFragment">
 
-    <fragment android:id="@+id/homeFragment"
-        android:label="appHomeFragment">
-        <action
-            android:id="@+id/action_placeholder_to_searchLocationFragment"
-            app:destination="@id/searchLocationFragment" />
-    </fragment>
     <fragment
         android:id="@+id/searchLocationFragment"
         android:name="com.diskin.alon.pagoda.locations.presentation.controller.SearchLocationFragment"

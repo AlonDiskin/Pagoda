@@ -1,4 +1,4 @@
-package com.diskin.alon.pagoda.weatherinfo.featuretesting.weatherunitchange
+package com.diskin.alon.pagoda.weatherinfo.featuretesting.showlatest
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.filters.MediumTest
@@ -29,7 +29,7 @@ import java.util.*
 import javax.inject.Inject
 
 /**
- * Step definitions com.diskin.alon.pagoda.runner for 'Weather units preference changed' scenario.
+ * Step definitions runner for 'Latest weather shown for current location' scenario.
  */
 @HiltAndroidTest
 @UninstallModules(WeatherInfoNetworkingModule::class,InfrastructureModule::class, LocationModule::class)
@@ -37,7 +37,7 @@ import javax.inject.Inject
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = HiltTestApplication::class,sdk = [28])
 @MediumTest
-class UnitsPrefChangedStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTest(scenario) {
+class CurrentLocationWeatherShownStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTest(scenario) {
 
     companion object {
         @JvmStatic
@@ -46,7 +46,7 @@ class UnitsPrefChangedStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTest(sc
             val res = ArrayList<Array<Any>>()
             val scenarioConfigs = GreenCoffeeConfig()
                 .withFeatureFromAssets("feature/browse_location_weather.feature")
-                .withTags("@weather-units-changed")
+                .withTags("@current-location-weather-shown")
                 .scenarios()
 
             for (scenarioConfig in scenarioConfigs) {
@@ -82,7 +82,7 @@ class UnitsPrefChangedStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTest(sc
     @Test
     fun test() {
         hiltRule.inject()
-        start(UnitsPrefChangedSteps(mockWebServer,unitPrefProvider,locationProvider))
+        start(CurrentLocationWeatherShownSteps(mockWebServer,unitPrefProvider,locationProvider))
     }
 
     override fun afterScenarioEnds(scenario: Scenario?, locale: Locale?) {

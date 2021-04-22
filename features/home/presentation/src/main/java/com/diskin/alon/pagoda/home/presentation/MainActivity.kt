@@ -19,7 +19,7 @@ import javax.inject.Inject
 class MainActivity : AppCompatActivity() {
 
     @Inject
-    lateinit var graphProvider: AppNavGraphProvider
+    lateinit var graphProvider: AppHomeNavProvider
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

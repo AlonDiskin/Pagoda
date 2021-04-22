@@ -24,10 +24,9 @@ import okhttp3.mockwebserver.RecordedRequest
 import org.json.JSONObject
 
 /**
- * Step definitions for 'User check location temperature in different unit system' scenario.
+ * Step definitions for 'User browse current location Temperature' scenario.
  */
-class BrowseLocationTempSteps(private val server: MockWebServer) : GreenCoffeeSteps() {
-
+class BrowseCurrentLocationTemperatureSteps(private val server: MockWebServer) : GreenCoffeeSteps() {
     private val dispatcher = TestDispatcher()
 
     init {
@@ -77,8 +76,8 @@ class BrowseLocationTempSteps(private val server: MockWebServer) : GreenCoffeeSt
     }
 
     private class TestDispatcher: Dispatcher() {
-        val locationWeatherRes = "assets/json/current_location_weather.json"
-        val locationGeoRes = "assets/json/current_location_geocoding.json"
+        val locationWeatherRes = "assets/json/location_weather.json"
+        val locationGeoRes = "assets/json/location_geocoding.json"
         private val weatherPath = "/data/2.5/onecall"
         private val geocodingPath = "/geo/1.0/reverse"
 

@@ -44,14 +44,13 @@ import org.robolectric.Shadows
 import java.text.SimpleDateFormat
 
 /**
- * Step definitions for 'Latest location weather data shown' scenario.
+ * Step definitions for 'Latest weather shown for current location' scenario.
  */
-class LatestLocationWeatherShownSteps(
+class CurrentLocationWeatherShownSteps(
     server: MockWebServer,
     unitPrefProvider: WeatherUnitsEventProvider,
     private val locationProvider: UserLocationProvider
 ) : GreenCoffeeSteps() {
-
     private lateinit var scenario: ActivityScenario<HiltTestActivity>
     private val dispatcher = TestDispatcher()
     private var currentWeatherRes = dispatcher.location1WeatherRes

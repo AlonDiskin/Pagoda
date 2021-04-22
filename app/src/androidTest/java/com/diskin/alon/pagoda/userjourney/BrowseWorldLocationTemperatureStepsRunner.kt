@@ -4,6 +4,7 @@ import androidx.test.filters.LargeTest
 import com.diskin.alon.pagoda.di.AppDataModule
 import com.diskin.alon.pagoda.di.AppNetworkingModule
 import com.diskin.alon.pagoda.util.NetworkUtil
+import com.diskin.alon.pagoda.util.TestDatabase
 import com.diskin.alon.pagoda.weatherinfo.di.WeatherInfoNetworkingModule
 import com.mauriciotogneri.greencoffee.GreenCoffeeConfig
 import com.mauriciotogneri.greencoffee.GreenCoffeeTest
@@ -15,22 +16,22 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
+import javax.inject.Inject
 
 /**
- * Step definitions runner for 'User check location temperature in different unit system' scenario.
+ * Step definitions runner for 'User browse world location temperature' scenario.
  */
 @HiltAndroidTest
-@UninstallModules(AppNetworkingModule::class,WeatherInfoNetworkingModule::class, AppDataModule::class)
+@UninstallModules(AppNetworkingModule::class,WeatherInfoNetworkingModule::class,AppDataModule::class)
 @RunWith(Parameterized::class)
 @LargeTest
-class BrowseLocationTempStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTest(scenario) {
-
+class BrowseWorldLocationTemperatureStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTest(scenario) {
     companion object {
         @JvmStatic
         @Parameterized.Parameters(name = "{0}")
         fun scenarios(): Iterable<ScenarioConfig> {
             return GreenCoffeeConfig()
-                .withFeatureFromAssets("assets/feature/check_temp_in_different_units.feature")
+                .withFeatureFromAssets("assets/feature/browse_world_location_temperature.feature")
                 .scenarios()
         }
     }
@@ -38,8 +39,12 @@ class BrowseLocationTempStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTest(
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
 
+    @Inject
+    lateinit var db: TestDatabase
+
     @Test
     fun test() {
-        start(BrowseLocationTempSteps(NetworkUtil.server))
+        hiltRule.inject()
+        start(BrowseWorldLocationTemperatureSteps(db,NetworkUtil.server))
     }
 }

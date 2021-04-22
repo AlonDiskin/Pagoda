@@ -45,7 +45,7 @@ class MainActivityTest {
     // Collaborators
     @BindValue
     @JvmField
-    val graphProvider: AppNavGraphProvider = mockk()
+    val graphProvider: AppHomeNavProvider = mockk()
 
     @Before
     fun setUp() {

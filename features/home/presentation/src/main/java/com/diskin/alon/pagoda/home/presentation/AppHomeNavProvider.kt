@@ -3,7 +3,7 @@ package com.diskin.alon.pagoda.home.presentation
 import androidx.annotation.IdRes
 import androidx.annotation.NavigationRes
 
-interface AppNavGraphProvider {
+interface AppHomeNavProvider {
 
     @NavigationRes
     fun getAppNavGraph(): Int

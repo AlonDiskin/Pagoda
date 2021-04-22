@@ -15,17 +15,22 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
+import com.diskin.alon.pagoda.common.presentation.LOCATION_LAT
+import com.diskin.alon.pagoda.common.presentation.LOCATION_LON
 import com.diskin.alon.pagoda.common.uitesting.HiltTestActivity
 import com.diskin.alon.pagoda.common.uitesting.RecyclerViewMatcher.withRecyclerView
 import com.diskin.alon.pagoda.common.uitesting.launchFragmentInHiltContainer
 import com.diskin.alon.pagoda.common.uitesting.withSearchViewHint
 import com.diskin.alon.pagoda.common.uitesting.withSearchViewQuery
 import com.diskin.alon.pagoda.locations.appservices.model.LocationSearchResult
+import com.diskin.alon.pagoda.locations.presentation.controller.AppLocationsNavProvider
 import com.diskin.alon.pagoda.locations.presentation.controller.LocationSearchResultsAdapter
 import com.diskin.alon.pagoda.locations.presentation.controller.LocationSearchResultsAdapter.LocationSearchResultViewHolder
 import com.diskin.alon.pagoda.locations.presentation.controller.SearchLocationFragment
@@ -58,6 +63,7 @@ class SearchLocationFragmentTest {
 
     // Collaborators
     private val viewModel: SearchLocationViewModel = mockk()
+    private val appNav: AppLocationsNavProvider = mockk()
 
     // Stub data
     private val results = MutableLiveData<PagingData<LocationSearchResult>>()
@@ -264,6 +270,35 @@ class SearchLocationFragmentTest {
 
         // Then
         assertThat(navController.currentDestination!!.id).isEqualTo(R.id.homeFragment)
+    }
+
+    @Test
+    fun openWeatherDataScreenWhenResultSelected() {
+        // Test case fixture
+        scenario.onActivity {
+            val fragment = it.supportFragmentManager.fragments[0] as SearchLocationFragment
+            fragment.appNav = appNav
+        }
+
+        every { appNav.getWeatherDest() } returns R.id.testWeatherInfoFragment
+
+        // Given
+
+        // When
+        val searchResults = createSearchResults()
+        results.value = PagingData.from(searchResults)
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // And
+        onView(withId(R.id.searchResults))
+            .perform(actionOnItemAtPosition<LocationSearchResultViewHolder>(0,click()))
+
+        // Then
+        assertThat(navController.currentDestination!!.id).isEqualTo(R.id.testWeatherInfoFragment)
+        assertThat(navController.currentBackStackEntry?.arguments?.get(LOCATION_LAT))
+            .isEqualTo(searchResults.first().lat)
+        assertThat(navController.currentBackStackEntry?.arguments?.get(LOCATION_LON))
+            .isEqualTo(searchResults.first().lon)
     }
 
     private fun getSearchResultsAdapterLoadStatesListener(adapter: LocationSearchResultsAdapter): (CombinedLoadStates) -> Unit {

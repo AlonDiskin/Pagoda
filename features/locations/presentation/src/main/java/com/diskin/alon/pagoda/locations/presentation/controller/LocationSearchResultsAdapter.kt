@@ -12,7 +12,9 @@ import com.diskin.alon.pagoda.locations.presentation.databinding.LocationSearchR
 /**
  * Layout adapter that display [LocationSearchResult]s data.
  */
-class LocationSearchResultsAdapter : PagingDataAdapter<LocationSearchResult, LocationSearchResultViewHolder>(
+class LocationSearchResultsAdapter(
+    private val resultClickListener: (LocationSearchResult) -> (Unit)
+) : PagingDataAdapter<LocationSearchResult, LocationSearchResultViewHolder>(
     DIFF_CALLBACK
 ) {
 
@@ -49,6 +51,7 @@ class LocationSearchResultsAdapter : PagingDataAdapter<LocationSearchResult, Loc
             false
         )
 
+        binding.resultClickListener = resultClickListener
         return LocationSearchResultViewHolder(binding)
     }
 }

@@ -31,7 +31,6 @@ import org.robolectric.Shadows
  * Step definitions for 'User search for location' scenario.
  */
 class SearchLocationSteps(db: TestDatabase) : GreenCoffeeSteps() {
-
     private lateinit var scenario: ActivityScenario<HiltTestActivity>
     private val partialLocationQuery = "los"
     private val fullLocationName = "los angeles"

@@ -2,29 +2,37 @@ package com.diskin.alon.pagoda.weatherinfo.appservices.usecase
 
 import com.diskin.alon.pagoda.common.appservices.*
 import com.diskin.alon.pagoda.common.util.Mapper
-import com.diskin.alon.pagoda.weatherinfo.appservices.interfaces.UserLocationProvider
 import com.diskin.alon.pagoda.weatherinfo.appservices.interfaces.AppPrefsStore
+import com.diskin.alon.pagoda.weatherinfo.appservices.interfaces.UserLocationProvider
 import com.diskin.alon.pagoda.weatherinfo.appservices.interfaces.WeatherRepository
 import com.diskin.alon.pagoda.weatherinfo.appservices.model.LocationWeatherDto
+import com.diskin.alon.pagoda.weatherinfo.appservices.model.LocationWeatherRequest
+import com.diskin.alon.pagoda.weatherinfo.appservices.model.LocationWeatherRequest.*
 import com.diskin.alon.pagoda.weatherinfo.domain.LocationWeather
 import com.diskin.alon.pagoda.weatherinfo.domain.UnitSystem
 import io.reactivex.Observable
 import javax.inject.Inject
 
 /**
- * Coordinate app operations to provide weather info for current user location.
+ * Coordinate app operations to provide weather info for a world location.
  */
-class GetCurrentWeatherUseCase @Inject constructor(
+class GetLocationWeatherUseCase @Inject constructor(
     private val weatherRepo: WeatherRepository,
     private val locationProvider: UserLocationProvider,
     private val prefsStore: AppPrefsStore,
-    private val mapper: Mapper<LocationWeather,LocationWeatherDto>
-) : UseCase<Unit, Observable<Result<LocationWeatherDto>>> {
+    private val mapper: Mapper<LocationWeather, LocationWeatherDto>
+) : UseCase<LocationWeatherRequest, Observable<Result<LocationWeatherDto>>> {
 
-    override fun execute(param: Unit): Observable<Result<LocationWeatherDto>> {
-        return locationProvider
-            .getCurrentLocation().toData()
-            .switchMap { getWeather(it.lat,it.lon) }
+    override fun execute(param: LocationWeatherRequest): Observable<Result<LocationWeatherDto>> {
+        val weather =  when(param) {
+            is CurrentLocationRequest -> locationProvider
+                .getCurrentLocation().toData()
+                .switchMap { getWeather(it.lat,it.lon) }
+
+            is LocationRequest -> getWeather(param.lat,param.lon)
+        }
+
+        return weather
             .toResult()
             .mapResult(mapper::map)
     }

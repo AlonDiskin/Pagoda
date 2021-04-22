@@ -12,11 +12,8 @@ class HourlyForecastAdapter(
 ) : ListAdapter<HourForecastDto, HourlyForecastAdapter.HourlyForecastViewHolder>(
     DIFF_CALLBACK
 ) {
-
     companion object {
-
         private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<HourForecastDto>() {
-
             override fun areItemsTheSame(oldItem: HourForecastDto, newItem: HourForecastDto): Boolean {
                 return oldItem == newItem
             }

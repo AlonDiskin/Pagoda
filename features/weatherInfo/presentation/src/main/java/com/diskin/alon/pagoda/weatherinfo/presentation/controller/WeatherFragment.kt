@@ -13,15 +13,16 @@ import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
 import androidx.activity.result.contract.ActivityResultContracts.StartIntentSenderForResult
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.diskin.alon.pagoda.common.appservices.AppError
 import com.diskin.alon.pagoda.common.presentation.ErrorViewData
 import com.diskin.alon.pagoda.common.presentation.UpdateViewData
-import com.diskin.alon.pagoda.weatherinfo.presentation.viewmodel.WeatherViewModel
 import com.diskin.alon.pagoda.weatherinfo.errors.*
 import com.diskin.alon.pagoda.weatherinfo.presentation.R
 import com.diskin.alon.pagoda.weatherinfo.presentation.databinding.FragmentWeatherBinding
+import com.diskin.alon.pagoda.weatherinfo.presentation.viewmodel.WeatherViewModel
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
@@ -36,7 +37,6 @@ import dagger.hilt.android.migration.OptionalInject
 class WeatherFragment(
     registry: ActivityResultRegistry? = null
 ) : Fragment(){
-
     private val viewModel: WeatherViewModel by viewModels()
     private lateinit var binding: FragmentWeatherBinding
     private var errorSnackbar: Snackbar? = null
@@ -79,6 +79,9 @@ class WeatherFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Show location indicator
+        binding.weatherMain.isCurrentLocation = viewModel.isCurrentLocation
+
         // Setup forecast adapters
         val hourlyForeCastAdapter = HourlyForecastAdapter()
         val dailyForecastAdapter = DailyForecastAdapter()
@@ -116,9 +119,19 @@ class WeatherFragment(
         binding.swipeRefresh.setOnRefreshListener { viewModel.refresh() }
 
         // Condition swipe to refresh action to app bar layout being expanded
-        val weatherMainHeight = binding.weatherMain.root.height
         binding.appBar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
-            binding.swipeRefresh.isEnabled = (verticalOffset == weatherMainHeight)
+            binding.swipeRefresh.isEnabled = (verticalOffset == 0)
+        })
+
+        // Show location name as appbar title, when appbar collapses
+        binding.appBar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
+            val showNameOffset = -1 * binding.weatherMain.root.height
+            if (verticalOffset == showNameOffset) {
+                requireActivity()
+                binding.weather?.let { (requireActivity() as AppCompatActivity).supportActionBar?.title = it.name }
+            } else {
+                binding.weather?.let { (requireActivity() as AppCompatActivity).supportActionBar?.title = "" }
+            }
         })
     }
 
@@ -134,6 +147,7 @@ class WeatherFragment(
     }
 
     private fun resolveWeatherDataError(appError: AppError) {
+        // findNavController().currentDestination?.label
         when(appError.description) {
             UNKNOWN_ERR -> showUnknownError()
             DEVICE_NETWORK -> showDeviceNetworkError()

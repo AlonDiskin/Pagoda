@@ -4,21 +4,28 @@ import android.os.Bundle
 import android.view.*
 import android.widget.ProgressBar
 import androidx.appcompat.widget.SearchView
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.RecyclerView
+import com.diskin.alon.pagoda.common.presentation.LOCATION_LAT
+import com.diskin.alon.pagoda.common.presentation.LOCATION_LON
+import com.diskin.alon.pagoda.locations.appservices.model.LocationSearchResult
 import com.diskin.alon.pagoda.locations.presentation.R
 import com.diskin.alon.pagoda.locations.presentation.viewmodel.SearchLocationViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.migration.OptionalInject
+import javax.inject.Inject
 
 @OptionalInject
 @AndroidEntryPoint
 class SearchLocationFragment : Fragment(), SearchView.OnQueryTextListener, MenuItem.OnActionExpandListener {
 
     private val viewModel: SearchLocationViewModel by viewModels()
+    @Inject
+    lateinit var appNav: AppLocationsNavProvider
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,7 +45,7 @@ class SearchLocationFragment : Fragment(), SearchView.OnQueryTextListener, MenuI
 
         // Setup search results ui adapter
         val rv = view.findViewById<RecyclerView>(R.id.searchResults)
-        val adapter = LocationSearchResultsAdapter()
+        val adapter = LocationSearchResultsAdapter(::handleResultClick)
         rv.adapter = adapter
 
         // Handle adapter paging load state updates
@@ -104,5 +111,11 @@ class SearchLocationFragment : Fragment(), SearchView.OnQueryTextListener, MenuI
         // Navigate back to parent dest
         findNavController().navigateUp()
         return true
+    }
+
+    private fun handleResultClick(result: LocationSearchResult) {
+        // Navigate to weather info screen and pass selected result coordinates
+        val bundle = bundleOf(LOCATION_LAT to result.lat, LOCATION_LON to result.lon)
+        findNavController().navigate(appNav.getWeatherDest(), bundle)
     }
 }
