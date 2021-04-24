@@ -1,17 +1,17 @@
 package com.diskin.alon.pagoda.settings.presentation
 
 import androidx.lifecycle.ViewModel
-import com.diskin.alon.pagoda.common.events.UnitSystemEvent
-import com.diskin.alon.pagoda.common.events.WeatherUnitsEventPublisher
+import com.diskin.alon.pagoda.common.presentation.Model
+import com.diskin.alon.pagoda.settings.appservices.WeatherUnit
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    private val eventPublisher: WeatherUnitsEventPublisher
+    @SettingsModel private val model: Model
 ) : ViewModel() {
 
-    fun updateWeatherUnit(unitSystemPref: UnitSystemEvent) {
-        eventPublisher.post(unitSystemPref)
+    fun updateWeatherUnits(unit: WeatherUnit) {
+        model.execute(UpdateWeatherUnitModelRequest(unit))
     }
 }

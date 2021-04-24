@@ -15,7 +15,7 @@ import androidx.test.espresso.matcher.RootMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
-import com.diskin.alon.pagoda.common.events.UnitSystemEvent
+import com.diskin.alon.pagoda.settings.appservices.WeatherUnit.*
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
@@ -58,94 +58,123 @@ class SettingsFragmentTest {
     }
 
     @Test
-    fun setAndDisplayUnitTypePreference() {
-        // Given a resumed fragment with default app preferences
+    fun allowTemperatureUnitPreferenceSelection() {
+        // Given
 
         scenario.onFragment {
-            val key = it.getString(R.string.pref_units_key)
-            val unitPref = it.preferenceScreen.get<ListPreference>(key)!!
+            val key = it.getString(R.string.pref_temperature_unit_key)
+            val tempUnitPref = it.preferenceScreen.get<ListPreference>(key)!!
             val metricValue = it.getString(R.string.pref_units_metric_value)
-            val metricValueUiEntry = it.getString(R.string.pref_units_metric_entry)
+            val metricValueUiEntry = it.getString(R.string.pref_temperature_metric_entry)
 
-            // Then fragment should show 'unit type' preference with summary entry as 'metric' value
-            assertThat(unitPref.isShown).isTrue()
-            assertThat(unitPref.summary).isEqualTo(metricValueUiEntry)
+            // Then fragment should show temperature unit selection preference with
+            // summary entry as metric
+            assertThat(tempUnitPref.isShown).isTrue()
+            assertThat(tempUnitPref.summary).isEqualTo(metricValueUiEntry)
 
-            // And preference should be set as 'metric'
-            assertThat(unitPref.value).isEqualTo(metricValue)
+            // And default preference should be set as metric
+            assertThat(tempUnitPref.value).isEqualTo(metricValue)
         }
     }
 
     @Test
-    fun changeUnitTypeAccordingToUserSelection() {
-        // Text case fixture
-        every { viewModel.updateWeatherUnit(any()) } returns Unit
-
-        // Given a resumed fragment with default unit preferences as 'metric'
-
-        // When user select 'imperial' unit type
-        onView(withText(R.string.pref_units_title))
-            .perform(click())
-        Shadows.shadowOf(Looper.getMainLooper()).idle()
-
-        onView(withText(R.string.pref_units_imperial_entry))
-            .inRoot(RootMatchers.isDialog())
-            .perform(click())
-        Shadows.shadowOf(Looper.getMainLooper()).idle()
-
-        // Then fragment should set preference as 'imperial'
-        val context = ApplicationProvider.getApplicationContext<Context>()
-        val prefs = PreferenceManager.getDefaultSharedPreferences(context)!!
-        val unitPrefKey = context.getString(R.string.pref_units_key)
-        val imperialPrefValue = context.getString(R.string.pref_units_imperial_value)
-
-        assertThat(prefs.getString(unitPrefKey,"")).isEqualTo(imperialPrefValue)
-
-        // And display unit preference as set to 'imperial'
-        scenario.onFragment {
-            val key = it.getString(R.string.pref_units_key)
-            val unitPref = it.preferenceScreen.get<ListPreference>(key)!!
-            val imperialValueUiEntry = context.getString(R.string.pref_units_imperial_entry)
-
-            assertThat(unitPref.isShown).isTrue()
-            assertThat(unitPref.summary).isEqualTo(imperialValueUiEntry)
-        }
-    }
-
-    @Test
-    fun updateWeatherUnitWhenUnitPrefChanged() {
-        // Text case fixture
-        every { viewModel.updateWeatherUnit(any()) } returns Unit
+    fun updateTemperatureUnitWhenPrefChanges() {
+        // Test cas fixture
+        every { viewModel.updateWeatherUnits(any()) } returns Unit
 
         // Given
 
         // When
-        onView(withText(R.string.pref_units_title))
+        onView(withText(R.string.pref_temperature_title))
             .perform(click())
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
-        onView(withText(R.string.pref_units_imperial_entry))
+        onView(withText(R.string.pref_temperature_imperial_entry))
             .inRoot(RootMatchers.isDialog())
             .perform(click())
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
         // Then
-        verify { viewModel.updateWeatherUnit(UnitSystemEvent.IMPERIAL) }
+        verify { viewModel.updateWeatherUnits(Temperature(UnitSystem.IMPERIAL)) }
+    }
 
-        Shadows.shadowOf(Looper.getMainLooper()).idle()
+    @Test
+    fun allowTimeFormatUnitPreferenceSelection() {
+        // Given
+
+        scenario.onFragment {
+            val key = it.getString(R.string.pref_time_format_key)
+            val tempUnitPref = it.preferenceScreen.get<ListPreference>(key)!!
+            val unitValue = it.getString(R.string.pref_time_format_24_value)
+
+            // Then
+            assertThat(tempUnitPref.isShown).isTrue()
+            assertThat(tempUnitPref.summary).isEqualTo(unitValue)
+
+            // And d
+            assertThat(tempUnitPref.value).isEqualTo(unitValue)
+        }
+    }
+
+    @Test
+    fun updateTimeFormatUnitWhenPrefChanges() {
+        // Test cas fixture
+        every { viewModel.updateWeatherUnits(any()) } returns Unit
+
+        // Given
 
         // When
-        onView(withText(R.string.pref_units_title))
+        onView(withText(R.string.pref_time_format_title))
             .perform(click())
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
-        onView(withText(R.string.pref_units_metric_entry))
+        onView(withText(R.string.pref_time_format_12_value))
             .inRoot(RootMatchers.isDialog())
             .perform(click())
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
         // Then
-        verify { viewModel.updateWeatherUnit(UnitSystemEvent.METRIC) }
+        verify { viewModel.updateWeatherUnits(TimeFormat(HourFormat.HOUR_12)) }
+    }
+
+    @Test
+    fun allowWindSpeedUnitPreferenceSelection() {
+        // Given
+
+        scenario.onFragment {
+            val key = it.getString(R.string.pref_wind_speed_unit_key)
+            val tempUnitPref = it.preferenceScreen.get<ListPreference>(key)!!
+            val unitValue = it.getString(R.string.pref_units_metric_value)
+            val unitUiEntry = it.getString(R.string.pref_wind_speed_metric_entry)
+
+            // Then
+            assertThat(tempUnitPref.isShown).isTrue()
+            assertThat(tempUnitPref.summary).isEqualTo(unitUiEntry)
+
+            // And d
+            assertThat(tempUnitPref.value).isEqualTo(unitValue)
+        }
+    }
+
+    @Test
+    fun updateWindUnitWhenPrefChanges() {
+        // Test cas fixture
+        every { viewModel.updateWeatherUnits(any()) } returns Unit
+
+        // Given
+
+        // When
+        onView(withText(R.string.pref_wind_speed_title))
+            .perform(click())
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        onView(withText(R.string.pref_wind_speed_imperial_entry))
+            .inRoot(RootMatchers.isDialog())
+            .perform(click())
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // Then
+        verify { viewModel.updateWeatherUnits(WindSpeed(UnitSystem.IMPERIAL)) }
     }
 
     private fun clearSharedPrefs() {

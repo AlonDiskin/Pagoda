@@ -50,6 +50,7 @@ class BrowseWorldLocationTemperatureSteps(db: TestDatabase, server: MockWebServe
     @Given("^User launch app from device home$")
     fun user_launch_app_from_device_home() {
         DeviceUtil.launchAppFromHome()
+        Thread.sleep(1000)
     }
 
     @And("^User search for location other then his current one$")
@@ -77,6 +78,7 @@ class BrowseWorldLocationTemperatureSteps(db: TestDatabase, server: MockWebServe
         // Click on first search result
         onView(withId(R.id.searchResults))
             .perform(actionOnItemAtPosition<LocationSearchResultViewHolder>(0, click()))
+        Thread.sleep(1000)
     }
 
     @Then("^Selected location temperature should be shown$")

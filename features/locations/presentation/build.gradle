@@ -61,7 +61,7 @@ dependencies {
     implementation "androidx.fragment:fragment-ktx:$fragment_version"
 
     // Project modules
-    implementation project(':features:common:presentation')
+    api project(':features:common:presentation')
     implementation project(':features:common:util')
     implementation project(':features:locations:appServices')
 

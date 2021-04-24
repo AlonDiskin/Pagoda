@@ -23,7 +23,7 @@ class RemoteWeatherStoreImpl @Inject constructor(
         return Observable.combineLatest(
             api.getCurrentWeather(lat, lon).toObservable(),
             api.getLocationDetail(lat, lon).toObservable(),
-            { weather, location -> mapper.map(weather,location.first()) })
+            { weather, location -> mapper.map(weather, location.first()) })
             .subscribeOn(Schedulers.io())
             .toResult(errorHandler::handle)
     }

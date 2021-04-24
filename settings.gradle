@@ -1,3 +1,6 @@
+include ':features:settings:di'
+include ':features:common:eventContracts'
+include ':features:settings:appServices'
 include ':features:locations:featureTesting'
 include ':features:locations:di'
 include ':features:locations:data'

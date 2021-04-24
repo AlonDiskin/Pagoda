@@ -6,7 +6,7 @@
     <data>
         <variable
             name="forecast"
-            type="com.diskin.alon.pagoda.weatherinfo.appservices.model.DayForecastDto" />
+            type="com.diskin.alon.pagoda.weatherinfo.presentation.model.UiDayForecast" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -19,24 +19,24 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            app:setDayOfWeek="@{forecast.dayOfWeek}"
+            android:text="@{forecast.dayOfWeek}"
             android:textAppearance="?attr/textAppearanceSubtitle1"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHorizontal_chainStyle="spread_inside"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="Sunday" />
+            tools:text="Sun" />
 
         <ImageView
             android:id="@+id/dailyWeatherIcon"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
             android:layout_gravity="center_horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:setWeatherIcon="@{forecast.condition}"
+            app:setImageRes="@{forecast.conditionIconRes}"
             tools:srcCompat="@drawable/ic_weather_rain_96" />
 
         <TextView
@@ -44,9 +44,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_margin="16dp"
+            android:layout_margin="12dp"
             android:textAppearance="?attr/textAppearanceSubtitle1"
-            app:setTemp="@{forecast.maxTemp}"
+            android:text="@{forecast.maxTemp}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/minTemp"
             app:layout_constraintTop_toTopOf="parent"
@@ -59,12 +59,23 @@
             android:layout_gravity="center_horizontal"
             android:layout_margin="16dp"
             android:textAppearance="?attr/textAppearanceSubtitle1"
-            app:setTemp="@{forecast.minTemp}"
+            android:text="@{forecast.minTemp}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="10&#xb0;" />
+
+        <TextView
+            android:id="@+id/condition"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="56dp"
+            android:text="@{forecast.condition}"
+            android:textAppearance="?attr/textAppearanceBody2"
+            app:layout_constraintBottom_toBottomOf="@+id/day"
+            app:layout_constraintStart_toStartOf="@+id/day"
+            tools:text="rain"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

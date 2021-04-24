@@ -47,7 +47,6 @@ dependencies {
     api project(':features:weatherInfo:infrastructure')
     api project(':features:common:presentation')
     api project(':features:common:util')
-    api project(':features:common:events')
 
     // Retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.6.2'

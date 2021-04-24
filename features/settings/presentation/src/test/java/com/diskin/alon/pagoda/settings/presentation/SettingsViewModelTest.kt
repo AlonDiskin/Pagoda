@@ -1,7 +1,7 @@
 package com.diskin.alon.pagoda.settings.presentation
 
-import com.diskin.alon.pagoda.common.events.UnitSystemEvent
-import com.diskin.alon.pagoda.common.events.WeatherUnitsEventPublisher
+import com.diskin.alon.pagoda.common.presentation.Model
+import com.diskin.alon.pagoda.settings.appservices.WeatherUnit
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -17,25 +17,25 @@ class SettingsViewModelTest {
     private lateinit var viewModel: SettingsViewModel
 
     // Collaborators
-    private val eventPublisher: WeatherUnitsEventPublisher = mockk()
+    private val model: Model = mockk()
 
     @Before
     fun setUp() {
-        viewModel = SettingsViewModel(eventPublisher)
+        viewModel = SettingsViewModel(model)
     }
 
     @Test
     fun publishEventToModelWhenUnitTypeUpdated() {
         // Test case fixture
-        every { eventPublisher.post(any()) } returns Unit
+        every { model.execute(any<UpdateWeatherUnitModelRequest>()) } returns Unit
 
         // Given
 
         // When
-        val unit: UnitSystemEvent = mockk()
-        viewModel.updateWeatherUnit(unit)
+        val unit: WeatherUnit = mockk()
+        viewModel.updateWeatherUnits(unit)
 
         // Then
-        verify { eventPublisher.post(unit) }
+        verify { model.execute(UpdateWeatherUnitModelRequest(unit)) }
     }
 }

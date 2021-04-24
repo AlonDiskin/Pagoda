@@ -32,13 +32,10 @@ import com.diskin.alon.pagoda.common.presentation.ImageLoader
 import com.diskin.alon.pagoda.common.presentation.UpdateViewData
 import com.diskin.alon.pagoda.common.uitesting.*
 import com.diskin.alon.pagoda.common.uitesting.RecyclerViewMatcher.withRecyclerView
-import com.diskin.alon.pagoda.weatherinfo.appservices.model.LocationWeatherDto
-import com.diskin.alon.pagoda.weatherinfo.appservices.model.UvIndexDto
-import com.diskin.alon.pagoda.weatherinfo.appservices.model.WeatherConditionDto
-import com.diskin.alon.pagoda.weatherinfo.appservices.model.WeatherDescriptionDto
 import com.diskin.alon.pagoda.weatherinfo.errors.*
 import com.diskin.alon.pagoda.weatherinfo.presentation.controller.HourlyForecastAdapter.HourlyForecastViewHolder
 import com.diskin.alon.pagoda.weatherinfo.presentation.controller.WeatherFragment
+import com.diskin.alon.pagoda.weatherinfo.presentation.model.UiWeather
 import com.diskin.alon.pagoda.weatherinfo.presentation.viewmodel.WeatherViewModel
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.material.appbar.AppBarLayout
@@ -51,8 +48,6 @@ import org.junit.runner.RunWith
 import org.robolectric.Shadows
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import java.text.SimpleDateFormat
-import java.util.*
 
 /**
  * [WeatherFragment] hermetic ui test.
@@ -71,7 +66,7 @@ class WeatherFragmentTest {
 
     // Stub data
     private val isCurrentLocation = true
-    private val weather = MutableLiveData<LocationWeatherDto>()
+    private val weather = MutableLiveData<UiWeather>()
     private val update = MutableLiveData<UpdateViewData>()
     private val error = MutableLiveData<ErrorViewData>()
     private val testRegistry = object : ActivityResultRegistry() {
@@ -136,88 +131,79 @@ class WeatherFragmentTest {
         // Verify main weather icon loaded
         scenario.onActivity {
             val imageView = it.findViewById<ImageView>(R.id.mainWeatherIcon)
-            verifyConditionIconLoaded(imageView,weatherData.condition)
+            verify { ImageLoader.loadIconResIntoImageView(imageView,weatherData.conditionIconRes) }
         }
 
         // Verify location name
         onView(withId(R.id.locationName))
-            .check(matches(withText(weatherData.name)))
+            .check(matches(withText(weatherData.locationName)))
 
         // Verify location weather clock data
         onView(withId(R.id.textClock))
             .check(matches(withTimeZone(weatherData.timeZone)))
 
         onView(withId(R.id.textClock))
-            .check(matches(withTimeFormat12("E, dd MMM yyyy hh:mm aa")))
+            .check(matches(withTimeFormat12(weatherData.clock12HourFormat)))
 
         onView(withId(R.id.textClock))
-            .check(matches(withTimeFormat24("E, dd MMM yyyy HH:mm")))
+            .check(matches(withTimeFormat24(weatherData.clock24HourFormat)))
 
         // Verify current temp data
         onView(withId(R.id.currentTemp))
-            .check(matches(withText("${weatherData.currentTemp.toInt()}°")))
+            .check(matches(withText(weatherData.currentTemp)))
 
         // Verify feel temp data
         onView(withId(R.id.feelTemp))
-            .check(matches(withText("Feels like ${weatherData.feelTemp.toInt()}°")))
+            .check(matches(withText(weatherData.feelTemp)))
 
         // Verify weather description
         onView(withId(R.id.description))
-            .check(matches(withText(weatherData.condition.description.name)))
+            .check(matches(withText(weatherData.weatherCondition)))
 
         // Verify min and max data
         onView(withId(R.id.minMaxTemp))
-            .check(matches(withText("min ${weatherData.minTemp.toInt()}°/max ${weatherData.maxTemp.toInt()}°")))
+            .check(matches(withText(weatherData.minMaxTemp)))
 
         // Verify index value
-        val uv = when(weatherData.uvIndex) {
-            UvIndexDto.LOW -> "Low"
-            UvIndexDto.MODERATE -> "Moderate"
-            UvIndexDto.HIGH -> "High"
-            UvIndexDto.VERY_HIGH -> "Very high"
-        }
         onView(withId(R.id.uvValue))
-            .check(matches(withText(uv)))
+            .check(matches(withText(weatherData.uvIndex)))
 
         // Verify humidity
         onView(withId(R.id.humidityValue))
-            .check(matches(withText("${weatherData.humidity.toInt()}%")))
+            .check(matches(withText(weatherData.humidity)))
 
         // Verify wind speed
         onView(withId(R.id.windSpeedValue))
-            .check(matches(withText("${weatherData.windSpeed.toInt()}km/h")))
+            .check(matches(withText(weatherData.windSpeed)))
 
         // Verify sunrise and sunset data
         onView(withId(R.id.sunriseValue))
-            .check(matches(withText(SimpleDateFormat("HH:mm")
-                .format(Date(weatherData.sunrise)))))
+            .check(matches(withText(weatherData.sunrise)))
 
         onView(withId(R.id.sunsetValue))
-            .check(matches(withText(SimpleDateFormat("HH:mm")
-                .format(Date(weatherData.sunset)))))
+            .check(matches(withText(weatherData.sunset)))
 
         // Verify hourly forecast
         onView(withId(R.id.hourForecast))
             .check(matches(isRecyclerViewItemsCount(weatherData.hourlyForecast.size)))
 
-        weatherData.hourlyForecast.forEachIndexed { index, hourForecastDto ->
+        weatherData.hourlyForecast.forEachIndexed { index, hourForecast ->
             onView(withId(R.id.hourForecast))
                 .perform(scrollToPosition<HourlyForecastViewHolder>(index))
             Shadows.shadowOf(Looper.getMainLooper()).idle()
 
             onView(withRecyclerView(R.id.hourForecast).atPositionOnView(index,R.id.hour))
-                .check(matches(withText("${hourForecastDto.hour}:00")))
+                .check(matches(withText(hourForecast.hour)))
 
             onView(withRecyclerView(R.id.hourForecast).atPositionOnView(index,R.id.temp))
-                .check(matches(withText("${hourForecastDto.temp.toInt()}°")))
+                .check(matches(withText(hourForecast.temp)))
 
             // Verify hourly forecast icon loaded
             scenario.onActivity {
                 val rv = it.findViewById<RecyclerView>(R.id.hourForecast)
                 val imageView = rv.findViewHolderForAdapterPosition(index)!!.itemView
                     .findViewById<ImageView>(R.id.hourWeatherIcon)
-
-                verifyConditionIconLoaded(imageView,hourForecastDto.condition)
+                verify { ImageLoader.loadIconResIntoImageView(imageView,hourForecast.conditionIconRes) }
             }
         }
 
@@ -225,40 +211,22 @@ class WeatherFragmentTest {
         onView(withId(R.id.dailyForecast))
             .check(matches(isRecyclerViewItemsCount(weatherData.dailyForecast.size)))
 
-        weatherData.dailyForecast.forEachIndexed { index, dayForecastDto ->
+        weatherData.dailyForecast.forEachIndexed { index, dayForecast ->
             onView(withRecyclerView(R.id.dailyForecast).atPositionOnView(index,R.id.day))
-                .check(
-                    matches(
-                        withText(
-                            when(dayForecastDto.dayOfWeek) {
-                                1 -> "Sunday"
-                                2 -> "Monday"
-                                3 -> "Tuesday"
-                                4 -> "Wednesday"
-                                5 -> "Thursday"
-                                6 -> "Friday"
-                                7 -> "Saturday"
-                                else -> throw IllegalArgumentException(
-                                    "Wrong day of week:${dayForecastDto.dayOfWeek}"
-                                )
-                            }
-                        )
-                    )
-                )
+                .check(matches(withText(dayForecast.dayOfWeek)))
 
             onView(withRecyclerView(R.id.dailyForecast).atPositionOnView(index,R.id.maxTemp))
-                .check(matches(withText("${dayForecastDto.maxTemp.toInt()}°")))
+                .check(matches(withText(dayForecast.maxTemp)))
 
             onView(withRecyclerView(R.id.dailyForecast).atPositionOnView(index,R.id.minTemp))
-                .check(matches(withText("${dayForecastDto.minTemp.toInt()}°")))
+                .check(matches(withText(dayForecast.minTemp)))
 
             // Verify day forecast icon loaded
             scenario.onActivity {
                 val rv = it.findViewById<RecyclerView>(R.id.dailyForecast)
                 val imageView = rv.findViewHolderForAdapterPosition(index)!!.itemView
                     .findViewById<ImageView>(R.id.dailyWeatherIcon)
-
-                verifyConditionIconLoaded(imageView,dayForecastDto.condition)
+                verify { ImageLoader.loadIconResIntoImageView(imageView,dayForecast.conditionIconRes) }
             }
         }
     }
@@ -428,7 +396,7 @@ class WeatherFragmentTest {
 
         // Then
         scenario.onActivity {
-            assertThat(it.supportActionBar!!.title).isEqualTo(weatherData.name)
+            assertThat(it.supportActionBar!!.title).isEqualTo(weatherData.locationName)
         }
     }
 
@@ -478,52 +446,5 @@ class WeatherFragmentTest {
 
         // Then
         verify(exactly = 0) { ImageLoader.loadIconResIntoImageView(any(),R.drawable.ic_baseline_location_24) }
-    }
-
-    private fun verifyConditionIconLoaded(imageView: ImageView, condition: WeatherConditionDto) {
-        when(condition.description) {
-            WeatherDescriptionDto.Thunderstorm -> {
-                verify { ImageLoader.loadIconResIntoImageView(imageView,R.drawable.ic_weather_thunder_96) }
-            }
-
-            WeatherDescriptionDto.Drizzle -> {
-                verify { ImageLoader.loadIconResIntoImageView(imageView,R.drawable.ic_weather_drizzle_96) }
-            }
-
-            WeatherDescriptionDto.Rain -> {
-                verify { ImageLoader.loadIconResIntoImageView(imageView,R.drawable.ic_weather_rain_96) }
-            }
-
-            WeatherDescriptionDto.Snow -> {
-                verify { ImageLoader.loadIconResIntoImageView(imageView,R.drawable.ic_weather_snow_96) }
-            }
-
-            WeatherDescriptionDto.Mist, WeatherDescriptionDto.Fog -> {
-                verify { ImageLoader.loadIconResIntoImageView(imageView,R.drawable.ic_weather_fog_96) }
-            }
-
-            WeatherDescriptionDto.Clear -> {
-                when(condition.isDay) {
-                    true -> verify { ImageLoader.loadIconResIntoImageView(imageView,R.drawable.ic_weather_clear_day_96) }
-                    else -> verify { ImageLoader.loadIconResIntoImageView(imageView,R.drawable.ic_weather_clear_night_96) }
-                }
-            }
-
-            WeatherDescriptionDto.Clouds -> {
-                verify { ImageLoader.loadIconResIntoImageView(imageView,R.drawable.ic_weather_clouds_96) }
-            }
-
-            WeatherDescriptionDto.Haze, WeatherDescriptionDto.Dust, WeatherDescriptionDto.Sand -> {
-                verify { ImageLoader.loadIconResIntoImageView(imageView,R.drawable.ic_weather_haze_96) }
-            }
-
-            WeatherDescriptionDto.Tornado -> {
-                verify { ImageLoader.loadIconResIntoImageView(imageView,R.drawable.ic_weather_tornado_96) }
-            }
-
-            WeatherDescriptionDto.Unknown -> {
-                verify { ImageLoader.loadIconResIntoImageView(imageView,R.drawable.ic_weather_unknown_96) }
-            }
-        }
     }
 }

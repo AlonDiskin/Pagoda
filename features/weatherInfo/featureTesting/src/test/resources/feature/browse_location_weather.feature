@@ -19,16 +19,16 @@ Feature: Current location weather
 
   @weather-units-changed
   Scenario Outline: Weather units preference changed
-    Given Units preference is set as "<current>"
-    And User open current weather screen
-    Then Weather data units is shown according to "<current>" preference
-    When User change unit system preference to "<selected>"
-    Then Shown weather data should be updated to "<selected>" units
+    Given Unit "<unit_type>" preference is set as "<current>"
+    And User open weather screen
+    Then Weather data unit of type "<unit_type>" is shown according to "<current>" preference
+    When Unit "<unit_type>" preference is changed to "<changed>"
+    Then Shown weather data of type "<unit_type>" should be updated to "<changed>" type
     Examples:
-      | current    | selected |
-      | metric     | imperial |
-      | imperial   | metric   |
-
+      | unit_type    | current    | changed  |
+      | temperature  | metric     | imperial |
+      | wind speed   | metric     | imperial |
+      | time format  | 24 hour    | 12 hour  |
 
   #Rule: Provide error handling for weather data browsing
 

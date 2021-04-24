@@ -1,81 +1,33 @@
 package com.diskin.alon.pagoda.weatherinfo.presentation
 
-import com.diskin.alon.pagoda.weatherinfo.appservices.model.*
-import org.joda.time.LocalDateTime
+import com.diskin.alon.pagoda.weatherinfo.presentation.model.UiDayForecast
+import com.diskin.alon.pagoda.weatherinfo.presentation.model.UiHourForecast
+import com.diskin.alon.pagoda.weatherinfo.presentation.model.UiWeather
 
-fun createTestWeather(): LocationWeatherDto {
-    return LocationWeatherDto(
+fun createTestWeather(): UiWeather {
+    return UiWeather(
         "city",
-        "country",
         "America/Chicago",
-        23.4,
-        22.0,
-        28.6,
-        18.0,
-        WeatherConditionDto(
-            WeatherDescriptionDto.Clouds,
-            true
-        ),
-        35.0,
-        10.0,
-        LocalDateTime(2020,10,10,6,15).toDate().time,
-        LocalDateTime(2020,10,10,18,15).toDate().time,
-        UnitSystemDto.METRIC,
-        UvIndexDto.LOW,
+        "E, dd MMM yyyy HH:mm",
+        null,
+        "24°",
+        "condition",
+        10,
+        "25°",
+        "min max temp",
+        "34%",
+        "15km/h",
+        "06:34",
+        "19:34",
+        "low",
         listOf(
-          HourForecastDto(
-              LocalDateTime(2020,10,10,6,15).hourOfDay,
-              WeatherConditionDto(
-                  WeatherDescriptionDto.Clouds,
-                  true
-              ),
-              25.6
-          ),
-            HourForecastDto(
-                LocalDateTime(2020,10,10,7,15).hourOfDay,
-                WeatherConditionDto(
-                    WeatherDescriptionDto.Drizzle,
-                    true
-                ),
-                24.6
-            ),
-            HourForecastDto(
-                LocalDateTime(2020,10,10,7,15).hourOfDay,
-                WeatherConditionDto(
-                    WeatherDescriptionDto.Rain,
-                    true
-                ),
-                15.6
-            )
+            UiHourForecast("12:00","condition1",34,"23°"),
+            UiHourForecast("13:00","condition2",32,"28°"),
+            UiHourForecast("14:00","condition3",35,"32°")
         ),
         listOf(
-            DayForecastDto(
-                LocalDateTime(2020,10,10,7,15).dayOfWeek,
-                WeatherConditionDto(
-                    WeatherDescriptionDto.Rain,
-                    true
-                ),
-                10.4,
-                18.5
-            ),
-            DayForecastDto(
-                LocalDateTime(2020,10,11,7,15).dayOfWeek,
-                WeatherConditionDto(
-                    WeatherDescriptionDto.Snow,
-                    true
-                ),
-                -10.4,
-                2.0
-            ),
-            DayForecastDto(
-                LocalDateTime(2020,10,12,7,15).dayOfWeek,
-                WeatherConditionDto(
-                    WeatherDescriptionDto.Thunderstorm,
-                    true
-                ),
-                5.7,
-                13.5
-            )
+            UiDayForecast("Sunday","condition4",45,"-10°","32°"),
+            UiDayForecast("Monday","condition7",47,"10°","36°")
         )
     )
 }

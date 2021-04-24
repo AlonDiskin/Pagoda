@@ -2,16 +2,17 @@ package com.diskin.alon.pagoda.weatherinfo.presentation
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.SavedStateHandle
-import com.diskin.alon.pagoda.common.presentation.Model
-import com.diskin.alon.pagoda.common.presentation.UpdateViewData
-import com.diskin.alon.pagoda.weatherinfo.presentation.viewmodel.WeatherViewModel
 import com.diskin.alon.pagoda.common.appservices.Result
 import com.diskin.alon.pagoda.common.presentation.LOCATION_LAT
 import com.diskin.alon.pagoda.common.presentation.LOCATION_LON
-import com.diskin.alon.pagoda.weatherinfo.appservices.model.LocationWeatherDto
+import com.diskin.alon.pagoda.common.presentation.Model
+import com.diskin.alon.pagoda.common.presentation.UpdateViewData
+import com.diskin.alon.pagoda.weatherinfo.presentation.model.UiWeather
 import com.diskin.alon.pagoda.weatherinfo.presentation.model.WeatherModelRequest
-import com.diskin.alon.pagoda.weatherinfo.presentation.model.WeatherModelRequest.*
-import com.google.common.truth.Truth.*
+import com.diskin.alon.pagoda.weatherinfo.presentation.model.WeatherModelRequest.CurrentLocationWeatherModelRequest
+import com.diskin.alon.pagoda.weatherinfo.presentation.model.WeatherModelRequest.LocationWeatherModelRequest
+import com.diskin.alon.pagoda.weatherinfo.presentation.viewmodel.WeatherViewModel
+import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -50,7 +51,7 @@ class WeatherViewModelTest {
     private val model: Model = mockk()
 
     // Stub data
-    private val modelCurrentWeather = BehaviorSubject.create<Result<LocationWeatherDto>>()
+    private val modelCurrentWeather = BehaviorSubject.create<Result<UiWeather>>()
     private val savedState: SavedStateHandle = SavedStateHandle()
 
     @Before
@@ -95,7 +96,7 @@ class WeatherViewModelTest {
         // Given
 
         // When
-        val weather = mockk<LocationWeatherDto>()
+        val weather = mockk<UiWeather>()
         modelCurrentWeather.onNext(Result.Success(weather))
 
         // Then

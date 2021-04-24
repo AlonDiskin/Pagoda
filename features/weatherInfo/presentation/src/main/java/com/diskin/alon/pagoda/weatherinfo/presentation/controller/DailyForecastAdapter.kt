@@ -5,21 +5,25 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.diskin.alon.pagoda.weatherinfo.appservices.model.DayForecastDto
 import com.diskin.alon.pagoda.weatherinfo.presentation.databinding.DailyForecastBinding
+import com.diskin.alon.pagoda.weatherinfo.presentation.model.UiDayForecast
 
 class DailyForecastAdapter(
-) : ListAdapter<DayForecastDto, DailyForecastAdapter.DailyForecastViewHolder>(
+) : ListAdapter<UiDayForecast, DailyForecastAdapter.DailyForecastViewHolder>(
     DIFF_CALLBACK
 ) {
+
     companion object {
-        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<DayForecastDto>() {
-            override fun areItemsTheSame(oldItem: DayForecastDto, newItem: DayForecastDto): Boolean {
+
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<UiDayForecast>() {
+
+            override fun areItemsTheSame(oldItem: UiDayForecast, newItem: UiDayForecast): Boolean {
                 return oldItem == newItem
             }
 
-            override fun areContentsTheSame(oldItem: DayForecastDto, newItem: DayForecastDto) =
-                oldItem == newItem
+            override fun areContentsTheSame(oldItem: UiDayForecast, newItem: UiDayForecast): Boolean {
+                return oldItem == newItem
+            }
         }
     }
 
@@ -27,7 +31,7 @@ class DailyForecastAdapter(
         private val binding: DailyForecastBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(forecast: DayForecastDto) {
+        fun bind(forecast: UiDayForecast) {
             binding.forecast = forecast
         }
     }

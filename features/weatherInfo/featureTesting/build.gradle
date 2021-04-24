@@ -67,6 +67,7 @@ dependencies {
     testImplementation project(':features:common:featureTesting')
     testImplementation project(':features:weatherInfo:di')
     testImplementation project(':features:weatherInfo:errors')
+    testImplementation project(':features:common:eventContracts')
 
     // Data binding
     kaptTest "androidx.databinding:databinding-compiler:4.1.3"

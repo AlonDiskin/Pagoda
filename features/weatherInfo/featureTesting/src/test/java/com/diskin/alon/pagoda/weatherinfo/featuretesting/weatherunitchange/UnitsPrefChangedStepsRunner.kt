@@ -2,7 +2,10 @@ package com.diskin.alon.pagoda.weatherinfo.featuretesting.weatherunitchange
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.filters.MediumTest
-import com.diskin.alon.pagoda.common.events.WeatherUnitsEventProvider
+import com.diskin.alon.pagoda.common.eventcontracts.AppEventProvider
+import com.diskin.alon.pagoda.common.eventcontracts.settings.TemperatureUnitPref
+import com.diskin.alon.pagoda.common.eventcontracts.settings.TimeFormatPref
+import com.diskin.alon.pagoda.common.eventcontracts.settings.WindSpeedUnitPref
 import com.diskin.alon.pagoda.weatherinfo.appservices.interfaces.UserLocationProvider
 import com.diskin.alon.pagoda.weatherinfo.di.InfrastructureModule
 import com.diskin.alon.pagoda.weatherinfo.di.LocationModule
@@ -29,7 +32,7 @@ import java.util.*
 import javax.inject.Inject
 
 /**
- * Step definitions com.diskin.alon.pagoda.runner for 'Weather units preference changed' scenario.
+ * Step definitions runner for 'Weather units preference changed' scenario.
  */
 @HiltAndroidTest
 @UninstallModules(WeatherInfoNetworkingModule::class,InfrastructureModule::class, LocationModule::class)
@@ -77,12 +80,24 @@ class UnitsPrefChangedStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTest(sc
     lateinit var locationProvider: UserLocationProvider
 
     @Inject
-    lateinit var unitPrefProvider: WeatherUnitsEventProvider
+    lateinit var tempUnitPrefProvider: AppEventProvider<TemperatureUnitPref>
+
+    @Inject
+    lateinit var windSpeedUnitPrefProvider: AppEventProvider<WindSpeedUnitPref>
+
+    @Inject
+    lateinit var timeFormatPrefProvider: AppEventProvider<TimeFormatPref>
 
     @Test
     fun test() {
         hiltRule.inject()
-        start(UnitsPrefChangedSteps(mockWebServer,unitPrefProvider,locationProvider))
+        start(UnitsPrefChangedSteps(
+            locationProvider,
+            mockWebServer,
+            tempUnitPrefProvider,
+            windSpeedUnitPrefProvider,
+            timeFormatPrefProvider
+        ))
     }
 
     override fun afterScenarioEnds(scenario: Scenario?, locale: Locale?) {

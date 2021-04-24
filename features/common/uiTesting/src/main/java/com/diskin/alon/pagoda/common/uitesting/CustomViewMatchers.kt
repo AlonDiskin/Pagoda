@@ -34,26 +34,32 @@ fun withTimeZone(timeZone: String): Matcher<View> {
     }
 }
 
-fun withTimeFormat24(format: String): Matcher<View> {
+fun withTimeFormat24(format: String?): Matcher<View> {
     return object : BoundedMatcher<View,TextClock>(TextClock::class.java) {
         override fun describeTo(description: Description) {
             description.appendText("with 24 time format:${format}")
         }
 
         override fun matchesSafely(item: TextClock): Boolean {
-            return item.format24Hour.toString() == format
+            return when(format) {
+                null -> item.format24Hour == null
+                else -> item.format24Hour.toString() == format
+            }
         }
     }
 }
 
-fun withTimeFormat12(format: String): Matcher<View> {
+fun withTimeFormat12(format: String?): Matcher<View> {
     return object : BoundedMatcher<View,TextClock>(TextClock::class.java) {
         override fun describeTo(description: Description) {
             description.appendText("with 12 time format:${format}")
         }
 
         override fun matchesSafely(item: TextClock): Boolean {
-            return item.format12Hour.toString() == format
+            return when(format) {
+                null -> item.format12Hour == null
+                else -> item.format12Hour.toString() == format
+            }
         }
     }
 }

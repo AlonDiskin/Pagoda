@@ -1,7 +1,10 @@
 package com.diskin.alon.pagoda.settings.featuretesting
 
 import androidx.test.filters.MediumTest
-import com.diskin.alon.pagoda.common.events.WeatherUnitsEventPublisher
+import com.diskin.alon.pagoda.common.eventcontracts.AppEventPublisher
+import com.diskin.alon.pagoda.common.eventcontracts.settings.TemperatureUnitPref
+import com.diskin.alon.pagoda.common.eventcontracts.settings.TimeFormatPref
+import com.diskin.alon.pagoda.common.eventcontracts.settings.WindSpeedUnitPref
 import com.mauriciotogneri.greencoffee.GreenCoffeeConfig
 import com.mauriciotogneri.greencoffee.GreenCoffeeTest
 import com.mauriciotogneri.greencoffee.ScenarioConfig
@@ -18,7 +21,7 @@ import java.util.*
 import javax.inject.Inject
 
 /**
- * Step definitions com.diskin.alon.pagoda.runner for 'User change unit type preference' scenario.
+ * Step runner for 'User change unit type preference' scenario.
  */
 @HiltAndroidTest
 @RunWith(ParameterizedRobolectricTestRunner::class)
@@ -34,7 +37,7 @@ class UnitTypePrefChangedStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTest
             val res = ArrayList<Array<Any>>()
             val scenarioConfigs = GreenCoffeeConfig()
                 .withFeatureFromAssets("weather_units_type_selection.feature")
-                .withTags("@unit-selected")
+                .withTags("@unit-changed")
                 .scenarios()
 
             for (scenarioConfig in scenarioConfigs) {
@@ -49,11 +52,17 @@ class UnitTypePrefChangedStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTest
     var hiltRule = HiltAndroidRule(this)
 
     @Inject
-    lateinit var eventPublisher: WeatherUnitsEventPublisher
+    lateinit var tempUnitPublisher: AppEventPublisher<TemperatureUnitPref>
+
+    @Inject
+    lateinit var windSpeedUnitPublisher: AppEventPublisher<WindSpeedUnitPref>
+
+    @Inject
+    lateinit var timeFormatPublisher: AppEventPublisher<TimeFormatPref>
 
     @Test
     fun test() {
         hiltRule.inject()
-        start(UnitTypePrefChangedSteps(eventPublisher))
+        start(UnitTypePrefChangedSteps(tempUnitPublisher, windSpeedUnitPublisher, timeFormatPublisher))
     }
 }

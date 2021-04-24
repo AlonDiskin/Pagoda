@@ -75,10 +75,11 @@ dependencies {
 
     // Project modules
     implementation project(':features:home:presentation')
-    implementation project(':features:settings:presentation')
     implementation project(':features:common:presentation')
+    implementation project(':features:common:events')
     implementation project(':features:weatherInfo:di')
     implementation project(':features:locations:di')
+    implementation project(':features:settings:di')
 
     // Multidex
     implementation 'androidx.multidex:multidex:2.0.1'
