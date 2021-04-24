@@ -19,7 +19,7 @@ import javax.inject.Inject
 class MainActivity : AppCompatActivity() {
 
     @Inject
-    lateinit var graphProvider: AppNavGraphProvider
+    lateinit var graphProvider: AppHomeNavProvider
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,9 +56,16 @@ class MainActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.action_settings -> {
                 findNavController(R.id.nav_host_container)
-                    .navigate(graphProvider.getSettingsGraphId())
+                    .navigate(graphProvider.getSettingsDestId())
                 true
             }
+
+            R.id.action_search_location -> {
+                findNavController(R.id.nav_host_container)
+                    .navigate(graphProvider.getSearchLocationsDestId())
+                true
+            }
+
             else -> super.onOptionsItemSelected(item)
         }
     }

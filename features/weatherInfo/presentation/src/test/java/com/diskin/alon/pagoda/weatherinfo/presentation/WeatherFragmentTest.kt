@@ -13,12 +13,12 @@ import androidx.activity.result.contract.ActivityResultContracts.StartIntentSend
 import androidx.core.app.ActivityOptionsCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
-import androidx.fragment.app.testing.FragmentScenario
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelLazy
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -32,15 +32,16 @@ import com.diskin.alon.pagoda.common.presentation.ImageLoader
 import com.diskin.alon.pagoda.common.presentation.UpdateViewData
 import com.diskin.alon.pagoda.common.uitesting.*
 import com.diskin.alon.pagoda.common.uitesting.RecyclerViewMatcher.withRecyclerView
-import com.diskin.alon.pagoda.weatherinfo.presentation.controller.HourlyForecastAdapter.HourlyForecastViewHolder
-import com.diskin.alon.pagoda.weatherinfo.presentation.controller.WeatherFragment
-import com.diskin.alon.pagoda.weatherinfo.presentation.viewmodel.WeatherViewModel
 import com.diskin.alon.pagoda.weatherinfo.appservices.model.LocationWeatherDto
 import com.diskin.alon.pagoda.weatherinfo.appservices.model.UvIndexDto
 import com.diskin.alon.pagoda.weatherinfo.appservices.model.WeatherConditionDto
 import com.diskin.alon.pagoda.weatherinfo.appservices.model.WeatherDescriptionDto
 import com.diskin.alon.pagoda.weatherinfo.errors.*
+import com.diskin.alon.pagoda.weatherinfo.presentation.controller.HourlyForecastAdapter.HourlyForecastViewHolder
+import com.diskin.alon.pagoda.weatherinfo.presentation.controller.WeatherFragment
+import com.diskin.alon.pagoda.weatherinfo.presentation.viewmodel.WeatherViewModel
 import com.google.android.gms.common.api.ResolvableApiException
+import com.google.android.material.appbar.AppBarLayout
 import com.google.common.truth.Truth.assertThat
 import io.mockk.*
 import org.hamcrest.CoreMatchers.allOf
@@ -63,12 +64,13 @@ import java.util.*
 class WeatherFragmentTest {
 
     // Test subject
-    private lateinit var scenario: FragmentScenario<WeatherFragment>
+    private lateinit var scenario: ActivityScenario<HiltTestActivity>
 
     // Collaborators
     private val viewModel: WeatherViewModel = mockk()
 
     // Stub data
+    private val isCurrentLocation = true
     private val weather = MutableLiveData<LocationWeatherDto>()
     private val update = MutableLiveData<UpdateViewData>()
     private val error = MutableLiveData<ErrorViewData>()
@@ -103,13 +105,12 @@ class WeatherFragmentTest {
         every { viewModel.weather } returns weather
         every { viewModel.update } returns update
         every { viewModel.error } returns error
+        every { viewModel.isCurrentLocation } returns isCurrentLocation
 
+        // Test require AppCompatActivity properties verification,which HiltTestActivity inherits from
         // Launch fragment under test
-        scenario = FragmentScenario.launchInContainer(
-            WeatherFragment::class.java,
-            null,
-            R.style.AppTheme,
-            object :FragmentFactory() {
+        scenario = launchFragmentInHiltContainer<WeatherFragment>(
+            factory = object :FragmentFactory() {
                 override fun instantiate(classLoader: ClassLoader, className: String): Fragment {
                     return WeatherFragment(testRegistry)
                 }
@@ -133,8 +134,8 @@ class WeatherFragmentTest {
         // Then fragment should show weather data in ui
 
         // Verify main weather icon loaded
-        scenario.onFragment { fragment ->
-            val imageView = fragment.view!!.findViewById<ImageView>(R.id.mainWeatherIcon)
+        scenario.onActivity {
+            val imageView = it.findViewById<ImageView>(R.id.mainWeatherIcon)
             verifyConditionIconLoaded(imageView,weatherData.condition)
         }
 
@@ -211,8 +212,8 @@ class WeatherFragmentTest {
                 .check(matches(withText("${hourForecastDto.temp.toInt()}°")))
 
             // Verify hourly forecast icon loaded
-            scenario.onFragment { fragment ->
-                val rv = fragment.view!!.findViewById<RecyclerView>(R.id.hourForecast)
+            scenario.onActivity {
+                val rv = it.findViewById<RecyclerView>(R.id.hourForecast)
                 val imageView = rv.findViewHolderForAdapterPosition(index)!!.itemView
                     .findViewById<ImageView>(R.id.hourWeatherIcon)
 
@@ -252,8 +253,8 @@ class WeatherFragmentTest {
                 .check(matches(withText("${dayForecastDto.minTemp.toInt()}°")))
 
             // Verify day forecast icon loaded
-            scenario.onFragment { fragment ->
-                val rv = fragment.view!!.findViewById<RecyclerView>(R.id.dailyForecast)
+            scenario.onActivity {
+                val rv = it.findViewById<RecyclerView>(R.id.dailyForecast)
                 val imageView = rv.findViewHolderForAdapterPosition(index)!!.itemView
                     .findViewById<ImageView>(R.id.dailyWeatherIcon)
 
@@ -271,8 +272,8 @@ class WeatherFragmentTest {
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
         // Then fragment should show refresh indicator
-        scenario.onFragment {
-            val refreshLayout = it.view!!.findViewById<SwipeRefreshLayout>(R.id.swipeRefresh)
+        scenario.onActivity {
+            val refreshLayout = it.findViewById<SwipeRefreshLayout>(R.id.swipeRefresh)
             assertThat(refreshLayout.isRefreshing).isTrue()
         }
 
@@ -281,8 +282,8 @@ class WeatherFragmentTest {
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
         // Then fragment should hide refresh indicator
-        scenario.onFragment {
-            val refreshLayout = it.view!!.findViewById<SwipeRefreshLayout>(R.id.swipeRefresh)
+        scenario.onActivity {
+            val refreshLayout = it.findViewById<SwipeRefreshLayout>(R.id.swipeRefresh)
             assertThat(refreshLayout.isRefreshing).isFalse()
         }
     }
@@ -412,7 +413,74 @@ class WeatherFragmentTest {
             .check(doesNotExist())
     }
 
-    private fun verifyConditionIconLoaded(imageView: ImageView,condition: WeatherConditionDto) {
+    @Test
+    fun showLocationNameAsAppbarTitleWheAppbarCollapses() {
+        // Given
+        val weatherData = createTestWeather()
+        this.weather.value = weatherData
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // When
+        scenario.onActivity {
+            it.findViewById<AppBarLayout>(R.id.appBar).setExpanded(false)
+            Shadows.shadowOf(Looper.getMainLooper()).idle()
+        }
+
+        // Then
+        scenario.onActivity {
+            assertThat(it.supportActionBar!!.title).isEqualTo(weatherData.name)
+        }
+    }
+
+    @Test
+    fun hideLocationNameAsAppbarTitleWheAppbarExpanded() {
+        // Given
+        val weatherData = createTestWeather()
+        this.weather.value = weatherData
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // When
+        scenario.onActivity {
+            it.findViewById<AppBarLayout>(R.id.appBar).setExpanded(true)
+            Shadows.shadowOf(Looper.getMainLooper()).idle()
+        }
+
+        // Then
+        scenario.onActivity {
+            assertThat(it.supportActionBar!!.title).isEqualTo("")
+        }
+    }
+
+    @Test
+    fun showCurrentLocationIndicatorWhenShowsCurrentLocationWeather() {
+        // Test fixture
+        mockkObject(ImageLoader)
+        every { ImageLoader.loadIconResIntoImageView(any(),any()) } returns Unit
+
+        // Given
+        every { viewModel.isCurrentLocation } returns true
+
+        // When
+        scenario.recreate()
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // Then
+        verify { ImageLoader.loadIconResIntoImageView(any(),R.drawable.ic_baseline_location_24) }
+    }
+
+    @Test
+    fun hideCurrentLocationIndicatorWhenShowsLocationWeather() {
+        // Test fixture
+        mockkObject(ImageLoader)
+        every { ImageLoader.loadIconResIntoImageView(any(),any()) } returns Unit
+
+        // Given
+
+        // Then
+        verify(exactly = 0) { ImageLoader.loadIconResIntoImageView(any(),R.drawable.ic_baseline_location_24) }
+    }
+
+    private fun verifyConditionIconLoaded(imageView: ImageView, condition: WeatherConditionDto) {
         when(condition.description) {
             WeatherDescriptionDto.Thunderstorm -> {
                 verify { ImageLoader.loadIconResIntoImageView(imageView,R.drawable.ic_weather_thunder_96) }

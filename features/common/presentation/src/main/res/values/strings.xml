@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Pagoda</string>
+    <string name="idling_resource_recycler_view_tag">data binding tag</string>
 </resources>

@@ -29,6 +29,9 @@ jobs:
       - run:
           name: Unit test settings feature
           command: ./gradlew :features:settings:presentation:testDebugUnitTest --no-daemon --max-workers=2 --stacktrace
+      - run:
+          name: Unit test locations feature
+          command: ./gradlew :features:locations:presentation:testDebugUnitTest :features:locations:data:testDebugUnitTest :features:locations:appServices:test :features:locations:domain:test --no-daemon --max-workers=2 --stacktrace
       - store_artifacts:
           path: app/build/reports
           destination: reports
@@ -48,6 +51,14 @@ jobs:
           path: features/weatherInfo/infrastructure/build/test-results
       - store_test_results:
           path: features/settings/presentation/build/test-results
+      - store_test_results:
+          path: features/locations/presentation/build/test-results
+      - store_test_results:
+          path: features/locations/data/build/test-results
+      - store_test_results:
+          path: features/locations/appServices/build/test-results
+      - store_test_results:
+          path: features/locations/domain/build/test-results
   integration_tests:
     working_directory: ~/code
     docker:
@@ -71,6 +82,9 @@ jobs:
       - run:
           name: Integration test settings feature
           command: ./gradlew :features:settings:featureTesting:testDebugUnitTest --tests 'com.diskin.alon.pagoda.settings.featuretesting.*' --no-daemon --max-workers=2 --stacktrace
+      - run:
+          name: Integration test locations feature
+          command: ./gradlew :features:locations:featureTesting:testDebugUnitTest --tests 'com.diskin.alon.pagoda.locations.featuretesting.*' --no-daemon --max-workers=2 --stacktrace
       - store_artifacts:
           path: app/build/reports
           destination: reports
@@ -78,6 +92,8 @@ jobs:
           path: features/weatherInfo/featureTesting/build/test-results
       - store_test_results:
           path: features/settings/featureTesting/build/test-results
+      - store_test_results:
+          path: features/locations/featureTesting/build/test-results
   e2e_tests:
     working_directory: ~/code
     docker:

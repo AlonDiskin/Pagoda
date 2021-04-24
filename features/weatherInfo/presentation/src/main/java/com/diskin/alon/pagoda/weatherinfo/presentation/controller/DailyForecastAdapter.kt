@@ -12,11 +12,8 @@ class DailyForecastAdapter(
 ) : ListAdapter<DayForecastDto, DailyForecastAdapter.DailyForecastViewHolder>(
     DIFF_CALLBACK
 ) {
-
     companion object {
-
         private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<DayForecastDto>() {
-
             override fun areItemsTheSame(oldItem: DayForecastDto, newItem: DayForecastDto): Boolean {
                 return oldItem == newItem
             }

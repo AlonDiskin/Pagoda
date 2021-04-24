@@ -45,7 +45,7 @@ class ShowWeatherErrorHandlingStepsRunner(scenario: ScenarioConfig) : GreenCoffe
         fun data(): Collection<Array<Any>> {
             val res = ArrayList<Array<Any>>()
             val scenarioConfigs = GreenCoffeeConfig()
-                .withFeatureFromAssets("feature/browse_current_location_weather.feature")
+                .withFeatureFromAssets("feature/browse_location_weather.feature")
                 .withTags("@weather-browsing-error")
                 .scenarios()
 

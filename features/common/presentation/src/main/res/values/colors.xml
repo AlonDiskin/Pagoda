@@ -1,12 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#1e88e5</color>
-    <color name="colorPrimaryDark">#1e88e5</color>
-    <color name="colorAccent">#bb86fc</color>
-    <color name="colorSurface">#42a5f5</color>
-    <color name="colorOnSurface">#FFFFFF</color>
-    <color name="colorOnPrimary">#FFFFFF</color>
-    <color name="colorBackground">#1e88e5</color>
-    <color name="colorOnBackground">#FFFFFF</color>
-    <color name="colorOnSecondary">#FFFFFF</color>
+    <color name="blue_600">#1e88e5</color>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="blue_400">#42a5f5</color>
+    <color name="white">#FFFFFF</color>
+    <color name="colorHint">#48FFFFFF</color>
 </resources>

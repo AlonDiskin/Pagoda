@@ -157,3 +157,12 @@ fun setMinMaxTemp(tv: TextView, weather: LocationWeatherDto?) {
         tv.text = context.getString(R.string.min_max_temp,it.minTemp.toInt(),it.maxTemp.toInt())
     }
 }
+
+@BindingAdapter("setLocationIndicator")
+fun setLocationIndicator(iv: ImageView,isCurrent: Boolean?) {
+    isCurrent?.let {
+        when(it) {
+            true -> ImageLoader.loadIconResIntoImageView(iv,R.drawable.ic_baseline_location_24)
+        }
+    }
+}

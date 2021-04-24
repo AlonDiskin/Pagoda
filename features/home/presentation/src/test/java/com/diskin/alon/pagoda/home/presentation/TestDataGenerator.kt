@@ -7,3 +7,6 @@ fun getTestAppGraph(): Int = R.navigation.test_app_graph
 
 @NavigationRes
 fun getTestSettingsGraphId(): Int = R.id.settingsFragment
+
+@NavigationRes
+fun getTestSearchLocationsDestId(): Int = R.id.searchLocationsFragment

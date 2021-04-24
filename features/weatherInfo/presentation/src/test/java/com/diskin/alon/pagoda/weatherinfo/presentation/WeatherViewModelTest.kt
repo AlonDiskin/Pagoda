@@ -1,12 +1,16 @@
 package com.diskin.alon.pagoda.weatherinfo.presentation
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.SavedStateHandle
 import com.diskin.alon.pagoda.common.presentation.Model
 import com.diskin.alon.pagoda.common.presentation.UpdateViewData
-import com.diskin.alon.pagoda.weatherinfo.presentation.model.CurrentWeatherModelRequest
 import com.diskin.alon.pagoda.weatherinfo.presentation.viewmodel.WeatherViewModel
 import com.diskin.alon.pagoda.common.appservices.Result
+import com.diskin.alon.pagoda.common.presentation.LOCATION_LAT
+import com.diskin.alon.pagoda.common.presentation.LOCATION_LON
 import com.diskin.alon.pagoda.weatherinfo.appservices.model.LocationWeatherDto
+import com.diskin.alon.pagoda.weatherinfo.presentation.model.WeatherModelRequest
+import com.diskin.alon.pagoda.weatherinfo.presentation.model.WeatherModelRequest.*
 import com.google.common.truth.Truth.*
 import io.mockk.every
 import io.mockk.mockk
@@ -47,13 +51,14 @@ class WeatherViewModelTest {
 
     // Stub data
     private val modelCurrentWeather = BehaviorSubject.create<Result<LocationWeatherDto>>()
+    private val savedState: SavedStateHandle = SavedStateHandle()
 
     @Before
     fun setUp() {
         // Stub collaborators
-        every { model.execute(any<CurrentWeatherModelRequest>()) } returns modelCurrentWeather
+        every { model.execute(any<WeatherModelRequest>()) } returns modelCurrentWeather
 
-        viewModel = WeatherViewModel(model)
+        viewModel = WeatherViewModel(model,savedState)
     }
 
     @Test
@@ -65,11 +70,24 @@ class WeatherViewModelTest {
     }
 
     @Test
-    fun subscribeToModelWeatherUpdatesWhenCreated() {
+    fun subscribeToModelCurrentLocationWeatherUpdatesWhenCreatedWithoutCoordinates() {
         // Given
 
         // Then
-        verify { model.execute(CurrentWeatherModelRequest()) }
+        verify { model.execute(CurrentLocationWeatherModelRequest) }
+    }
+
+    @Test
+    fun subscribeToModelLocationWeatherUpdatesWhenCreatedWithCoordinates() {
+        // Given
+        val lat = 89.34
+        val lon = 12.45
+        savedState.set(LOCATION_LAT,lat)
+        savedState.set(LOCATION_LON,lon)
+        viewModel = WeatherViewModel(model, savedState)
+
+        // Then
+        verify { model.execute(LocationWeatherModelRequest(lat, lon)) }
     }
 
     @Test
@@ -86,14 +104,14 @@ class WeatherViewModelTest {
     }
 
     @Test
-    fun initModelWeatherDataUpdateWhenRefreshed() {
+    fun refreshModelWeatherDataWhenRefreshed() {
         // Given
 
         // When
         viewModel.refresh()
 
         // Then
-        verify(exactly = 2) { model.execute(CurrentWeatherModelRequest()) }
+        verify(exactly = 2) { model.execute(any<WeatherModelRequest>()) }
 
         // And
         assertThat(viewModel.update.value).isEqualTo(UpdateViewData.Refresh)

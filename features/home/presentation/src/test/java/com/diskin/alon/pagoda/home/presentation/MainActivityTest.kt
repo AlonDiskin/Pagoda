@@ -45,13 +45,13 @@ class MainActivityTest {
     // Collaborators
     @BindValue
     @JvmField
-    val graphProvider: AppNavGraphProvider = mockk()
+    val graphProvider: AppHomeNavProvider = mockk()
 
     @Before
     fun setUp() {
         // Stub collaborator
         every { graphProvider.getAppNavGraph() } returns getTestAppGraph()
-        every { graphProvider.getSettingsGraphId() } returns getTestSettingsGraphId()
+        every { graphProvider.getSettingsDestId() } returns getTestSettingsGraphId()
 
         // Launch activity under test
         scenario = ActivityScenario.launch(MainActivity::class.java)
@@ -73,7 +73,6 @@ class MainActivityTest {
         // Then activity should navigate to settings fragment
         scenario.onActivity {
             val controller = it.findNavController(R.id.nav_host_container)
-
             assertThat(controller.currentDestination!!.id).isEqualTo(R.id.settingsFragment)
         }
     }
@@ -85,7 +84,6 @@ class MainActivityTest {
         // Then activity should set weather fragment as home destination for navigation
         scenario.onActivity {
             val controller = it.findNavController(R.id.nav_host_container)
-
             assertThat(controller.currentDestination!!.id).isEqualTo(R.id.weatherFragment)
         }
     }
@@ -105,5 +103,25 @@ class MainActivityTest {
         // Then
         onView(withContentDescription(R.string.abc_action_bar_up_description))
             .check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun openLocationsSearchScreenWhenSelectedByUser() {
+        // Test case fixture
+        val locationSearchDestId = getTestSearchLocationsDestId()
+        every { graphProvider.getSearchLocationsDestId() } returns locationSearchDestId
+
+        // Given a resume activity
+
+        // When user select to open locations search screen
+        onView(withContentDescription(R.string.title_search_location))
+            .perform(click())
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // Then activity should navigate to search fragment
+        scenario.onActivity {
+            val controller = it.findNavController(R.id.nav_host_container)
+            assertThat(controller.currentDestination!!.id).isEqualTo(R.id.searchLocationsFragment)
+        }
     }
 }

@@ -8,4 +8,11 @@
         app:showAsAction="never"
         />
 
+    <item
+        android:id="@+id/action_search_location"
+        android:title="@string/title_search_location"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_baseline_search_24"
+        />
+
 </menu>

@@ -13,11 +13,18 @@
         <action
             android:id="@+id/action_weatherFragment_to_settingsFragment"
             app:destination="@id/settingsFragment" />
+        <action
+            android:id="@+id/action_weatherFragment_to_searchLocationsFragment"
+            app:destination="@id/searchLocationsFragment" />
     </fragment>
 
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.diskin.alon.pagoda.home.presentation.BlankFragment"
-        android:label="WeatherFragment"
+        tools:layout="@layout/fragment_blank"/>
+
+    <fragment
+        android:id="@+id/searchLocationsFragment"
+        android:name="com.diskin.alon.pagoda.home.presentation.BlankFragment"
         tools:layout="@layout/fragment_blank"/>
 </navigation>

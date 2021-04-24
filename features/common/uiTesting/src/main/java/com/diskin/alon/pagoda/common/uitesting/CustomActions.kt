@@ -2,11 +2,15 @@ package com.diskin.alon.pagoda.common.uitesting
 
 import android.view.View
 import android.view.animation.Animation
+import androidx.appcompat.widget.SearchView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
+import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import io.mockk.mockk
 import org.hamcrest.BaseMatcher
+import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.isA
 import org.hamcrest.Description
 import org.hamcrest.Matcher
@@ -51,6 +55,22 @@ fun swipeToRefresh(): ViewAction {
 
                 animatorListener.onAnimationEnd(mockk())
             }
+        }
+    }
+}
+
+fun typeSearchViewText(text: String): ViewAction {
+    return object : ViewAction {
+        override fun getDescription(): String {
+            return "Change view text"
+        }
+
+        override fun getConstraints(): Matcher<View> {
+            return allOf(isDisplayed(), isAssignableFrom(SearchView::class.java))
+        }
+
+        override fun perform(uiController: UiController?, view: View?) {
+            (view as SearchView).setQuery(text, true)
         }
     }
 }
