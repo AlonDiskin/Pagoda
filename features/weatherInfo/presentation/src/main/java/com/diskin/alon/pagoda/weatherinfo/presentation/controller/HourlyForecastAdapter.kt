@@ -5,20 +5,23 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.diskin.alon.pagoda.weatherinfo.appservices.model.HourForecastDto
 import com.diskin.alon.pagoda.weatherinfo.presentation.databinding.HourlyForecastBinding
+import com.diskin.alon.pagoda.weatherinfo.presentation.model.UiHourForecast
 
 class HourlyForecastAdapter(
-) : ListAdapter<HourForecastDto, HourlyForecastAdapter.HourlyForecastViewHolder>(
+) : ListAdapter<UiHourForecast, HourlyForecastAdapter.HourlyForecastViewHolder>(
     DIFF_CALLBACK
 ) {
+
     companion object {
-        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<HourForecastDto>() {
-            override fun areItemsTheSame(oldItem: HourForecastDto, newItem: HourForecastDto): Boolean {
+
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<UiHourForecast>() {
+
+            override fun areItemsTheSame(oldItem: UiHourForecast, newItem: UiHourForecast): Boolean {
                 return oldItem == newItem
             }
 
-            override fun areContentsTheSame(oldItem: HourForecastDto, newItem: HourForecastDto) =
+            override fun areContentsTheSame(oldItem: UiHourForecast, newItem: UiHourForecast) =
                 oldItem == newItem
         }
     }
@@ -27,7 +30,7 @@ class HourlyForecastAdapter(
         private val binding: HourlyForecastBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(forecast: HourForecastDto) {
+        fun bind(forecast: UiHourForecast) {
             binding.forecast = forecast
         }
     }

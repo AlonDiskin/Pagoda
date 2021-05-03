@@ -16,16 +16,20 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import com.diskin.alon.pagoda.common.appservices.AppError
 import com.diskin.alon.pagoda.common.appservices.Result
 import com.diskin.alon.pagoda.common.appservices.toResult
-import com.diskin.alon.pagoda.common.events.UnitSystemEvent
-import com.diskin.alon.pagoda.common.events.WeatherUnitsEventProvider
+import com.diskin.alon.pagoda.common.eventcontracts.AppEventProvider
+import com.diskin.alon.pagoda.common.eventcontracts.settings.TemperatureUnitPref
+import com.diskin.alon.pagoda.common.eventcontracts.settings.TimeFormatPref
+import com.diskin.alon.pagoda.common.eventcontracts.settings.TimeFormatPref.HourFormat
+import com.diskin.alon.pagoda.common.eventcontracts.settings.UnitPrefSystem
+import com.diskin.alon.pagoda.common.eventcontracts.settings.WindSpeedUnitPref
 import com.diskin.alon.pagoda.common.uitesting.HiltTestActivity
 import com.diskin.alon.pagoda.common.uitesting.launchFragmentInHiltContainer
-import com.diskin.alon.pagoda.weatherinfo.presentation.R
-import com.diskin.alon.pagoda.weatherinfo.presentation.controller.WeatherFragment
 import com.diskin.alon.pagoda.weatherinfo.appservices.interfaces.UserLocationProvider
 import com.diskin.alon.pagoda.weatherinfo.appservices.model.UserLocation
 import com.diskin.alon.pagoda.weatherinfo.errors.DEVICE_LOCATION
 import com.diskin.alon.pagoda.weatherinfo.errors.LOCATION_PERMISSION
+import com.diskin.alon.pagoda.weatherinfo.presentation.R
+import com.diskin.alon.pagoda.weatherinfo.presentation.controller.WeatherFragment
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.common.truth.Truth.assertThat
 import com.mauriciotogneri.greencoffee.GreenCoffeeSteps
@@ -45,7 +49,9 @@ import org.robolectric.Shadows
 class ShowWeatherErrorHandlingSteps(
     private val locationProvider: UserLocationProvider,
     private val server: MockWebServer,
-    private val unitPrefProvider: WeatherUnitsEventProvider
+    private val tempUnitPrefProvider: AppEventProvider<TemperatureUnitPref>,
+    private val windSpeedUnitPrefProvider: AppEventProvider<WindSpeedUnitPref>,
+    private val timeFormatPrefProvider: AppEventProvider<TimeFormatPref>
 ) : GreenCoffeeSteps() {
 
     private lateinit var scenario: ActivityScenario<HiltTestActivity>
@@ -106,8 +112,10 @@ class ShowWeatherErrorHandlingSteps(
                 val location = UserLocation(10.0, 10.0)
                 every { locationProvider.getCurrentLocation() } returns Observable.just(location).toResult()
 
-                // Prepare unit system pref provider for scenario
-                every { unitPrefProvider.get() } returns Observable.just(UnitSystemEvent.METRIC)
+                // Prepare app prefs providers for scenario
+                every { tempUnitPrefProvider.get() } returns Observable.just(TemperatureUnitPref(UnitPrefSystem.METRIC))
+                every { windSpeedUnitPrefProvider.get() } returns Observable.just(WindSpeedUnitPref(UnitPrefSystem.METRIC))
+                every { timeFormatPrefProvider.get() } returns Observable.just(TimeFormatPref(HourFormat.HOUR_24))
             }
 
             "device network" -> {
@@ -125,7 +133,9 @@ class ShowWeatherErrorHandlingSteps(
                 every { locationProvider.getCurrentLocation() } returns Observable.just(location).toResult()
 
                 // Prepare unit system pref provider for scenario
-                every { unitPrefProvider.get() } returns Observable.just(UnitSystemEvent.METRIC)
+                every { tempUnitPrefProvider.get() } returns Observable.just(TemperatureUnitPref(UnitPrefSystem.METRIC))
+                every { windSpeedUnitPrefProvider.get() } returns Observable.just(WindSpeedUnitPref(UnitPrefSystem.METRIC))
+                every { timeFormatPrefProvider.get() } returns Observable.just(TimeFormatPref(HourFormat.HOUR_24))
             }
 
             else -> throw IllegalArgumentException("Unknown scenario arg:${error}")

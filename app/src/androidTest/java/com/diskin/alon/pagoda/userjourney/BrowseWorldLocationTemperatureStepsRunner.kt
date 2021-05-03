@@ -26,6 +26,7 @@ import javax.inject.Inject
 @RunWith(Parameterized::class)
 @LargeTest
 class BrowseWorldLocationTemperatureStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTest(scenario) {
+
     companion object {
         @JvmStatic
         @Parameterized.Parameters(name = "{0}")

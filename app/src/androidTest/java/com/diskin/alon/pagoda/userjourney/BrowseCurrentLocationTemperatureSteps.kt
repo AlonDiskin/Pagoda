@@ -1,22 +1,17 @@
 package com.diskin.alon.pagoda.userjourney
 
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu
-import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.RootMatchers.isDialog
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.diskin.alon.pagoda.R
 import com.diskin.alon.pagoda.util.DeviceUtil
 import com.diskin.alon.pagoda.util.FileUtil
 import com.diskin.alon.pagoda.weatherinfo.data.BuildConfig
 import com.google.common.truth.Truth.assertThat
 import com.mauriciotogneri.greencoffee.GreenCoffeeSteps
-import com.mauriciotogneri.greencoffee.annotations.And
 import com.mauriciotogneri.greencoffee.annotations.Given
 import com.mauriciotogneri.greencoffee.annotations.Then
-import com.mauriciotogneri.greencoffee.annotations.When
 import okhttp3.mockwebserver.Dispatcher
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
@@ -27,6 +22,7 @@ import org.json.JSONObject
  * Step definitions for 'User browse current location Temperature' scenario.
  */
 class BrowseCurrentLocationTemperatureSteps(private val server: MockWebServer) : GreenCoffeeSteps() {
+
     private val dispatcher = TestDispatcher()
 
     init {
@@ -39,39 +35,20 @@ class BrowseCurrentLocationTemperatureSteps(private val server: MockWebServer) :
         DeviceUtil.launchAppFromHome()
     }
 
-    @When("^User select different weather units system$")
-    fun user_select_different_weather_units_system() {
-        // Select imperial units from app settings
-        // Currently (4.2021)  openActionBarOverflowOrOptionsMenu method fail sometimes
-        openActionBarOverflowOrOptionsMenu(ApplicationProvider.getApplicationContext())
-        onView(withText(R.string.title_settings))
-            .perform(click())
-        onView(withText(R.string.pref_units_title))
-            .perform(click())
-        onView(withText(R.string.pref_units_imperial_entry))
-            .inRoot(isDialog())
-            .perform(click())
-    }
-
-    @And("^Check temperature for current location")
-    fun check_temperature_for_current_location() {
-        // Return to app home(weather info screen)
-        DeviceUtil.pressBack()
-    }
-
-    @Then("^Location temperature should be shown according to selected unit$")
+    @Then("^Location temperature should be shown in weather info screen$")
     fun location_temperature_should_be_shown_according_to_selected_unit() {
+        // Extract expected temp value from mock server stub data
         val weatherJson = FileUtil.readStringFromFile(dispatcher.locationWeatherRes)
         val currentTemp = JSONObject(weatherJson).getJSONObject("current")
             .getDouble("temp")
+        val expectedTemp = currentTemp.toInt().toString().plus("°")
 
-        // Verify current temp
+        Thread.sleep(3000)
+        // Verify current temp shown as expected
         onView(withId(R.id.currentTemp))
-            .check(matches(withText(
-                String.format("%.1f", ((currentTemp * (9.0/5.0)) + 32))
-                    .toDouble().toInt().toString().plus("°")
-            )))
+            .check(matches(withText(expectedTemp)))
 
+        // Verify server request count
         assertThat(server.requestCount).isEqualTo(2)
     }
 

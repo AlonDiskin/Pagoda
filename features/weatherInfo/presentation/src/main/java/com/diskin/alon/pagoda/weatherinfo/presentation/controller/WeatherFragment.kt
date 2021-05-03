@@ -37,6 +37,7 @@ import dagger.hilt.android.migration.OptionalInject
 class WeatherFragment(
     registry: ActivityResultRegistry? = null
 ) : Fragment(){
+
     private val viewModel: WeatherViewModel by viewModels()
     private lateinit var binding: FragmentWeatherBinding
     private var errorSnackbar: Snackbar? = null
@@ -128,7 +129,7 @@ class WeatherFragment(
             val showNameOffset = -1 * binding.weatherMain.root.height
             if (verticalOffset == showNameOffset) {
                 requireActivity()
-                binding.weather?.let { (requireActivity() as AppCompatActivity).supportActionBar?.title = it.name }
+                binding.weather?.let { (requireActivity() as AppCompatActivity).supportActionBar?.title = it.locationName }
             } else {
                 binding.weather?.let { (requireActivity() as AppCompatActivity).supportActionBar?.title = "" }
             }

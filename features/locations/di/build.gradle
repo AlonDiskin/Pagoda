@@ -44,7 +44,6 @@ dependencies {
     api project(':features:locations:appServices')
     api project(':features:locations:domain')
     api project(':features:locations:presentation')
-    api project(':features:common:presentation')
     api project(':features:common:util')
 
     // Hilt

@@ -10,18 +10,21 @@ import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.diskin.alon.pagoda.common.appservices.toResult
-import com.diskin.alon.pagoda.common.events.UnitSystemEvent
-import com.diskin.alon.pagoda.common.events.WeatherUnitsEventProvider
+import com.diskin.alon.pagoda.common.eventcontracts.AppEventProvider
+import com.diskin.alon.pagoda.common.eventcontracts.settings.TemperatureUnitPref
+import com.diskin.alon.pagoda.common.eventcontracts.settings.TimeFormatPref
+import com.diskin.alon.pagoda.common.eventcontracts.settings.UnitPrefSystem
+import com.diskin.alon.pagoda.common.eventcontracts.settings.WindSpeedUnitPref
 import com.diskin.alon.pagoda.common.presentation.ImageLoader
 import com.diskin.alon.pagoda.common.uitesting.*
 import com.diskin.alon.pagoda.common.uitesting.RecyclerViewMatcher.withRecyclerView
-import com.diskin.alon.pagoda.weatherinfo.presentation.controller.HourlyForecastAdapter.HourlyForecastViewHolder
-import com.diskin.alon.pagoda.weatherinfo.presentation.controller.WeatherFragment
 import com.diskin.alon.pagoda.weatherinfo.appservices.interfaces.UserLocationProvider
 import com.diskin.alon.pagoda.weatherinfo.appservices.model.UserLocation
 import com.diskin.alon.pagoda.weatherinfo.data.BuildConfig
 import com.diskin.alon.pagoda.weatherinfo.featuretesting.getJsonFromResource
 import com.diskin.alon.pagoda.weatherinfo.presentation.R
+import com.diskin.alon.pagoda.weatherinfo.presentation.controller.HourlyForecastAdapter.HourlyForecastViewHolder
+import com.diskin.alon.pagoda.weatherinfo.presentation.controller.WeatherFragment
 import com.mauriciotogneri.greencoffee.GreenCoffeeSteps
 import com.mauriciotogneri.greencoffee.annotations.And
 import com.mauriciotogneri.greencoffee.annotations.Given
@@ -48,7 +51,9 @@ import java.text.SimpleDateFormat
  */
 class CurrentLocationWeatherShownSteps(
     server: MockWebServer,
-    unitPrefProvider: WeatherUnitsEventProvider,
+    tempUnitPrefProvider: AppEventProvider<TemperatureUnitPref>,
+    windSpeedUnitPrefProvider: AppEventProvider<WindSpeedUnitPref>,
+    timeFormatPrefProvider: AppEventProvider<TimeFormatPref>,
     private val locationProvider: UserLocationProvider
 ) : GreenCoffeeSteps() {
     private lateinit var scenario: ActivityScenario<HiltTestActivity>
@@ -65,7 +70,9 @@ class CurrentLocationWeatherShownSteps(
         every { locationProvider.getCurrentLocation() } returns Observable.just(location).toResult()
 
         // Prepare weather units preference provider for test
-        every { unitPrefProvider.get() } returns Observable.just(UnitSystemEvent.METRIC)
+        every { tempUnitPrefProvider.get() } returns Observable.just(TemperatureUnitPref(UnitPrefSystem.METRIC))
+        every { windSpeedUnitPrefProvider.get() } returns Observable.just(WindSpeedUnitPref(UnitPrefSystem.METRIC))
+        every { timeFormatPrefProvider.get() } returns Observable.just(TimeFormatPref(TimeFormatPref.HourFormat.HOUR_24))
 
         // Prepare image loader for test
         mockkObject(ImageLoader)
@@ -136,7 +143,7 @@ class CurrentLocationWeatherShownSteps(
             .check(matches(withTimeZone(weather.timeZone)))
 
         onView(withId(R.id.textClock))
-            .check(matches(withTimeFormat12(weather.clockFormat12Hour)))
+            .check(matches(withTimeFormat12(null)))
 
         onView(withId(R.id.textClock))
             .check(matches(withTimeFormat24(weather.clockFormat24Hour)))
@@ -278,8 +285,12 @@ class CurrentLocationWeatherShownSteps(
 
             hourlyUiForecast.add(
                 UiHourForecast(
-                    LocalDateTime(hour * 1000, DateTimeZone.forID(timeZone))
-                        .hourOfDay.toString().plus(":00"),
+                    SimpleDateFormat("HH:mm").format(
+                        LocalDateTime(
+                            hour * 1000,
+                            DateTimeZone.forID(timeZone)
+                        ).toDate()
+                    ),
                     hourTemp.toInt().toString().plus("°"),
                     when {
                         (hourConditionCode in 200..299) -> "Thunderstorm"
@@ -314,13 +325,13 @@ class CurrentLocationWeatherShownSteps(
             dailyUiForecast.add(
                 UiDayForecast(
                     when(LocalDateTime(day * 1000, DateTimeZone.forID(timeZone)).dayOfWeek) {
-                        1 -> "Monday"
-                        2 -> "Tuesday"
-                        3 -> "Wednesday"
-                        4 -> "Thursday"
-                        5 -> "Friday"
-                        6 -> "Saturday"
-                        7 -> "Sunday"
+                        1 -> "Mon"
+                        2 -> "Tue"
+                        3 -> "Wed"
+                        4 -> "Thu"
+                        5 -> "Fri"
+                        6 -> "Sat"
+                        7 -> "Sun"
                         else -> throw IllegalArgumentException("Wrong day of week arg:$day")
                     },
                     dayMinTemp.toInt().toString().plus("°"),
@@ -347,7 +358,6 @@ class CurrentLocationWeatherShownSteps(
         return UiWeatherData(
             name,
             timeZone,
-            "E, dd MMM yyyy hh:mm aa",
             "E, dd MMM yyyy HH:mm",
             currentTemp.toInt().toString().plus("°"),
             "Feels like ${feelTemp.toInt()}°",
@@ -391,46 +401,60 @@ class CurrentLocationWeatherShownSteps(
     private fun verifyConditionIconLoaded(imageView: ImageView, condition: String,isDay: Boolean) {
         when(condition) {
             "Thunderstorm" -> {
-                verify { ImageLoader.loadIconResIntoImageView(imageView,R.drawable.ic_weather_thunder_96) }
+                when(isDay) {
+                    true -> verify { ImageLoader.loadIconResIntoImageView(imageView, R.drawable.ic_weather_thunder_day_96) }
+                    else -> verify { ImageLoader.loadIconResIntoImageView(imageView, R.drawable.ic_weather_thunder_night_96) }
+                }
             }
 
-            "Drizzle" -> {
-                verify { ImageLoader.loadIconResIntoImageView(imageView,R.drawable.ic_weather_drizzle_96) }
-            }
-
-            "Rain" -> {
-                verify { ImageLoader.loadIconResIntoImageView(imageView,R.drawable.ic_weather_rain_96) }
+            "Drizzle","Rain" -> {
+                when(isDay) {
+                    true -> verify { ImageLoader.loadIconResIntoImageView(imageView, R.drawable.ic_weather_rain_day_96) }
+                    else -> verify { ImageLoader.loadIconResIntoImageView(imageView, R.drawable.ic_weather_rain_night_96) }
+                }
             }
 
             "Snow" -> {
-                verify { ImageLoader.loadIconResIntoImageView(imageView,R.drawable.ic_weather_snow_96) }
+                when(isDay) {
+                    true -> verify { ImageLoader.loadIconResIntoImageView(imageView, R.drawable.ic_weather_snow_day_96) }
+                    else -> verify { ImageLoader.loadIconResIntoImageView(imageView, R.drawable.ic_weather_snow_night_96) }
+                }
             }
 
             "Mist", "Fog" -> {
-                verify { ImageLoader.loadIconResIntoImageView(imageView,R.drawable.ic_weather_fog_96) }
+                when(isDay) {
+                    true -> verify { ImageLoader.loadIconResIntoImageView(imageView, R.drawable.ic_weather_fog_day_96) }
+                    else -> verify { ImageLoader.loadIconResIntoImageView(imageView, R.drawable.ic_weather_fog_night_96) }
+                }
             }
 
             "Clear" -> {
                 when(isDay) {
-                    true -> verify { ImageLoader.loadIconResIntoImageView(imageView,R.drawable.ic_weather_clear_day_96) }
-                    else -> verify { ImageLoader.loadIconResIntoImageView(imageView,R.drawable.ic_weather_clear_night_96) }
+                    true -> verify { ImageLoader.loadIconResIntoImageView(imageView, R.drawable.ic_weather_clear_day_96) }
+                    else -> verify { ImageLoader.loadIconResIntoImageView(imageView, R.drawable.ic_weather_clear_night_96) }
                 }
             }
 
             "Clouds" -> {
-                verify { ImageLoader.loadIconResIntoImageView(imageView,R.drawable.ic_weather_clouds_96) }
+                when(isDay) {
+                    true -> verify { ImageLoader.loadIconResIntoImageView(imageView, R.drawable.ic_weather_clouds_day_96) }
+                    else -> verify { ImageLoader.loadIconResIntoImageView(imageView, R.drawable.ic_weather_clouds_night_96) }
+                }
             }
 
             "Haze", "Dust", "Sand" -> {
-                verify { ImageLoader.loadIconResIntoImageView(imageView,R.drawable.ic_weather_haze_96) }
+                when(isDay) {
+                    true -> verify { ImageLoader.loadIconResIntoImageView(imageView, R.drawable.ic_weather_haze_day_96) }
+                    else -> verify { ImageLoader.loadIconResIntoImageView(imageView, R.drawable.ic_weather_haze_night_96) }
+                }
             }
 
             "Tornado" -> {
-                verify { ImageLoader.loadIconResIntoImageView(imageView,R.drawable.ic_weather_tornado_96) }
+                verify { ImageLoader.loadIconResIntoImageView(imageView, R.drawable.ic_weather_tornado_96) }
             }
 
             "Unknown" -> {
-                verify { ImageLoader.loadIconResIntoImageView(imageView,R.drawable.ic_weather_unknown_96) }
+                verify { ImageLoader.loadIconResIntoImageView(imageView, R.drawable.ic_weather_unknown_96) }
             }
         }
     }
@@ -438,7 +462,6 @@ class CurrentLocationWeatherShownSteps(
     private data class UiWeatherData(
         val name: String,
         val timeZone: String,
-        val clockFormat12Hour: String,
         val clockFormat24Hour: String,
         val currentTemp: String,
         val feelTemp: String,

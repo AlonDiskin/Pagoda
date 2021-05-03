@@ -24,6 +24,7 @@ import org.junit.runners.Parameterized
 @RunWith(Parameterized::class)
 @LargeTest
 class BrowseCurrentLocationTemperatureStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTest(scenario) {
+
     companion object {
         @JvmStatic
         @Parameterized.Parameters(name = "{0}")

@@ -5,6 +5,4 @@ Feature: Browse current location temperature
 
   Scenario: User browse current location temperature
     Given User launch app from device home
-    When User select different weather units system
-    And Check temperature for current location
-    Then Location temperature should be shown according to selected unit
+    Then Location temperature should be shown in weather info screen

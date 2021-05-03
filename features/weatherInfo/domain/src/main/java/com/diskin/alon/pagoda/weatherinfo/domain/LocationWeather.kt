@@ -4,7 +4,7 @@ package com.diskin.alon.pagoda.weatherinfo.domain
  * Entity class that represent the distinct weather conditions and info for a geographical location.
  *
  * @param hourlyForecast  12 hour forecast.
- * @param dailyForecast 7 days forecast.
+ * @param dailyForecast 8 days forecast.
  * @param sunrise milliseconds time stamp(for given [timeZone]).
  * @param sunset milliseconds time stamp(for given [timeZone]).
  */
@@ -35,6 +35,8 @@ data class LocationWeather(val id: Coordinates,
         require(sunset > 0)
         require(sunrise != sunset)
         require(uvIndexValue >= 0)
+        require(hourlyForecast.size == 12)
+        require(dailyForecast.size == 8)
     }
 
     /**

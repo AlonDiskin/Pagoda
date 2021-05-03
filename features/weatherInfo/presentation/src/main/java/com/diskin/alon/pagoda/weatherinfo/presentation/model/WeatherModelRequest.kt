@@ -8,7 +8,7 @@ import com.diskin.alon.pagoda.weatherinfo.appservices.model.LocationWeatherReque
 import io.reactivex.Observable
 
 sealed class WeatherModelRequest(request: LocationWeatherRequest)
-    : ModelRequest<LocationWeatherRequest, Observable<Result<LocationWeatherDto>>>(request) {
+    : ModelRequest<LocationWeatherRequest, Observable<Result<UiWeather>>>(request) {
 
     object CurrentLocationWeatherModelRequest : WeatherModelRequest(CurrentLocationRequest)
 

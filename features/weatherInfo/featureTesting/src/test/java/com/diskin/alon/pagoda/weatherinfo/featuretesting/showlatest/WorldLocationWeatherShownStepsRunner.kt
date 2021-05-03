@@ -2,7 +2,10 @@ package com.diskin.alon.pagoda.weatherinfo.featuretesting.showlatest
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.filters.MediumTest
-import com.diskin.alon.pagoda.common.events.WeatherUnitsEventProvider
+import com.diskin.alon.pagoda.common.eventcontracts.AppEventProvider
+import com.diskin.alon.pagoda.common.eventcontracts.settings.TemperatureUnitPref
+import com.diskin.alon.pagoda.common.eventcontracts.settings.TimeFormatPref
+import com.diskin.alon.pagoda.common.eventcontracts.settings.WindSpeedUnitPref
 import com.diskin.alon.pagoda.weatherinfo.di.InfrastructureModule
 import com.diskin.alon.pagoda.weatherinfo.di.LocationModule
 import com.diskin.alon.pagoda.weatherinfo.di.WeatherInfoNetworkingModule
@@ -73,12 +76,23 @@ class WorldLocationWeatherShownStepsRunner(scenario: ScenarioConfig) : GreenCoff
     lateinit var mockWebServer: MockWebServer
 
     @Inject
-    lateinit var unitPrefProvider: WeatherUnitsEventProvider
+    lateinit var tempUnitPrefProvider: AppEventProvider<TemperatureUnitPref>
+
+    @Inject
+    lateinit var windSpeedUnitPrefProvider: AppEventProvider<WindSpeedUnitPref>
+
+    @Inject
+    lateinit var timeFormatPrefProvider: AppEventProvider<TimeFormatPref>
 
     @Test
     fun test() {
         hiltRule.inject()
-        start(WorldLocationWeatherShownSteps(mockWebServer,unitPrefProvider))
+        start(WorldLocationWeatherShownSteps(
+            mockWebServer,
+            tempUnitPrefProvider,
+            windSpeedUnitPrefProvider,
+            timeFormatPrefProvider)
+        )
     }
 
     override fun afterScenarioEnds(scenario: Scenario?, locale: Locale?) {

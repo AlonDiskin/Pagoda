@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import com.diskin.alon.pagoda.common.appservices.Result
 import com.diskin.alon.pagoda.common.presentation.*
-import com.diskin.alon.pagoda.weatherinfo.appservices.model.LocationWeatherDto
+import com.diskin.alon.pagoda.weatherinfo.presentation.model.UiWeather
 import com.diskin.alon.pagoda.weatherinfo.presentation.model.WeatherModelRequest
 import com.diskin.alon.pagoda.weatherinfo.presentation.model.WeatherModelRequest.CurrentLocationWeatherModelRequest
 import com.diskin.alon.pagoda.weatherinfo.presentation.model.WeatherModelRequest.LocationWeatherModelRequest
@@ -24,9 +24,10 @@ class WeatherViewModel @Inject constructor(
     @WeatherInfoModel private val model: Model,
     private val savedState: SavedStateHandle
 ) : RxViewModel() {
+
     private val weatherSubject: BehaviorSubject<WeatherModelRequest> = initWeatherSubject()
-    private val _weather = MutableLiveData<LocationWeatherDto>()
-    val weather: LiveData<LocationWeatherDto> get() = _weather
+    private val _weather = MutableLiveData<UiWeather>()
+    val weather: LiveData<UiWeather> get() = _weather
     private val _update = MutableLiveData<UpdateViewData>(UpdateViewData.Refresh)
     val update: LiveData<UpdateViewData> get() = _update
     private val _error = MutableLiveData<ErrorViewData>()
@@ -58,7 +59,7 @@ class WeatherViewModel @Inject constructor(
             .subscribe(this::handleWeatherResult, this::handleWeatherSubscriptionError)
     }
 
-    private fun handleWeatherResult(result: Result<LocationWeatherDto>) {
+    private fun handleWeatherResult(result: Result<UiWeather>) {
         _update.value = UpdateViewData.EndRefresh
         when(result) {
             is Result.Success -> _weather.value = result.data

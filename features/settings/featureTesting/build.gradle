@@ -63,9 +63,7 @@ dependencies {
     testImplementation 'androidx.preference:preference-ktx:1.1.1'
 
     // Project modules
-    testImplementation project(':features:settings:presentation')
-    testImplementation project(':features:common:events')
-    testImplementation project(':features:common:presentation')
+    testImplementation project(':features:settings:di')
     testImplementation project(':features:common:featureTesting')
 
     // Hilt

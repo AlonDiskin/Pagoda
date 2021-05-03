@@ -59,8 +59,8 @@ dependencies {
     implementation "androidx.fragment:fragment-ktx:$fragment_version"
 
     // Project modules
-    implementation project(':features:common:presentation')
-    implementation project(':features:common:events')
+    api project(':features:common:presentation')
+    implementation project(':features:settings:appServices')
 
     // View model
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"

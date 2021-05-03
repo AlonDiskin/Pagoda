@@ -2,13 +2,38 @@
 <androidx.preference.PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.preference.ListPreference
-        app:defaultValue="@string/pref_units_default_value"
-        app:dialogTitle="@string/pref_units_dialog_title"
-        app:key="@string/pref_units_key"
-        app:entries="@array/pref_units_list_entries"
-        app:entryValues="@array/pref_units_list_values"
-        app:title="@string/pref_units_title"
-        app:useSimpleSummaryProvider="true"
-        tools:summary="\u2103"/>
+    <PreferenceCategory app:title="Units">
+
+        <androidx.preference.ListPreference
+            app:defaultValue="@string/pref_temperature_default_value"
+            app:dialogTitle="@string/pref_temperature_dialog_title"
+            app:key="@string/pref_temperature_unit_key"
+            app:entries="@array/pref_temperature_list_entries"
+            app:entryValues="@array/pref_temperature_list_values"
+            app:title="@string/pref_temperature_title"
+            app:useSimpleSummaryProvider="true"
+            tools:summary="\u2103"/>
+
+        <androidx.preference.ListPreference
+            app:defaultValue="@string/pref_wind_speed_default_value"
+            app:dialogTitle="@string/pref_wind_speed_dialog_title"
+            app:key="@string/pref_wind_speed_unit_key"
+            app:entries="@array/pref_wind_speed_list_entries"
+            app:entryValues="@array/pref_wind_speed_list_values"
+            app:title="@string/pref_wind_speed_title"
+            app:useSimpleSummaryProvider="true"
+            tools:summary="km\h"/>
+
+        <androidx.preference.ListPreference
+            app:defaultValue="@string/pref_time_format_default_value"
+            app:dialogTitle="@string/pref_time_format_dialog_title"
+            app:key="@string/pref_time_format_key"
+            app:entries="@array/pref_time_format_list_entries"
+            app:entryValues="@array/pref_time_format_list_values"
+            app:title="@string/pref_time_format_title"
+            app:useSimpleSummaryProvider="true"
+            tools:summary="24"/>
+
+    </PreferenceCategory>
+
 </androidx.preference.PreferenceScreen>

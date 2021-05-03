@@ -51,7 +51,6 @@ dependencies {
     implementation project(':features:weatherInfo:domain')
     implementation project(':features:weatherInfo:errors')
     implementation project(':features:common:util')
-    implementation project(':features:common:events')
 
     // Javax annotation
     implementation "javax.inject:javax.inject:$javax_annotation_version"

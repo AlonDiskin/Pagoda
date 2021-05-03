@@ -6,7 +6,7 @@
     <data>
         <variable
             name="weather"
-            type="com.diskin.alon.pagoda.weatherinfo.appservices.model.LocationWeatherDto" />
+            type="com.diskin.alon.pagoda.weatherinfo.presentation.model.UiWeather" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -40,7 +40,7 @@
             android:textAppearance="?attr/textAppearanceSubtitle1"
             android:layout_margin="@dimen/item_margin"
             tools:text="Low"
-            app:setUvIndex="@{weather.uvIndex}"
+            android:text="@{weather.uvIndex}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -68,7 +68,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="45%"
-            app:setHumidity="@{weather.humidity}"
+            android:text="@{weather.humidity}"
             android:textAppearance="?attr/textAppearanceSubtitle1"
             android:layout_margin="@dimen/item_margin"
             app:layout_constraintBottom_toBottomOf="@+id/humidityLabel"
@@ -100,7 +100,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="10 km/h"
-            app:setWindSpeed="@{weather}"
+            android:text="@{weather.windSpeed}"
             android:textAppearance="?attr/textAppearanceSubtitle1"
             android:layout_margin="@dimen/item_margin"
             app:layout_constraintBottom_toBottomOf="@+id/windSpeedLabel"
@@ -132,7 +132,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="05:45"
-            app:setTime="@{weather.sunrise}"
+            android:text="@{weather.sunrise}"
             android:textAppearance="?attr/textAppearanceSubtitle1"
             android:layout_margin="@dimen/item_margin"
             app:layout_constraintBottom_toBottomOf="@+id/sunriseLabel"
@@ -168,7 +168,7 @@
             android:layout_margin="@dimen/item_margin"
             app:layout_constraintBottom_toBottomOf="@+id/sunsetLabel"
             app:layout_constraintEnd_toEndOf="parent"
-            app:setTime="@{weather.sunset}"
+            android:text="@{weather.sunset}"
             app:layout_constraintTop_toTopOf="@+id/sunsetLabel" />
 
         <Space
