@@ -70,4 +70,10 @@ dependencies {
     testImplementation "com.google.dagger:hilt-android:$hilt_version"
     kaptTest "com.google.dagger:hilt-android-compiler:$hilt_version"
     testImplementation "com.google.dagger:hilt-android-testing:$hilt_version"
+    testImplementation "androidx.hilt:hilt-work:$hilt_worker_version"
+
+    // WorkManager
+    testImplementation "androidx.work:work-runtime-ktx:$work_version"
+    testImplementation "androidx.work:work-rxjava2:$work_version"
+    testImplementation "androidx.work:work-testing:$work_version"
 }

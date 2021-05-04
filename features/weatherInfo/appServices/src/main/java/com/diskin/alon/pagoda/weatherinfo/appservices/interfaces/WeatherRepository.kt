@@ -1,6 +1,6 @@
 package com.diskin.alon.pagoda.weatherinfo.appservices.interfaces
 
-import com.diskin.alon.pagoda.common.appservices.Result
+import com.diskin.alon.pagoda.common.appservices.AppResult
 import com.diskin.alon.pagoda.weatherinfo.domain.LocationWeather
 import io.reactivex.Observable
 
@@ -16,5 +16,5 @@ interface WeatherRepository {
      * @param lat latitude value of location.
      * @param lon longitude value of location.
      */
-    fun get(lat: Double, lon: Double): Observable<Result<LocationWeather>>
+    fun get(lat: Double, lon: Double): Observable<AppResult<LocationWeather>>
 }

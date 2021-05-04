@@ -27,12 +27,13 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.diskin.alon.pagoda.common.appservices.AppError
+import com.diskin.alon.pagoda.common.appservices.ErrorType
+import com.diskin.alon.pagoda.common.appservices.ErrorType.*
 import com.diskin.alon.pagoda.common.presentation.ErrorViewData
 import com.diskin.alon.pagoda.common.presentation.ImageLoader
 import com.diskin.alon.pagoda.common.presentation.UpdateViewData
 import com.diskin.alon.pagoda.common.uitesting.*
 import com.diskin.alon.pagoda.common.uitesting.RecyclerViewMatcher.withRecyclerView
-import com.diskin.alon.pagoda.weatherinfo.errors.*
 import com.diskin.alon.pagoda.weatherinfo.presentation.controller.HourlyForecastAdapter.HourlyForecastViewHolder
 import com.diskin.alon.pagoda.weatherinfo.presentation.controller.WeatherFragment
 import com.diskin.alon.pagoda.weatherinfo.presentation.model.UiWeather
@@ -280,7 +281,7 @@ class WeatherFragmentTest {
         // Given a resumed fragment
 
         // When view model update a device network error
-        error.value = ErrorViewData.Error(AppError(LOCATION_PERMISSION,true))
+        error.value = ErrorViewData.Error(AppError(LOCATION_PERMISSION))
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
         // Then
@@ -296,7 +297,7 @@ class WeatherFragmentTest {
         every { pendingIntent.intentSender } returns mockk()
         every { viewModel.refresh() } returns Unit
 
-        error.value = ErrorViewData.Error(AppError(DEVICE_LOCATION,true,errorOrigin))
+        error.value = ErrorViewData.Error(AppError(DEVICE_LOCATION,errorOrigin))
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
         verify { viewModel.refresh() }
@@ -310,7 +311,7 @@ class WeatherFragmentTest {
         // Given a resumed fragment
 
         // When view model update a device network error
-        error.value = ErrorViewData.Error(AppError(DEVICE_NETWORK,true))
+        error.value = ErrorViewData.Error(AppError(DEVICE_NETWORK))
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
         // Then fragment should show snackbar message with error description
@@ -333,7 +334,7 @@ class WeatherFragmentTest {
         // Given a resumed fragment
 
         // When view model update a remote server error
-        error.value = ErrorViewData.Error(AppError(REMOTE_SERVER,true))
+        error.value = ErrorViewData.Error(AppError(REMOTE_SERVER))
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
         // Then fragment should show snackbar message with error description
@@ -353,7 +354,7 @@ class WeatherFragmentTest {
         // Given a resumed fragment
 
         // When view model update an unknown error
-        error.value = ErrorViewData.Error(AppError(UNKNOWN_ERR,false))
+        error.value = ErrorViewData.Error(AppError(UNKNOWN_ERR))
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
         // Then fragment should show snackbar message with error description

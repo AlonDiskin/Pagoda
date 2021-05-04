@@ -1,6 +1,6 @@
 package com.diskin.alon.pagoda.weatherinfo.data.implementations
 
-import com.diskin.alon.pagoda.common.appservices.Result
+import com.diskin.alon.pagoda.common.appservices.AppResult
 import com.diskin.alon.pagoda.weatherinfo.appservices.interfaces.WeatherRepository
 import com.diskin.alon.pagoda.weatherinfo.data.remote.RemoteWeatherStore
 import com.diskin.alon.pagoda.weatherinfo.domain.LocationWeather
@@ -17,7 +17,7 @@ class WeatherRepositoryImpl @Inject constructor(
     override fun get(
         lat: Double,
         lon: Double
-    ): Observable<Result<LocationWeather>> {
+    ): Observable<AppResult<LocationWeather>> {
         return remoteStore.get(lat, lon)
     }
 }

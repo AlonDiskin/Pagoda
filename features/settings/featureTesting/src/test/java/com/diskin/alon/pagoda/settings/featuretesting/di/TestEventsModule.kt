@@ -17,19 +17,19 @@ object TestEventsModule {
 
     @Singleton
     @Provides
-    fun provideTemperatureUnitPrepProvider(): AppEventPublisher<TemperatureUnitPref> {
+    fun provideTemperatureUnitPrefPublisher(): AppEventPublisher<TemperatureUnitPref> {
         return mockk()
     }
 
     @Singleton
     @Provides
-    fun provideWindSpeedUnitPrepProvider(): AppEventPublisher<WindSpeedUnitPref> {
+    fun provideWindSpeedUnitPrefPublisher(): AppEventPublisher<WindSpeedUnitPref> {
         return mockk()
     }
 
     @Singleton
     @Provides
-    fun provideTimeFormatPrepProvider(): AppEventPublisher<TimeFormatPref> {
+    fun provideTimeFormatPrefPublisher(): AppEventPublisher<TimeFormatPref> {
         return mockk()
     }
 }

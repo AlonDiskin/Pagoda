@@ -2,7 +2,7 @@ package com.diskin.alon.pagoda.weatherinfo.infrastructure
 
 import android.annotation.SuppressLint
 import android.os.Looper
-import com.diskin.alon.pagoda.common.appservices.Result
+import com.diskin.alon.pagoda.common.appservices.AppResult
 import com.diskin.alon.pagoda.common.appservices.toSingleResult
 import com.diskin.alon.pagoda.common.util.Mapper
 import com.diskin.alon.pagoda.weatherinfo.appservices.interfaces.UserLocationProvider
@@ -23,7 +23,7 @@ class UserLocationProviderImpl @Inject constructor(
 ) : UserLocationProvider {
 
     @SuppressLint("MissingPermission")
-    override fun getCurrentLocation(): Observable<Result<UserLocation>> {
+    override fun getCurrentLocation(): Observable<AppResult<UserLocation>> {
         return  Single.create<UserLocation> { emitter ->
             // Set the location request and settings request for needed location functionality
             // from device

@@ -3,7 +3,7 @@ package com.diskin.alon.pagoda.weatherinfo.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
-import com.diskin.alon.pagoda.common.appservices.Result
+import com.diskin.alon.pagoda.common.appservices.AppResult
 import com.diskin.alon.pagoda.common.presentation.*
 import com.diskin.alon.pagoda.weatherinfo.presentation.model.UiWeather
 import com.diskin.alon.pagoda.weatherinfo.presentation.model.WeatherModelRequest
@@ -50,7 +50,7 @@ class WeatherViewModel @Inject constructor(
     }
 
     /**
-     * Create rx subscription for model weather data,to be shown in view ui.
+     * Create rx chain and its subscription for model weather data.
      */
     private fun createWeatherSubscription(): Disposable {
         return weatherSubject
@@ -59,11 +59,11 @@ class WeatherViewModel @Inject constructor(
             .subscribe(this::handleWeatherResult, this::handleWeatherSubscriptionError)
     }
 
-    private fun handleWeatherResult(result: Result<UiWeather>) {
+    private fun handleWeatherResult(result: AppResult<UiWeather>) {
         _update.value = UpdateViewData.EndRefresh
         when(result) {
-            is Result.Success -> _weather.value = result.data
-            is Result.Error -> _error.value = ErrorViewData.Error(result.error)
+            is AppResult.Success -> _weather.value = result.data
+            is AppResult.Error -> _error.value = ErrorViewData.Error(result.error)
         }
     }
 

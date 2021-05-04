@@ -57,9 +57,13 @@ hilt {
 
 dependencies {
 
-    implementation fileTree(dir: "libs", include: ["*.jar"])
+    // Kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
+    // Android core
     implementation 'androidx.core:core-ktx:1.3.2'
+
+    // Android UI
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation "androidx.constraintlayout:constraintlayout:2.0.4"
     implementation 'androidx.cardview:cardview:1.0.0'
@@ -71,7 +75,6 @@ dependencies {
     implementation project(':features:common:presentation')
     implementation project(':features:common:util')
     implementation project(':features:weatherInfo:appServices')
-    implementation project(':features:weatherInfo:errors')
 
     // View model and Live Data
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"

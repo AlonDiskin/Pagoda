@@ -4,65 +4,70 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.functions.Function
 
-sealed class Result<T : Any> {
+sealed class AppResult<T : Any> {
 
-    data class Success<T : Any>(val data: T) : Result<T>()
+    data class Success<T : Any>(val data: T) : AppResult<T>()
 
-    data class Error<T : Any>(val error: AppError) : Result<T>()
+    data class Error<T : Any>(val error: AppError) : AppResult<T>()
 }
 
-data class AppError(val description: String, val retriable: Boolean,val origin: Throwable? = null): Throwable()
+enum class ErrorType{
+    UNKNOWN_ERR,DEVICE_NETWORK,REMOTE_SERVER,DEVICE_LOCATION,LOCATION_PERMISSION,
+    LOCATION_BACKGROUND_PERMISSION
+}
 
-fun <T : Any, R : Any> Observable<Result<T>>.mapResult(mapper: Function<T,R>): Observable<Result<R>> {
+data class AppError(val type: ErrorType,val origin: Throwable? = null): Throwable()
+
+fun <T : Any, R : Any> Observable<AppResult<T>>.mapResult(mapper: Function<T,R>): Observable<AppResult<R>> {
     return this.map {
         when(it) {
-            is Result.Success -> Result.Success(
+            is AppResult.Success -> AppResult.Success(
                 mapper.apply(
                     it.data
                 )
             )
-            is Result.Error -> Result.Error(it.error)
+            is AppResult.Error -> AppResult.Error(it.error)
         }
     }
 }
 
-fun <T : Any> Observable<T>.toResult(errorHandler: ((Throwable) -> (AppError))? = null): Observable<Result<T>> {
+fun <T : Any> Observable<T>.toResult(errorHandler: ((Throwable) -> (AppError))? = null): Observable<AppResult<T>> {
     return this.map { toSuccessResult(it) }
         .onErrorReturn { toResultError(it,errorHandler) }
 }
 
-fun <T : Any> Single<T>.toSingleResult(errorHandler: ((Throwable) -> (AppError))? = null): Single<Result<T>> {
+fun <T : Any> Single<T>.toSingleResult(errorHandler: ((Throwable) -> (AppError))? = null): Single<AppResult<T>> {
     return this.map { toSuccessResult(it) }
         .onErrorReturn { toResultError(it,errorHandler) }
 }
 
-fun <T : Any> Observable<Result<T>>.toData(): Observable<T> {
+fun <T : Any> Observable<AppResult<T>>.toData(): Observable<T> {
     return this.flatMap {
         when(it ) {
-            is Result.Success -> Observable.just(it.data)
-            is Result.Error -> Observable.error(it.error)
+            is AppResult.Success -> Observable.just(it.data)
+            is AppResult.Error -> Observable.error(it.error)
         }
     }
 }
 
-fun <T : Any> Single<Result<T>>.toSingleData(): Single<T> {
+fun <T : Any> Single<AppResult<T>>.toSingleData(): Single<T> {
     return this.flatMap {
         when(it ) {
-            is Result.Success -> Single.just(it.data)
-            is Result.Error -> Single.error(it.error)
+            is AppResult.Success -> Single.just(it.data)
+            is AppResult.Error -> Single.error(it.error)
         }
     }
 }
 
-private fun <T : Any> toSuccessResult(data: T): Result<T> {
-    return Result.Success(data)
+private fun <T : Any> toSuccessResult(data: T): AppResult<T> {
+    return AppResult.Success(data)
 }
 
-private fun <T : Any> toResultError(throwable: Throwable,errorHandler: ((Throwable) -> (AppError))? = null): Result<T> {
+private fun <T : Any> toResultError(throwable: Throwable,errorHandler: ((Throwable) -> (AppError))? = null): AppResult<T> {
     return when(throwable) {
-        is AppError -> Result.Error(throwable)
-        else -> Result.Error(
-            errorHandler?.invoke(throwable) ?: AppError("Unknown error", false)
+        is AppError -> AppResult.Error(throwable)
+        else -> AppResult.Error(
+            errorHandler?.invoke(throwable) ?: AppError(ErrorType.UNKNOWN_ERR)
         )
     }
 }

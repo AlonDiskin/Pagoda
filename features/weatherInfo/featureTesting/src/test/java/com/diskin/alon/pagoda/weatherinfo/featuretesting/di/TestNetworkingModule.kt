@@ -1,9 +1,6 @@
 package com.diskin.alon.pagoda.weatherinfo.featuretesting.di
 
-import com.diskin.alon.pagoda.weatherinfo.data.remote.NetworkErrorHandler
-import com.diskin.alon.pagoda.weatherinfo.data.remote.NetworkErrorHandlerImpl
 import com.diskin.alon.pagoda.weatherinfo.data.remote.OpenWeatherMapApi
-import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,41 +15,34 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class TestNetworkingModule {
+object TestNetworkingModule {
 
-    companion object {
+    @Singleton
+    @Provides
+    fun provideMockWebServer(): MockWebServer {
+        // Fix MockWebServer 'No password supplied for PKCS#12 KeyStore' bug on CI machine
+        System.setProperty("javax.net.ssl.trustStore", "NONE")
+        val server =  MockWebServer()
 
-        @Singleton
-        @Provides
-        fun provideMockWebServer(): MockWebServer {
-            // Fix MockWebServer 'No password supplied for PKCS#12 KeyStore' bug on CI machine
-            System.setProperty("javax.net.ssl.trustStore", "NONE")
-            val server =  MockWebServer()
-
-            server.start()
-            return server
-        }
-
-        @Singleton
-        @Provides
-        fun provideOpenWeatherMapApi(server: MockWebServer): OpenWeatherMapApi {
-            val logging = HttpLoggingInterceptor()
-            logging.level = HttpLoggingInterceptor.Level.BASIC
-            val okHttpClient = OkHttpClient.Builder()
-                .addInterceptor(logging)
-                .build()
-
-            return Retrofit.Builder()
-                .baseUrl(server.url("/"))
-                .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .client(okHttpClient)
-                .build()
-                .create(OpenWeatherMapApi::class.java)
-        }
+        server.start()
+        return server
     }
 
     @Singleton
-    @Binds
-    abstract fun bindNetworkErrorHandler(handler: NetworkErrorHandlerImpl): NetworkErrorHandler
+    @Provides
+    fun provideOpenWeatherMapApi(server: MockWebServer): OpenWeatherMapApi {
+        val logging = HttpLoggingInterceptor()
+        logging.level = HttpLoggingInterceptor.Level.BASIC
+        val okHttpClient = OkHttpClient.Builder()
+            .addInterceptor(logging)
+            .build()
+
+        return Retrofit.Builder()
+            .baseUrl(server.url("/"))
+            .addConverterFactory(GsonConverterFactory.create())
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .client(okHttpClient)
+            .build()
+            .create(OpenWeatherMapApi::class.java)
+    }
 }

@@ -73,6 +73,9 @@ dependencies {
     implementation "com.google.dagger:hilt-android:$hilt_version"
     kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
 
+    // RxAndroid
+    implementation "io.reactivex.rxjava2:rxandroid:$rx_android_version"
+
     // Local\Unit testing
     testImplementation project(':features:common:uiTesting')
     testImplementation project(':features:common:localTesting')

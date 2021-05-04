@@ -14,7 +14,8 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.diskin.alon.pagoda.common.appservices.AppError
-import com.diskin.alon.pagoda.common.appservices.Result
+import com.diskin.alon.pagoda.common.appservices.ErrorType
+import com.diskin.alon.pagoda.common.appservices.AppResult
 import com.diskin.alon.pagoda.common.appservices.toResult
 import com.diskin.alon.pagoda.common.eventcontracts.AppEventProvider
 import com.diskin.alon.pagoda.common.eventcontracts.settings.TemperatureUnitPref
@@ -26,8 +27,6 @@ import com.diskin.alon.pagoda.common.uitesting.HiltTestActivity
 import com.diskin.alon.pagoda.common.uitesting.launchFragmentInHiltContainer
 import com.diskin.alon.pagoda.weatherinfo.appservices.interfaces.UserLocationProvider
 import com.diskin.alon.pagoda.weatherinfo.appservices.model.UserLocation
-import com.diskin.alon.pagoda.weatherinfo.errors.DEVICE_LOCATION
-import com.diskin.alon.pagoda.weatherinfo.errors.LOCATION_PERMISSION
 import com.diskin.alon.pagoda.weatherinfo.presentation.R
 import com.diskin.alon.pagoda.weatherinfo.presentation.controller.WeatherFragment
 import com.google.android.gms.common.api.ResolvableApiException
@@ -44,7 +43,7 @@ import org.hamcrest.CoreMatchers.allOf
 import org.robolectric.Shadows
 
 /**
- * Step definitions for 'Weather data browsing error handled' scenario.
+ * Step definitions for 'Latest location weather data shown' scenario.
  */
 class ShowWeatherErrorHandlingSteps(
     private val locationProvider: UserLocationProvider,
@@ -84,14 +83,14 @@ class ShowWeatherErrorHandlingSteps(
         // Set error type according to scenario argument
         when(error) {
             "app location permission" -> {
-                val permissionError = Result.Error<UserLocation>(AppError(LOCATION_PERMISSION,true))
+                val permissionError = AppResult.Error<UserLocation>(AppError(ErrorType.LOCATION_PERMISSION))
                 every { locationProvider.getCurrentLocation() } returns Observable.just(permissionError)
             }
 
             "device location sensor" -> {
                 val errorOrigin: ResolvableApiException = mockk()
                 val pendingIntent: PendingIntent = mockk()
-                val permissionError = Result.Error<UserLocation>(AppError(DEVICE_LOCATION,true,errorOrigin))
+                val permissionError = AppResult.Error<UserLocation>(AppError(ErrorType.DEVICE_LOCATION,errorOrigin))
 
                 every { errorOrigin.resolution } returns pendingIntent
                 every { pendingIntent.intentSender } returns mockk()

@@ -1,7 +1,7 @@
 package com.diskin.alon.pagoda.weatherinfo.presentation.util
 
 import android.app.Application
-import com.diskin.alon.pagoda.common.appservices.Result
+import com.diskin.alon.pagoda.common.appservices.AppResult
 import com.diskin.alon.pagoda.common.appservices.mapResult
 import com.diskin.alon.pagoda.common.util.Mapper
 import com.diskin.alon.pagoda.weatherinfo.appservices.model.*
@@ -17,9 +17,9 @@ import javax.inject.Inject
 
 class UiWeatherMapper @Inject constructor(
     private val app: Application
-) : Mapper<Observable<Result<LocationWeatherDto>>,Observable<Result<UiWeather>>> {
+) : Mapper<Observable<AppResult<LocationWeatherDto>>,Observable<AppResult<UiWeather>>> {
 
-    override fun map(source: Observable<Result<LocationWeatherDto>>): Observable<Result<UiWeather>> {
+    override fun map(source: Observable<AppResult<LocationWeatherDto>>): Observable<AppResult<UiWeather>> {
         return source.mapResult {
             UiWeather(
                 it.name,
