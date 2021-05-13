@@ -36,9 +36,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@{forecast.condition}"
+            android:layout_marginTop="6dp"
             android:layout_gravity="center_horizontal"
             android:textAppearance="?attr/textAppearanceBody2"
-            tools:text="rain"/>
+            tools:text="Clear"/>
 
         <TextView
             android:id="@+id/temp"

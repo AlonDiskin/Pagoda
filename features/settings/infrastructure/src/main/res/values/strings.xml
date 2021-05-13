@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="notification_title">Pagoda Weather</string>
+    <string name="notification_text">Weather alert for your area:%1$s</string>
+</resources>

@@ -34,6 +34,7 @@
             android:layout_gravity="center_horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.35"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:setImageRes="@{forecast.conditionIconRes}"
@@ -44,7 +45,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_margin="12dp"
+            android:layout_margin="10dp"
             android:textAppearance="?attr/textAppearanceSubtitle1"
             android:text="@{forecast.maxTemp}"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -70,12 +71,12 @@
             android:id="@+id/condition"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="56dp"
+            android:layout_marginStart="16dp"
             android:text="@{forecast.condition}"
             android:textAppearance="?attr/textAppearanceBody2"
             app:layout_constraintBottom_toBottomOf="@+id/day"
-            app:layout_constraintStart_toStartOf="@+id/day"
-            tools:text="rain"/>
+            app:layout_constraintStart_toEndOf="@+id/dailyWeatherIcon"
+            tools:text="Rain" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

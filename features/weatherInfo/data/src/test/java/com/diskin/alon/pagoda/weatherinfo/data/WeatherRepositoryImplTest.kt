@@ -1,6 +1,6 @@
 package com.diskin.alon.pagoda.weatherinfo.data
 
-import com.diskin.alon.pagoda.common.appservices.Result
+import com.diskin.alon.pagoda.common.appservices.AppResult
 import com.diskin.alon.pagoda.weatherinfo.data.implementations.WeatherRepositoryImpl
 import com.diskin.alon.pagoda.weatherinfo.data.remote.RemoteWeatherStore
 import com.diskin.alon.pagoda.weatherinfo.domain.LocationWeather
@@ -31,7 +31,7 @@ class WeatherRepositoryImplTest {
     @Test
     fun loadLocationWeatherFromRemoteStoreWhenQueried() {
         // Test case fixture
-        val remoteRes: Observable<Result<LocationWeather>> = mockk()
+        val remoteRes: Observable<AppResult<LocationWeather>> = mockk()
 
         every { remoteStore.get(any(),any()) } returns remoteRes
 

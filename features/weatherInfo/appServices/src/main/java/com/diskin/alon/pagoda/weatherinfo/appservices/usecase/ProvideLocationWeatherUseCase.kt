@@ -1,6 +1,6 @@
 package com.diskin.alon.pagoda.weatherinfo.appservices.usecase
 
-import com.diskin.alon.pagoda.common.appservices.Result
+import com.diskin.alon.pagoda.common.appservices.AppResult
 import com.diskin.alon.pagoda.common.appservices.UseCase
 import com.diskin.alon.pagoda.common.appservices.toData
 import com.diskin.alon.pagoda.common.appservices.toResult
@@ -28,9 +28,9 @@ class ProvideLocationWeatherUseCase @Inject constructor(
     private val tempUnitPrefProvider: AppEventProvider<TemperatureUnitPref>,
     private val windSpeedUnitPrefProvider: AppEventProvider<WindSpeedUnitPref>,
     private val timeFormatPrefProvider: AppEventProvider<TimeFormatPref>
-) : UseCase<LocationWeatherRequest, Observable<Result<LocationWeatherDto>>> {
+) : UseCase<LocationWeatherRequest, Observable<AppResult<LocationWeatherDto>>> {
 
-    override fun execute(param: LocationWeatherRequest): Observable<Result<LocationWeatherDto>> {
+    override fun execute(param: LocationWeatherRequest): Observable<AppResult<LocationWeatherDto>> {
         val weather =  when(param) {
             // Provide weather data for current user location
             is CurrentLocationRequest -> locationProvider

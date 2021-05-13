@@ -1,6 +1,6 @@
 package com.diskin.alon.pagoda.weatherinfo.appservices
 
-import com.diskin.alon.pagoda.common.appservices.Result
+import com.diskin.alon.pagoda.common.appservices.AppResult
 import com.diskin.alon.pagoda.common.appservices.toResult
 import com.diskin.alon.pagoda.common.eventcontracts.AppEventProvider
 import com.diskin.alon.pagoda.common.eventcontracts.settings.TemperatureUnitPref
@@ -78,7 +78,7 @@ class ProvideLocationWeatherUseCaseTest {
         verify { tempUnitPrefProvider.get() }
         verify { windSpeedUnitPrefProvider.get() }
         verify { timeFormatPrefProvider.get() }
-        observer.assertValue(Result.Success(providedWeather))
+        observer.assertValue(AppResult.Success(providedWeather))
     }
 
     @Test
@@ -107,7 +107,7 @@ class ProvideLocationWeatherUseCaseTest {
         verify { tempUnitPrefProvider.get() }
         verify { windSpeedUnitPrefProvider.get() }
         verify { timeFormatPrefProvider.get() }
-        observer.assertValue(Result.Success(providedWeather))
+        observer.assertValue(AppResult.Success(providedWeather))
     }
 
     @Test

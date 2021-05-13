@@ -28,7 +28,7 @@ jobs:
           command: ./gradlew :features:weatherInfo:presentation:testDebugUnitTest :features:weatherInfo:infrastructure:testDebugUnitTest :features:weatherInfo:data:testDebugUnitTest :features:weatherInfo:appServices:test :features:weatherInfo:domain:test --no-daemon --max-workers=2 --stacktrace
       - run:
           name: Unit test settings feature
-          command: ./gradlew :features:settings:presentation:testDebugUnitTest :features:settings:appServices:test --no-daemon --max-workers=2 --stacktrace
+          command: ./gradlew :features:settings:presentation:testDebugUnitTest :features:settings:appServices:test :features:settings:data:testDebugUnitTest :features:settings:infrastructure:testDebugUnitTest --no-daemon --max-workers=2 --stacktrace
       - run:
           name: Unit test locations feature
           command: ./gradlew :features:locations:presentation:testDebugUnitTest :features:locations:data:testDebugUnitTest :features:locations:appServices:test :features:locations:domain:test --no-daemon --max-workers=2 --stacktrace
@@ -139,4 +139,8 @@ workflows:
     jobs:
       - unit_tests
       - integration_tests
-      - e2e_tests
+      - e2e_tests:
+          filters:
+            branches:
+              only:
+                - master

@@ -17,9 +17,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.diskin.alon.pagoda.common.appservices.AppError
+import com.diskin.alon.pagoda.common.appservices.ErrorType
 import com.diskin.alon.pagoda.common.presentation.ErrorViewData
 import com.diskin.alon.pagoda.common.presentation.UpdateViewData
-import com.diskin.alon.pagoda.weatherinfo.errors.*
 import com.diskin.alon.pagoda.weatherinfo.presentation.R
 import com.diskin.alon.pagoda.weatherinfo.presentation.databinding.FragmentWeatherBinding
 import com.diskin.alon.pagoda.weatherinfo.presentation.viewmodel.WeatherViewModel
@@ -148,13 +148,12 @@ class WeatherFragment(
     }
 
     private fun resolveWeatherDataError(appError: AppError) {
-        // findNavController().currentDestination?.label
-        when(appError.description) {
-            UNKNOWN_ERR -> showUnknownError()
-            DEVICE_NETWORK -> showDeviceNetworkError()
-            REMOTE_SERVER -> showRemoteServerError()
-            DEVICE_LOCATION -> askUserToTurnOnDeviceLocation(appError)
-            LOCATION_PERMISSION -> askUserForLocationPermission()
+        when(appError.type) {
+            ErrorType.UNKNOWN_ERR -> showUnknownError()
+            ErrorType.DEVICE_NETWORK -> showDeviceNetworkError()
+            ErrorType.REMOTE_SERVER -> showRemoteServerError()
+            ErrorType.DEVICE_LOCATION -> askUserToTurnOnDeviceLocation(appError)
+            ErrorType.LOCATION_PERMISSION -> askUserForLocationPermission()
         }
     }
 

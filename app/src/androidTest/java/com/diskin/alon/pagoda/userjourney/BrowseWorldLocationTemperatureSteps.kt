@@ -71,6 +71,7 @@ class BrowseWorldLocationTemperatureSteps(db: TestDatabase, server: MockWebServe
         // Verify expected search results are shown
         onView(withId(R.id.searchResults))
             .check(matches(isRecyclerViewItemsCount(expectedUiResultsSize)))
+        Thread.sleep(3000)
     }
 
     @And("^Select the first location result$")
@@ -78,7 +79,7 @@ class BrowseWorldLocationTemperatureSteps(db: TestDatabase, server: MockWebServe
         // Click on first search result
         onView(withId(R.id.searchResults))
             .perform(actionOnItemAtPosition<LocationSearchResultViewHolder>(0, click()))
-        Thread.sleep(1000)
+        Thread.sleep(2000)
     }
 
     @Then("^Selected location temperature should be shown$")

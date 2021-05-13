@@ -2,7 +2,7 @@ package com.diskin.alon.pagoda.weatherinfo.presentation
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.SavedStateHandle
-import com.diskin.alon.pagoda.common.appservices.Result
+import com.diskin.alon.pagoda.common.appservices.AppResult
 import com.diskin.alon.pagoda.common.presentation.LOCATION_LAT
 import com.diskin.alon.pagoda.common.presentation.LOCATION_LON
 import com.diskin.alon.pagoda.common.presentation.Model
@@ -51,7 +51,7 @@ class WeatherViewModelTest {
     private val model: Model = mockk()
 
     // Stub data
-    private val modelCurrentWeather = BehaviorSubject.create<Result<UiWeather>>()
+    private val modelCurrentWeather = BehaviorSubject.create<AppResult<UiWeather>>()
     private val savedState: SavedStateHandle = SavedStateHandle()
 
     @Before
@@ -97,7 +97,7 @@ class WeatherViewModelTest {
 
         // When
         val weather = mockk<UiWeather>()
-        modelCurrentWeather.onNext(Result.Success(weather))
+        modelCurrentWeather.onNext(AppResult.Success(weather))
 
         // Then
         assertThat(viewModel.weather.value).isEqualTo(weather)

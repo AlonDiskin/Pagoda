@@ -1,46 +1,33 @@
 package com.diskin.alon.pagoda.weatherinfo.di
 
-import com.diskin.alon.pagoda.common.appservices.Result
-import com.diskin.alon.pagoda.common.appservices.UseCase
-import com.diskin.alon.pagoda.common.presentation.Model
-import com.diskin.alon.pagoda.common.presentation.ModelDispatcher
-import com.diskin.alon.pagoda.common.presentation.ModelRequest
-import com.diskin.alon.pagoda.common.util.Mapper
-import com.diskin.alon.pagoda.weatherinfo.appservices.model.LocationWeatherDto
-import com.diskin.alon.pagoda.weatherinfo.appservices.usecase.ProvideLocationWeatherUseCase
-import com.diskin.alon.pagoda.weatherinfo.presentation.model.UiWeather
-import com.diskin.alon.pagoda.weatherinfo.presentation.model.WeatherModelRequest.CurrentLocationWeatherModelRequest
-import com.diskin.alon.pagoda.weatherinfo.presentation.model.WeatherModelRequest.LocationWeatherModelRequest
-import com.diskin.alon.pagoda.weatherinfo.presentation.util.UiWeatherMapper
-import com.diskin.alon.pagoda.weatherinfo.presentation.util.WeatherInfoModel
+import com.diskin.alon.pagoda.common.util.Mapper2
+import com.diskin.alon.pagoda.weatherinfo.appservices.interfaces.WeatherRepository
+import com.diskin.alon.pagoda.weatherinfo.data.implementations.WeatherRepositoryImpl
+import com.diskin.alon.pagoda.weatherinfo.data.model.ApiLocationResponse
+import com.diskin.alon.pagoda.weatherinfo.data.model.ApiWeatherResponse
+import com.diskin.alon.pagoda.weatherinfo.data.remote.RemoteWeatherMapper
+import com.diskin.alon.pagoda.weatherinfo.data.remote.RemoteWeatherStore
+import com.diskin.alon.pagoda.weatherinfo.data.remote.RemoteWeatherStoreImpl
+import com.diskin.alon.pagoda.weatherinfo.domain.LocationWeather
 import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ViewModelComponent
-import io.reactivex.Observable
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
 @Module
-@InstallIn(ViewModelComponent::class)
+@InstallIn(SingletonComponent::class)
 abstract class WeatherDataModule {
 
-    companion object {
-
-        @WeatherInfoModel
-        @Provides
-        fun provideModelDispatcherMap(
-            getWeatherUseCase: ProvideLocationWeatherUseCase,
-            uiWeatherMapper: Mapper<Observable<Result<LocationWeatherDto>>, Observable<Result<UiWeather>>>
-        ): Model {
-            val map = HashMap<Class<out ModelRequest<*, *>>,Pair<UseCase<*, *>, Mapper<*, *>?>>()
-
-            map[CurrentLocationWeatherModelRequest::class.java] = Pair(getWeatherUseCase,uiWeatherMapper)
-            map[LocationWeatherModelRequest::class.java] = Pair(getWeatherUseCase,uiWeatherMapper)
-
-            return ModelDispatcher(map)
-        }
-    }
-
+    @Singleton
     @Binds
-    abstract fun provideUiWeatherMapper(mapper: UiWeatherMapper): Mapper<Observable<Result<LocationWeatherDto>>,Observable<Result<UiWeather>>>
+    abstract fun bindRemoteWeatherStore(store: RemoteWeatherStoreImpl): RemoteWeatherStore
+
+    @Singleton
+    @Binds
+    abstract fun bindRemoteWeatherMapper(mapper: RemoteWeatherMapper): Mapper2<ApiWeatherResponse, ApiLocationResponse, LocationWeather>
+
+    @Singleton
+    @Binds
+    abstract fun bindWeatherRepository(repository: WeatherRepositoryImpl): WeatherRepository
 }

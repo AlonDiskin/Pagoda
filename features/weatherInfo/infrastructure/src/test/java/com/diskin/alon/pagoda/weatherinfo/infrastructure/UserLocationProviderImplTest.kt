@@ -1,7 +1,7 @@
 package com.diskin.alon.pagoda.weatherinfo.infrastructure
 
 import com.diskin.alon.pagoda.common.appservices.AppError
-import com.diskin.alon.pagoda.common.appservices.Result
+import com.diskin.alon.pagoda.common.appservices.AppResult
 import com.diskin.alon.pagoda.common.util.Mapper
 import com.diskin.alon.pagoda.weatherinfo.appservices.model.UserLocation
 import com.google.android.gms.location.*
@@ -77,7 +77,7 @@ class UserLocationProviderImplTest {
 
         // Then provider should propagate first mapped update result and unregister callback listener
         verify { mapper.map(locationRes) }
-        observer.assertValue(Result.Success(mappedLocation))
+        observer.assertValue(AppResult.Success(mappedLocation))
         assertThat(locationCallbackSlot.captured).isEqualTo(removedCallbackSlot.captured)
     }
 
@@ -105,7 +105,7 @@ class UserLocationProviderImplTest {
 
         // Then provider should propagate handled error result
         verify { errorHandler.handle(settingsError) }
-        observer.assertValue(Result.Error(appError))
+        observer.assertValue(AppResult.Error(appError))
     }
 
     @Test
@@ -141,6 +141,6 @@ class UserLocationProviderImplTest {
 
         // Then provider should propagate handled error result
         verify { errorHandler.handle(permissionError) }
-        observer.assertValue(Result.Error(appError))
+        observer.assertValue(AppResult.Error(appError))
     }
 }

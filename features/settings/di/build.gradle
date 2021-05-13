@@ -42,8 +42,19 @@ dependencies {
     // Project modules
     api project(':features:settings:appServices')
     api project(':features:settings:presentation')
+    api project(':features:settings:data')
+    api project(':features:settings:infrastructure')
     api project(':features:common:eventContracts')
     api project(':features:common:util')
+
+    // Retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.6.2'
+    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.9.1'
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
+
+    // WorkManager
+    implementation "androidx.work:work-runtime-ktx:$work_version"
 
     // Hilt
     implementation "com.google.dagger:hilt-android:$hilt_version"

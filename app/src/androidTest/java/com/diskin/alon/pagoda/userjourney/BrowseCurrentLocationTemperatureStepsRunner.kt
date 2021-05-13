@@ -3,8 +3,9 @@ package com.diskin.alon.pagoda.userjourney
 import androidx.test.filters.LargeTest
 import com.diskin.alon.pagoda.di.AppDataModule
 import com.diskin.alon.pagoda.di.AppNetworkingModule
+import com.diskin.alon.pagoda.settings.di.SettingsNetworkingModule
 import com.diskin.alon.pagoda.util.NetworkUtil
-import com.diskin.alon.pagoda.weatherinfo.di.WeatherInfoNetworkingModule
+import com.diskin.alon.pagoda.weatherinfo.di.WeatherNetworkingModule
 import com.mauriciotogneri.greencoffee.GreenCoffeeConfig
 import com.mauriciotogneri.greencoffee.GreenCoffeeTest
 import com.mauriciotogneri.greencoffee.ScenarioConfig
@@ -20,7 +21,7 @@ import org.junit.runners.Parameterized
  * Step definitions runner for 'User browse current location temperature' scenario.
  */
 @HiltAndroidTest
-@UninstallModules(AppNetworkingModule::class,WeatherInfoNetworkingModule::class, AppDataModule::class)
+@UninstallModules(SettingsNetworkingModule::class,WeatherNetworkingModule::class,AppDataModule::class)
 @RunWith(Parameterized::class)
 @LargeTest
 class BrowseCurrentLocationTemperatureStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTest(scenario) {

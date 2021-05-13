@@ -7,9 +7,8 @@ import com.diskin.alon.pagoda.common.eventcontracts.settings.TemperatureUnitPref
 import com.diskin.alon.pagoda.common.eventcontracts.settings.TimeFormatPref
 import com.diskin.alon.pagoda.common.eventcontracts.settings.WindSpeedUnitPref
 import com.diskin.alon.pagoda.weatherinfo.appservices.interfaces.UserLocationProvider
-import com.diskin.alon.pagoda.weatherinfo.di.InfrastructureModule
-import com.diskin.alon.pagoda.weatherinfo.di.LocationModule
-import com.diskin.alon.pagoda.weatherinfo.di.WeatherInfoNetworkingModule
+import com.diskin.alon.pagoda.weatherinfo.di.WeatherInfrastructureModule
+import com.diskin.alon.pagoda.weatherinfo.di.WeatherNetworkingModule
 import com.mauriciotogneri.greencoffee.GreenCoffeeConfig
 import com.mauriciotogneri.greencoffee.GreenCoffeeTest
 import com.mauriciotogneri.greencoffee.Scenario
@@ -32,10 +31,10 @@ import java.util.*
 import javax.inject.Inject
 
 /**
- * Step definitions com.diskin.alon.pagoda.runner for 'Latest location weather data shown' scenario.
+ * Step definitions runner for 'Latest location weather data shown' scenario.
  */
 @HiltAndroidTest
-@UninstallModules(WeatherInfoNetworkingModule::class,InfrastructureModule::class,LocationModule::class)
+@UninstallModules(WeatherNetworkingModule::class,WeatherInfrastructureModule::class)
 @RunWith(ParameterizedRobolectricTestRunner::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = HiltTestApplication::class,sdk = [28])

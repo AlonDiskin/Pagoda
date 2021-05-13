@@ -1,8 +1,8 @@
 package com.diskin.alon.pagoda.weatherinfo.data.remote
 
-import com.diskin.alon.pagoda.common.util.Mapper2
-import com.diskin.alon.pagoda.common.appservices.Result
+import com.diskin.alon.pagoda.common.appservices.AppResult
 import com.diskin.alon.pagoda.common.appservices.toResult
+import com.diskin.alon.pagoda.common.util.Mapper2
 import com.diskin.alon.pagoda.weatherinfo.data.model.ApiLocationResponse
 import com.diskin.alon.pagoda.weatherinfo.data.model.ApiWeatherResponse
 import com.diskin.alon.pagoda.weatherinfo.domain.LocationWeather
@@ -19,7 +19,7 @@ class RemoteWeatherStoreImpl @Inject constructor(
     private val mapper: Mapper2<ApiWeatherResponse, ApiLocationResponse, LocationWeather>
 ) : RemoteWeatherStore {
 
-    override fun get(lat: Double, lon: Double): Observable<Result<LocationWeather>> {
+    override fun get(lat: Double, lon: Double): Observable<AppResult<LocationWeather>> {
         return Observable.combineLatest(
             api.getCurrentWeather(lat, lon).toObservable(),
             api.getLocationDetail(lat, lon).toObservable(),

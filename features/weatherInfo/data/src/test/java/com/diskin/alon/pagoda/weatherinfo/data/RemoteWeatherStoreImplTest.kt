@@ -2,7 +2,7 @@ package com.diskin.alon.pagoda.weatherinfo.data
 
 import com.diskin.alon.pagoda.common.util.Mapper2
 import com.diskin.alon.pagoda.common.appservices.AppError
-import com.diskin.alon.pagoda.common.appservices.Result
+import com.diskin.alon.pagoda.common.appservices.AppResult
 import com.diskin.alon.pagoda.weatherinfo.data.model.ApiLocationResponse
 import com.diskin.alon.pagoda.weatherinfo.data.model.ApiWeatherResponse
 import com.diskin.alon.pagoda.weatherinfo.data.remote.NetworkErrorHandler
@@ -71,7 +71,7 @@ class RemoteWeatherStoreImplTest {
 
         // And propagate mapped api response to expected result model
         verify { mapper.map(apiWeatherResponse,apiLocationResponse) }
-        observer.assertValue(Result.Success(mappedWeather))
+        observer.assertValue(AppResult.Success(mappedWeather))
     }
 
     @Test
@@ -103,6 +103,6 @@ class RemoteWeatherStoreImplTest {
         verify { errorHandler.handle(error) }
 
         // And propagate expected result model
-        observer.assertValue(Result.Error(appError))
+        observer.assertValue(AppResult.Error(appError))
     }
 }

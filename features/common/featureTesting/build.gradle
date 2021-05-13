@@ -34,7 +34,6 @@ android {
 }
 
 dependencies {
-    def robolectric_version = "4.3.1"
     def greencoffee_version = "3.5.0"
 
     implementation fileTree(dir: "libs", include: ["*.jar"])

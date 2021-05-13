@@ -36,4 +36,15 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory app:title="Notifications">
+
+        <androidx.preference.SwitchPreference
+            app:key="@string/pref_alert_notification_key"
+            app:title="@string/pref_alert_notification_title"
+            app:summary="@string/pref_alert_notification_summary"
+            app:defaultValue="@string/pref_alert_notification_default_value"
+            tools:defaultValue="true" />
+
+    </PreferenceCategory>
+
 </androidx.preference.PreferenceScreen>
