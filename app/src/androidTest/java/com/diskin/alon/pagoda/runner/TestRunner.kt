@@ -1,13 +1,11 @@
 package com.diskin.alon.pagoda.runner
 
-import android.Manifest
 import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.FragmentActivity
 import androidx.test.espresso.IdlingRegistry
-import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnitRunner
 import com.diskin.alon.pagoda.R
 import com.diskin.alon.pagoda.common.uitesting.DataBindingIdlingResource
@@ -70,14 +68,6 @@ class TestRunner : AndroidJUnitRunner() {
     }
 
     override fun onStart() {
-        // Grant runtime permissions
-        InstrumentationRegistry.getInstrumentation().uiAutomation.grantRuntimePermission(
-            InstrumentationRegistry.getInstrumentation().targetContext.packageName,
-            Manifest.permission.ACCESS_FINE_LOCATION)
-        InstrumentationRegistry.getInstrumentation().uiAutomation.grantRuntimePermission(
-            InstrumentationRegistry.getInstrumentation().targetContext.packageName,
-            Manifest.permission.ACCESS_BACKGROUND_LOCATION)
-
         // Init RxIdler
         RxJavaPlugins.setInitIoSchedulerHandler(
             Rx2Idler.create("RxJava 2.x IO Scheduler"))
