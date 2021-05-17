@@ -32,6 +32,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val navigationView = findViewById<NavigationView>(R.id.nav_view)
         navigationView.setNavigationItemSelectedListener(this)
 
+
         // Set toolbar
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
@@ -55,55 +56,39 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         toolbar.setupWithNavController(navController, appBarConfiguration)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_main, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_settings -> {
-                findNavController(R.id.nav_host_container)
-                    .navigate(graphProvider.getSettingsDestId())
-                true
-            }
-
-            R.id.action_search_location -> {
-                findNavController(R.id.nav_host_container)
-                    .navigate(graphProvider.getSearchLocationsDestId())
-                true
-            }
-
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
     override fun onSupportNavigateUp(): Boolean {
         return findNavController(R.id.nav_host_container).navigateUp()
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        closeDrawer()
+        val controller = findNavController(R.id.nav_host_container)
+
+        closeDrawer(true)
         when (item.itemId) {
             R.id.nav_home -> {
-                val controller = findNavController(R.id.nav_host_container)
                 val homeDest = controller.graph.startDestination
-
                 controller.popBackStack(homeDest,true)
                 controller.navigate(homeDest)
             }
+            R.id.nav_search -> controller.navigate(graphProvider.getSearchLocationsDestId())
+            R.id.nav_settings -> controller.navigate(graphProvider.getSettingsDestId())
         }
         return true
     }
 
-    private fun closeDrawer() {
-        Thread {
-            Thread.sleep(300)
-            runOnUiThread {
-                val drawerLayout = findViewById<DrawerLayout>(R.id.drawerLayout)
-                drawerLayout.closeDrawer(GravityCompat.START)
-            }
-        }.start()
+    private fun closeDrawer(smooth: Boolean) {
+        val drawerLayout = findViewById<DrawerLayout>(R.id.drawerLayout)
+
+        if (smooth) {
+            Thread {
+                Thread.sleep(200)
+                runOnUiThread {
+                    drawerLayout.closeDrawer(GravityCompat.START)
+                }
+            }.start()
+        } else {
+            drawerLayout.closeDrawer(GravityCompat.START)
+        }
     }
 
     private fun isDrawerOpen(): Boolean {
@@ -113,7 +98,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onBackPressed() {
         if (isDrawerOpen()) {
-            closeDrawer()
+            closeDrawer(false)
         } else {
             super.onBackPressed()
         }
