@@ -13,7 +13,7 @@
             type="UiLocation" />
 
         <variable
-            name="resultClickListener"
+            name="locationClickListener"
             type="Function1&lt;UiLocation,Unit>" />
     </data>
 
@@ -21,7 +21,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:foreground="?android:attr/selectableItemBackground"
-        android:onClick="@{() -> resultClickListener.invoke(location)}">
+        android:onClick="@{() -> locationClickListener.invoke(location)}">
 
         <TextView
             android:id="@+id/locationName"
@@ -47,6 +47,16 @@
             android:text="@{location.country}"
             android:layout_marginBottom="8dp"
             tools:text="United States, CA"/>
+
+        <ImageButton
+            android:id="@+id/imageButton"
+            style="@style/Widget.AppCompat.ActionButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_baseline_more_vert_24" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

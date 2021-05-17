@@ -4,8 +4,7 @@ import androidx.paging.PagingData
 import com.diskin.alon.pagoda.common.util.Mapper
 import com.diskin.alon.pagoda.locations.appservices.interfaces.LocationRepository
 import com.diskin.alon.pagoda.locations.appservices.model.LocationDto
-import com.diskin.alon.pagoda.locations.appservices.model.SearchLocationsRequest
-import com.diskin.alon.pagoda.locations.appservices.usecase.SearchLocationsUseCase
+import com.diskin.alon.pagoda.locations.appservices.usecase.BrowseSavedLocationsUseCase
 import com.diskin.alon.pagoda.locations.domain.Location
 import io.mockk.every
 import io.mockk.mockk
@@ -15,40 +14,39 @@ import org.junit.Before
 import org.junit.Test
 
 /**
- * [SearchLocationsUseCase] unit test class.
+ * [BrowseSavedLocationsUseCase] unit test class.
  */
-class SearchLocationsUseCaseTest {
+class BrowseSavedLocationsUseCaseTest {
 
     // Test subject
-    private lateinit var useCase: SearchLocationsUseCase
+    private lateinit var useCas: BrowseSavedLocationsUseCase
 
     // Collaborators
     private val repository: LocationRepository = mockk()
-    private val locationMapper: Mapper<PagingData<Location>, PagingData<LocationDto>> = mockk()
+    private val mapper: Mapper<PagingData<Location>, PagingData<LocationDto>> = mockk()
 
     @Before
     fun setUp() {
-        useCase = SearchLocationsUseCase(repository, locationMapper)
+        useCas = BrowseSavedLocationsUseCase(repository, mapper)
     }
 
     @Test
-    fun performSearchWhenExecuted() {
+    fun fetchSavedLocationsWhenExecuted() {
         // Test case fixture
         val repoPaging: PagingData<Location> = mockk()
         val mappedPaging: PagingData<LocationDto> = mockk()
 
-        every { repository.search(any()) } returns Observable.just(repoPaging)
-        every { locationMapper.map(any()) } returns mappedPaging
+        every { repository.getSaved() } returns Observable.just(repoPaging)
+        every { mapper.map(any()) } returns mappedPaging
 
         // Given
 
         // When
-        val request = SearchLocationsRequest("query")
-        val observer = useCase.execute(request).test()
+        val observer = useCas.execute(Unit).test()
 
         // Then
-        verify { repository.search(request.query) }
-        verify { locationMapper.map(repoPaging) }
+        verify { repository.getSaved() }
+        verify { mapper.map(repoPaging) }
         observer.assertValue(mappedPaging)
     }
 }

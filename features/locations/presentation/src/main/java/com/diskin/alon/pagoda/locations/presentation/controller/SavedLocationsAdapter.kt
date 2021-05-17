@@ -5,17 +5,16 @@ import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.diskin.alon.pagoda.locations.appservices.model.LocationDto
-import com.diskin.alon.pagoda.locations.presentation.controller.LocationSearchResultsAdapter.LocationSearchResultViewHolder
-import com.diskin.alon.pagoda.locations.presentation.databinding.LocationSearchResultBinding
+import com.diskin.alon.pagoda.locations.presentation.controller.SavedLocationsAdapter.SavedLocationViewHolder
+import com.diskin.alon.pagoda.locations.presentation.databinding.SavedLocationBinding
 import com.diskin.alon.pagoda.locations.presentation.model.UiLocation
 
 /**
- * Layout adapter that display [LocationDto]s search results.
+ * Layout adapter that display [UiLocation]s for user saved locations.
  */
-class LocationSearchResultsAdapter(
-    private val resultClickListener: (UiLocation) -> (Unit)
-) : PagingDataAdapter<UiLocation, LocationSearchResultViewHolder>(
+class SavedLocationsAdapter(
+    private val locationClickListener: (UiLocation) -> (Unit)
+) : PagingDataAdapter<UiLocation, SavedLocationViewHolder>(
     DIFF_CALLBACK
 ) {
 
@@ -32,8 +31,8 @@ class LocationSearchResultsAdapter(
         }
     }
 
-    class LocationSearchResultViewHolder(
-        private val binding: LocationSearchResultBinding
+    class SavedLocationViewHolder(
+        private val binding: SavedLocationBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(location: UiLocation) {
@@ -41,18 +40,18 @@ class LocationSearchResultsAdapter(
         }
     }
 
-    override fun onBindViewHolder(holder: LocationSearchResultViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: SavedLocationViewHolder, position: Int) {
         getItem(position)?.let { holder.bind(it) }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LocationSearchResultViewHolder {
-        val binding = LocationSearchResultBinding.inflate(
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SavedLocationViewHolder {
+        val binding = SavedLocationBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
         )
 
-        binding.resultClickListener = resultClickListener
-        return LocationSearchResultViewHolder(binding)
+        binding.locationClickListener = locationClickListener
+        return SavedLocationViewHolder(binding)
     }
 }

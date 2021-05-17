@@ -8,9 +8,9 @@ import androidx.paging.PagingData
 import androidx.paging.rxjava2.cachedIn
 import com.diskin.alon.pagoda.common.presentation.Model
 import com.diskin.alon.pagoda.common.presentation.RxViewModel
-import com.diskin.alon.pagoda.locations.appservices.model.LocationSearchResult
-import com.diskin.alon.pagoda.locations.presentation.model.SearchModelRequest
-import com.diskin.alon.pagoda.locations.presentation.util.SearchLocationsModel
+import com.diskin.alon.pagoda.locations.presentation.model.SearchLocationsModelRequest
+import com.diskin.alon.pagoda.locations.presentation.model.UiLocation
+import com.diskin.alon.pagoda.locations.presentation.util.LocationsModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -18,8 +18,8 @@ import io.reactivex.subjects.BehaviorSubject
 import javax.inject.Inject
 
 @HiltViewModel
-class SearchLocationViewModel @Inject constructor(
-    @SearchLocationsModel private val model: Model,
+class SearchLocationsViewModel @Inject constructor(
+    @LocationsModel private val model: Model,
     private val savedState: SavedStateHandle
 ) : RxViewModel() {
 
@@ -30,8 +30,8 @@ class SearchLocationViewModel @Inject constructor(
 
     private val _query: BehaviorSubject<String> = BehaviorSubject.createDefault(getQueryState() ?: DEFAULT_QUERY)
     val query: String get() = _query.value!!
-    private val _results = MutableLiveData<PagingData<LocationSearchResult>>()
-    val results: LiveData<PagingData<LocationSearchResult>> get() = _results
+    private val _results = MutableLiveData<PagingData<UiLocation>>()
+    val results: LiveData<PagingData<UiLocation>> get() = _results
 
     init { addSubscription(createQuerySubscription()) }
 
@@ -40,7 +40,7 @@ class SearchLocationViewModel @Inject constructor(
      */
     private fun createQuerySubscription(): Disposable {
         return _query
-            .switchMap { model.execute(SearchModelRequest(it))}
+            .switchMap { model.execute(SearchLocationsModelRequest(it))}
             .cachedIn(viewModelScope)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { paging -> _results.value = paging }

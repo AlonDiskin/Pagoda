@@ -4,7 +4,6 @@ import android.Manifest
 import androidx.test.filters.LargeTest
 import androidx.test.rule.GrantPermissionRule
 import com.diskin.alon.pagoda.di.AppDataModule
-import com.diskin.alon.pagoda.di.AppNetworkingModule
 import com.diskin.alon.pagoda.settings.di.SettingsNetworkingModule
 import com.diskin.alon.pagoda.util.NetworkUtil
 import com.diskin.alon.pagoda.util.TestDatabase
@@ -28,14 +27,14 @@ import javax.inject.Inject
 @UninstallModules(SettingsNetworkingModule::class,WeatherNetworkingModule::class,AppDataModule::class)
 @RunWith(Parameterized::class)
 @LargeTest
-class BrowseWorldLocationTemperatureStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTest(scenario) {
+class SearchWorldLocationTemperatureStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTest(scenario) {
 
     companion object {
         @JvmStatic
         @Parameterized.Parameters(name = "{0}")
         fun scenarios(): Iterable<ScenarioConfig> {
             return GreenCoffeeConfig()
-                .withFeatureFromAssets("assets/feature/browse_world_location_temperature.feature")
+                .withFeatureFromAssets("assets/feature/search_world_location_temperature.feature")
                 .scenarios()
         }
     }
@@ -52,6 +51,6 @@ class BrowseWorldLocationTemperatureStepsRunner(scenario: ScenarioConfig) : Gree
     @Test
     fun test() {
         hiltRule.inject()
-        start(BrowseWorldLocationTemperatureSteps(db,NetworkUtil.server))
+        start(SearchWorldLocationTemperatureSteps(db,NetworkUtil.server))
     }
 }

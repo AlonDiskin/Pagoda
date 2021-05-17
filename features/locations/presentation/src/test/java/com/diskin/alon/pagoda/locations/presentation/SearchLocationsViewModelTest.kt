@@ -5,9 +5,9 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.paging.PagingData
 import com.diskin.alon.pagoda.common.presentation.Model
 import com.diskin.alon.pagoda.common.presentation.ModelRequest
-import com.diskin.alon.pagoda.locations.appservices.model.LocationSearchResult
-import com.diskin.alon.pagoda.locations.presentation.model.SearchModelRequest
-import com.diskin.alon.pagoda.locations.presentation.viewmodel.SearchLocationViewModel
+import com.diskin.alon.pagoda.locations.presentation.model.SearchLocationsModelRequest
+import com.diskin.alon.pagoda.locations.presentation.model.UiLocation
+import com.diskin.alon.pagoda.locations.presentation.viewmodel.SearchLocationsViewModel
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
@@ -22,9 +22,9 @@ import org.junit.Rule
 import org.junit.Test
 
 /**
- * [SearchLocationViewModel] unit test class.
+ * [SearchLocationsViewModel] unit test class.
  */
-class SearchLocationViewModelTest {
+class SearchLocationsViewModelTest {
 
     companion object {
 
@@ -42,14 +42,14 @@ class SearchLocationViewModelTest {
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     // Test subject
-    private lateinit var viewModel: SearchLocationViewModel
+    private lateinit var viewModel: SearchLocationsViewModel
 
     // Collaborators
     private val model: Model = mockk()
     private val savedState: SavedStateHandle = SavedStateHandle()
 
     // Stub data
-    private val searchResultsSubject = BehaviorSubject.create<PagingData<LocationSearchResult>>()
+    private val searchResultsSubject = BehaviorSubject.create<PagingData<UiLocation>>()
     private val modelRequestSlot = slot<ModelRequest<*, *>>()
 
     @Before
@@ -58,7 +58,7 @@ class SearchLocationViewModelTest {
         every { model.execute(capture(modelRequestSlot)) } returns searchResultsSubject
 
         // Init subject
-        viewModel = SearchLocationViewModel(model, savedState)
+        viewModel = SearchLocationsViewModel(model, savedState)
     }
 
     @Test
@@ -73,8 +73,8 @@ class SearchLocationViewModelTest {
     fun initSavedQueryWhenCreatedWithSavedState() {
         // Given
         val savedQuery = "query"
-        savedState.set(SearchLocationViewModel.KEY_QUERY,savedQuery)
-        viewModel = SearchLocationViewModel(model,savedState)
+        savedState.set(SearchLocationsViewModel.KEY_QUERY,savedQuery)
+        viewModel = SearchLocationsViewModel(model,savedState)
 
         // Then
         assertThat(viewModel.query).isEqualTo(savedQuery)
@@ -89,12 +89,12 @@ class SearchLocationViewModelTest {
         viewModel.search(query)
 
         // Then
-        verify { model.execute(any<SearchModelRequest>()) }
-        assertThat((modelRequestSlot.captured as SearchModelRequest).query).isEqualTo(query)
+        verify { model.execute(any<SearchLocationsModelRequest>()) }
+        assertThat((modelRequestSlot.captured as SearchLocationsModelRequest).query).isEqualTo(query)
 
         // And
         assertThat(viewModel.results.value).isNull()
-        val paging: PagingData<LocationSearchResult> = PagingData.from(emptyList())
+        val paging: PagingData<UiLocation> = PagingData.from(emptyList())
         searchResultsSubject.onNext(paging)
 
         // Then
@@ -105,11 +105,11 @@ class SearchLocationViewModelTest {
     fun performModelLocationsSearchWhenCreatedWithSavedState() {
         // Given
         val savedQuery = "query"
-        savedState.set(SearchLocationViewModel.KEY_QUERY,savedQuery)
-        viewModel = SearchLocationViewModel(model,savedState)
+        savedState.set(SearchLocationsViewModel.KEY_QUERY,savedQuery)
+        viewModel = SearchLocationsViewModel(model,savedState)
 
         // Then
-        verify { model.execute(any<SearchModelRequest>()) }
-        assertThat((modelRequestSlot.captured as SearchModelRequest).query).isEqualTo(savedQuery)
+        verify { model.execute(any<SearchLocationsModelRequest>()) }
+        assertThat((modelRequestSlot.captured as SearchLocationsModelRequest).query).isEqualTo(savedQuery)
     }
 }

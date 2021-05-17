@@ -12,18 +12,18 @@ import androidx.paging.LoadState
 import androidx.recyclerview.widget.RecyclerView
 import com.diskin.alon.pagoda.common.presentation.LOCATION_LAT
 import com.diskin.alon.pagoda.common.presentation.LOCATION_LON
-import com.diskin.alon.pagoda.locations.appservices.model.LocationSearchResult
 import com.diskin.alon.pagoda.locations.presentation.R
-import com.diskin.alon.pagoda.locations.presentation.viewmodel.SearchLocationViewModel
+import com.diskin.alon.pagoda.locations.presentation.model.UiLocation
+import com.diskin.alon.pagoda.locations.presentation.viewmodel.SearchLocationsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.migration.OptionalInject
 import javax.inject.Inject
 
 @OptionalInject
 @AndroidEntryPoint
-class SearchLocationFragment : Fragment(), SearchView.OnQueryTextListener, MenuItem.OnActionExpandListener {
+class SearchLocationsFragment : Fragment(), SearchView.OnQueryTextListener, MenuItem.OnActionExpandListener {
 
-    private val viewModel: SearchLocationViewModel by viewModels()
+    private val viewModel: SearchLocationsViewModel by viewModels()
     @Inject
     lateinit var appNav: AppLocationsNavProvider
 
@@ -37,7 +37,7 @@ class SearchLocationFragment : Fragment(), SearchView.OnQueryTextListener, MenuI
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_search_location, container, false)
+        return inflater.inflate(R.layout.fragment_search_locations, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -113,7 +113,7 @@ class SearchLocationFragment : Fragment(), SearchView.OnQueryTextListener, MenuI
         return true
     }
 
-    private fun handleResultClick(result: LocationSearchResult) {
+    private fun handleResultClick(result: UiLocation) {
         // Navigate to weather info screen and pass selected result coordinates
         val bundle = bundleOf(LOCATION_LAT to result.lat, LOCATION_LON to result.lon)
         findNavController().navigate(appNav.getWeatherDest(), bundle)

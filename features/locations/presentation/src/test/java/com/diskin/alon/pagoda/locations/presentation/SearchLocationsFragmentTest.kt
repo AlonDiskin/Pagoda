@@ -1,17 +1,20 @@
 package com.diskin.alon.pagoda.locations.presentation
 
+import android.os.Bundle
 import android.os.Looper
 import android.view.KeyEvent
 import androidx.appcompat.widget.SearchView
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelLazy
-import androidx.navigation.Navigation
-import androidx.navigation.testing.TestNavHostController
-import androidx.paging.*
+import androidx.navigation.fragment.findNavController
+import androidx.paging.CombinedLoadStates
+import androidx.paging.LoadState
+import androidx.paging.LoadStates
+import androidx.paging.PagingData
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.action.ViewActions
@@ -29,17 +32,12 @@ import com.diskin.alon.pagoda.common.uitesting.RecyclerViewMatcher.withRecyclerV
 import com.diskin.alon.pagoda.common.uitesting.launchFragmentInHiltContainer
 import com.diskin.alon.pagoda.common.uitesting.withSearchViewHint
 import com.diskin.alon.pagoda.common.uitesting.withSearchViewQuery
-import com.diskin.alon.pagoda.locations.appservices.model.LocationSearchResult
-import com.diskin.alon.pagoda.locations.presentation.controller.AppLocationsNavProvider
-import com.diskin.alon.pagoda.locations.presentation.controller.LocationSearchResultsAdapter
+import com.diskin.alon.pagoda.locations.presentation.controller.*
 import com.diskin.alon.pagoda.locations.presentation.controller.LocationSearchResultsAdapter.LocationSearchResultViewHolder
-import com.diskin.alon.pagoda.locations.presentation.controller.SearchLocationFragment
-import com.diskin.alon.pagoda.locations.presentation.viewmodel.SearchLocationViewModel
+import com.diskin.alon.pagoda.locations.presentation.model.UiLocation
+import com.diskin.alon.pagoda.locations.presentation.viewmodel.SearchLocationsViewModel
 import com.google.common.truth.Truth.assertThat
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.mockkConstructor
-import io.mockk.verify
+import io.mockk.*
 import org.hamcrest.CoreMatchers.instanceOf
 import org.junit.Before
 import org.junit.Test
@@ -47,30 +45,26 @@ import org.junit.runner.RunWith
 import org.robolectric.Shadows
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import java.util.concurrent.CopyOnWriteArrayList
 
 /**
- * [SearchLocationFragment] hermetic ui test.
+ * [SearchLocationsFragment] hermetic ui test.
  */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @SmallTest
 @Config(sdk = [28])
-class SearchLocationFragmentTest {
+class SearchLocationsFragmentTest {
 
     // Test subject
     private lateinit var scenario: ActivityScenario<HiltTestActivity>
 
     // Collaborators
-    private val viewModel: SearchLocationViewModel = mockk()
+    private val viewModel: SearchLocationsViewModel = mockk()
     private val appNav: AppLocationsNavProvider = mockk()
 
     // Stub data
-    private val results = MutableLiveData<PagingData<LocationSearchResult>>()
+    private val results = MutableLiveData<PagingData<UiLocation>>()
     private val query = "query"
-
-    // Test nav controller
-    private val navController = TestNavHostController(ApplicationProvider.getApplicationContext())
 
     @Before
     fun setUp() {
@@ -82,22 +76,12 @@ class SearchLocationFragmentTest {
         every { viewModel.query } returns query
         every { viewModel.results } returns results
 
-        // Setup test nav controller
-        navController.setGraph(R.navigation.test_locations_nav_graph)
-        navController.setCurrentDestination(R.id.searchLocationFragment)
-
         // Launch fragment under test
 
         // Fragment scenario has no action bar that needed for test so we use hilt
         // test activity(uses activity scenario)
-        scenario = launchFragmentInHiltContainer<SearchLocationFragment>()
+        scenario = launchFragmentInHiltContainer<SearchLocationsFragment>()
         Shadows.shadowOf(Looper.getMainLooper()).idle()
-
-        // Set the NavController property on the fragment with test controller
-        scenario.onActivity {
-            val fragment = it.supportFragmentManager.fragments[0]
-            Navigation.setViewNavController(fragment.requireView(), navController)
-        }
     }
 
     @Test
@@ -243,9 +227,6 @@ class SearchLocationFragmentTest {
 
             onView(withRecyclerView(R.id.searchResults).atPositionOnView(index,R.id.locationCountry))
                 .check(matches(withText(result.country)))
-
-            onView(withRecyclerView(R.id.searchResults).atPositionOnView(index,R.id.locationState))
-                .check(matches(withText(", ${result.state}")))
         }
     }
 
@@ -257,6 +238,12 @@ class SearchLocationFragmentTest {
     @Test
     fun navUpWhenUserCloseSearchField() {
         // Test case fixture
+        mockkStatic(Fragment::findNavController)
+
+        scenario.onActivity {
+            val fragment = it.supportFragmentManager.fragments[0] as SearchLocationsFragment
+            every { fragment.findNavController().navigateUp() } returns true
+        }
         every { viewModel.search(any()) } returns Unit
 
         // Given
@@ -269,18 +256,26 @@ class SearchLocationFragmentTest {
         pressBack()
 
         // Then
-        assertThat(navController.currentDestination!!.id).isEqualTo(R.id.homeFragment)
+        scenario.onActivity {
+            val fragment = it.supportFragmentManager.fragments[0] as SearchLocationsFragment
+            verify { fragment.findNavController().navigateUp() }
+        }
     }
 
     @Test
     fun openWeatherDataScreenWhenResultSelected() {
         // Test case fixture
+        val destId = 10
+        val bundleSlot = slot<Bundle>()
+        mockkStatic(Fragment::findNavController)
+
         scenario.onActivity {
-            val fragment = it.supportFragmentManager.fragments[0] as SearchLocationFragment
+            val fragment = it.supportFragmentManager.fragments[0] as SearchLocationsFragment
             fragment.appNav = appNav
+            every { fragment.findNavController().navigate(any(),capture(bundleSlot)) } returns Unit
         }
 
-        every { appNav.getWeatherDest() } returns R.id.testWeatherInfoFragment
+        every { appNav.getWeatherDest() } returns destId
 
         // Given
 
@@ -291,32 +286,17 @@ class SearchLocationFragmentTest {
 
         // And
         onView(withId(R.id.searchResults))
-            .perform(actionOnItemAtPosition<LocationSearchResultViewHolder>(0,click()))
+            .perform(actionOnItemAtPosition<SavedLocationsAdapter.SavedLocationViewHolder>(0, click()))
 
         // Then
-        assertThat(navController.currentDestination!!.id).isEqualTo(R.id.testWeatherInfoFragment)
-        assertThat(navController.currentBackStackEntry?.arguments?.get(LOCATION_LAT))
-            .isEqualTo(searchResults.first().lat)
-        assertThat(navController.currentBackStackEntry?.arguments?.get(LOCATION_LON))
-            .isEqualTo(searchResults.first().lon)
-    }
+        verify { appNav.getWeatherDest() }
 
-    private fun getSearchResultsAdapterLoadStatesListener(adapter: LocationSearchResultsAdapter): (CombinedLoadStates) -> Unit {
-        val field = PagingDataAdapter::class.java.getDeclaredField("differ")
-        field.isAccessible = true
-        @Suppress("UNCHECKED_CAST")
-        val differ = field.get(adapter) as AsyncPagingDataDiffer<LocationSearchResult>
+        scenario.onActivity {
+            val fragment = it.supportFragmentManager.fragments[0] as SearchLocationsFragment
+            verify { fragment.findNavController().navigate(destId,any()) }
+        }
 
-        val field2 = AsyncPagingDataDiffer::class.java.getDeclaredField("differBase")
-        field2.isAccessible = true
-        @Suppress("UNCHECKED_CAST")
-        val differBase = field2.get(differ) as PagingDataDiffer<LocationSearchResult>
-
-        val field3 = PagingDataDiffer::class.java.getDeclaredField("loadStateListeners")
-        field3.isAccessible = true
-        @Suppress("UNCHECKED_CAST")
-        val listeners = field3.get(differBase) as CopyOnWriteArrayList<(CombinedLoadStates) -> Unit>
-
-        return listeners[1]
+        assertThat(bundleSlot.captured.get(LOCATION_LAT)).isEqualTo(searchResults.first().lat)
+        assertThat(bundleSlot.captured.get(LOCATION_LON)).isEqualTo(searchResults.first().lon)
     }
 }

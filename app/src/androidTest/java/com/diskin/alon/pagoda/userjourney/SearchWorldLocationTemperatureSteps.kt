@@ -29,7 +29,7 @@ import org.json.JSONObject
 /**
  * Step definitions for 'User browse world location temperature' scenario.
  */
-class BrowseWorldLocationTemperatureSteps(db: TestDatabase, server: MockWebServer) : GreenCoffeeSteps() {
+class SearchWorldLocationTemperatureSteps(db: TestDatabase, server: MockWebServer) : GreenCoffeeSteps() {
     private val selectedLat = 18.213001
     private val selectedLon = 59.195999
     private val query = "los angeles"

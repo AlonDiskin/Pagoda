@@ -10,4 +10,6 @@ import io.reactivex.Observable
 interface LocationRepository {
 
     fun search(query: String): Observable<PagingData<Location>>
+
+    fun getSaved(): Observable<PagingData<Location>>
 }

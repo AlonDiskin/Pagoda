@@ -23,9 +23,9 @@
         android:label="Settings" />
     <fragment
         android:id="@+id/searchLocationFragment"
-        android:name="com.diskin.alon.pagoda.locations.presentation.controller.SearchLocationFragment"
+        android:name="com.diskin.alon.pagoda.locations.presentation.controller.SearchLocationsFragment"
         android:label=""
-        tools:layout="@layout/fragment_search_location">
+        tools:layout="@layout/fragment_search_locations">
         <action
             android:id="@+id/action_searchLocationFragment_to_weatherFragment"
             app:popUpToInclusive="true"

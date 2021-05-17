@@ -22,14 +22,14 @@ import java.util.*
 import javax.inject.Inject
 
 /**
- * Step definitions runner for 'Search result location weather shown' scenario.
+ * Step definitions runner for 'Saved locations listed' scenario.
  */
 @HiltAndroidTest
 @RunWith(ParameterizedRobolectricTestRunner::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = HiltTestApplication::class,sdk = [28])
 @MediumTest
-class ShowLocationResultWeatherStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTest(scenario) {
+class ShowSavedLocationsStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTest(scenario) {
 
     companion object {
         @JvmStatic
@@ -37,8 +37,8 @@ class ShowLocationResultWeatherStepsRunner(scenario: ScenarioConfig) : GreenCoff
         fun data(): Collection<Array<Any>> {
             val res = ArrayList<Array<Any>>()
             val scenarioConfigs = GreenCoffeeConfig()
-                .withFeatureFromAssets("feature/search_locations.feature")
-                .withTags("@show-location-weather")
+                .withFeatureFromAssets("feature/browse_saved_locations.feature")
+                .withTags("@locations-listed")
                 .scenarios()
 
             for (scenarioConfig in scenarioConfigs) {
@@ -70,6 +70,6 @@ class ShowLocationResultWeatherStepsRunner(scenario: ScenarioConfig) : GreenCoff
     @Test
     fun test() {
         hiltRule.inject()
-        start(ShowLocationResultWeatherSteps(db,navProvider))
+        start(ShowSavedLocationsSteps(db,navProvider))
     }
 }
