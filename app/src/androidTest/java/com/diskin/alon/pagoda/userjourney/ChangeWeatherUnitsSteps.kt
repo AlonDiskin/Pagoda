@@ -7,6 +7,8 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.DrawerActions
+import androidx.test.espresso.contrib.NavigationViewActions
 import androidx.test.espresso.matcher.RootMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -52,9 +54,12 @@ class ChangeWeatherUnitsSteps(private val server: MockWebServer) : GreenCoffeeSt
 
     @And("^Open settings screen$")
     fun open_settings_screen() {
-        openActionBarOverflowOrOptionsMenu(ApplicationProvider.getApplicationContext())
-        onView(withText(R.string.title_settings))
-            .perform(click())
+        onView(withId(R.id.drawerLayout))
+            .perform(DrawerActions.open())
+
+        onView(withId(R.id.nav_view))
+            .perform(NavigationViewActions.navigateTo(R.id.nav_settings))
+        Thread.sleep(1000)
     }
 
     @When("^User change temperature and time format units$")

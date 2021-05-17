@@ -1,6 +1,8 @@
 package com.diskin.alon.pagoda.userjourney
 
+import android.Manifest
 import androidx.test.filters.LargeTest
+import androidx.test.rule.GrantPermissionRule
 import com.diskin.alon.pagoda.di.AppDataModule
 import com.diskin.alon.pagoda.di.AppNetworkingModule
 import com.diskin.alon.pagoda.settings.di.SettingsNetworkingModule
@@ -38,6 +40,9 @@ class BrowseCurrentLocationTemperatureStepsRunner(scenario: ScenarioConfig) : Gr
 
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
+
+    @get:Rule
+    val permissionRule = GrantPermissionRule.grant(Manifest.permission.ACCESS_FINE_LOCATION)!!
 
     @Test
     fun test() {

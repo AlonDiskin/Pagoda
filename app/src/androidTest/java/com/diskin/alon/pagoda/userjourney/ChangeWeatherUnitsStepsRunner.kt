@@ -1,8 +1,10 @@
 package com.diskin.alon.pagoda.userjourney
 
+import android.Manifest
 import android.util.Log
 import androidx.test.core.app.ApplicationProvider.*
 import androidx.test.filters.LargeTest
+import androidx.test.rule.GrantPermissionRule
 import androidx.work.Configuration
 import androidx.work.impl.utils.SynchronousExecutor
 import androidx.work.testing.WorkManagerTestInitHelper
@@ -43,6 +45,9 @@ class ChangeWeatherUnitsStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTest(
 
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
+
+    @get:Rule
+    val permissionRule = GrantPermissionRule.grant(Manifest.permission.ACCESS_FINE_LOCATION)!!
 
     @Test
     fun test() {

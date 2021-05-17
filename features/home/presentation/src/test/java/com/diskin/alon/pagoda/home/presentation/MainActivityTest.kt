@@ -1,6 +1,8 @@
 package com.diskin.alon.pagoda.home.presentation
 
 import android.os.Looper
+import androidx.appcompat.view.menu.ActionMenuItem
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
@@ -8,6 +10,8 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.DrawerActions
+import androidx.test.espresso.contrib.NavigationViewActions
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
@@ -59,18 +63,24 @@ class MainActivityTest {
     }
 
     @Test
-    fun openSettingsScreenWhenSelectedByUser() {
+    fun openSettingsScreenWhenUserNavigatesToIt() {
         // Given a resumed activity
 
-        // When user navigates to bookmarks feature
-        openActionBarOverflowOrOptionsMenu(ApplicationProvider.getApplicationContext())
-        Shadows.shadowOf(Looper.getMainLooper()).idle()
+        // When user navigates to settings screen
+        scenario.onActivity {
+            val addMenuItem = ActionMenuItem(
+                it,
+                0,
+                R.id.nav_settings,
+                0,
+                0,
+                null
+            )
 
-        onView(withText(R.string.title_settings))
-            .perform(click())
-        Shadows.shadowOf(Looper.getMainLooper()).idle()
+            it.onNavigationItemSelected(addMenuItem)
+        }
 
-        // Then activity should navigate to settings fragment
+        // Then settings screen should be shown
         scenario.onActivity {
             val controller = it.findNavController(R.id.nav_host_container)
             assertThat(controller.currentDestination!!.id).isEqualTo(R.id.settingsFragment)
@@ -89,16 +99,22 @@ class MainActivityTest {
     }
 
     @Test
-    fun showUpNavigationUiWhenShowingSettings() {
+    fun showUpNavigationUiWhenShowingSettingsScreen() {
         // Given a resumed activity
 
-        // When user navigates to bookmarks feature
-        openActionBarOverflowOrOptionsMenu(ApplicationProvider.getApplicationContext())
-        Shadows.shadowOf(Looper.getMainLooper()).idle()
+        // When user navigates to settings screen
+        scenario.onActivity {
+            val addMenuItem = ActionMenuItem(
+                it,
+                0,
+                R.id.nav_settings,
+                0,
+                0,
+                null
+            )
 
-        onView(withText(R.string.title_settings))
-            .perform(click())
-        Shadows.shadowOf(Looper.getMainLooper()).idle()
+            it.onNavigationItemSelected(addMenuItem)
+        }
 
         // Then
         onView(withContentDescription(R.string.abc_action_bar_up_description))
@@ -106,22 +122,56 @@ class MainActivityTest {
     }
 
     @Test
-    fun openLocationsSearchScreenWhenSelectedByUser() {
+    fun openLocationsSearchScreenWhenUserNavigatesToIt() {
         // Test case fixture
         val locationSearchDestId = getTestSearchLocationsDestId()
         every { graphProvider.getSearchLocationsDestId() } returns locationSearchDestId
 
-        // Given a resume activity
+        // Given
 
-        // When user select to open locations search screen
-        onView(withContentDescription(R.string.title_search_location))
-            .perform(click())
-        Shadows.shadowOf(Looper.getMainLooper()).idle()
+        // When user navigates to locations search screen
+        scenario.onActivity {
+            val addMenuItem = ActionMenuItem(
+                it,
+                0,
+                R.id.nav_search,
+                0,
+                0,
+                null
+            )
 
-        // Then activity should navigate to search fragment
+            it.onNavigationItemSelected(addMenuItem)
+        }
+
+        // Then location search should be shown
         scenario.onActivity {
             val controller = it.findNavController(R.id.nav_host_container)
             assertThat(controller.currentDestination!!.id).isEqualTo(R.id.searchLocationsFragment)
+        }
+    }
+
+    @Test
+    fun openWeatherScreenWhenUserNavigatesToIt() {
+        // Given a resumed activity
+
+        // When user navigates to settings screen
+        scenario.onActivity {
+            val addMenuItem = ActionMenuItem(
+                it,
+                0,
+                R.id.nav_home,
+                0,
+                0,
+                null
+            )
+
+            it.onNavigationItemSelected(addMenuItem)
+        }
+
+        // Then settings screen should be shown
+        scenario.onActivity {
+            val controller = it.findNavController(R.id.nav_host_container)
+            assertThat(controller.currentDestination!!.id).isEqualTo(R.id.weatherFragment)
         }
     }
 }

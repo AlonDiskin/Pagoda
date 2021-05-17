@@ -4,6 +4,8 @@ import androidx.appcompat.widget.SearchView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.DrawerActions
+import androidx.test.espresso.contrib.NavigationViewActions
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.diskin.alon.pagoda.R
@@ -56,12 +58,16 @@ class BrowseWorldLocationTemperatureSteps(db: TestDatabase, server: MockWebServe
     @And("^User search for location other then his current one$")
     fun user_search_for_location_other_then_his_current_one() {
         // Open search screen
-        onView(withId(R.id.action_search_location))
-            .perform(click())
+        onView(withId(R.id.drawerLayout))
+            .perform(DrawerActions.open())
+
+        onView(withId(R.id.nav_view))
+            .perform(NavigationViewActions.navigateTo(R.id.nav_search))
 
         // Perform search
         onView(isAssignableFrom(SearchView::class.java))
             .perform(typeSearchViewText(query))
+        Thread.sleep(2000)
     }
 
     @Then("^All matching locations by name should be shown$")
@@ -71,7 +77,6 @@ class BrowseWorldLocationTemperatureSteps(db: TestDatabase, server: MockWebServe
         // Verify expected search results are shown
         onView(withId(R.id.searchResults))
             .check(matches(isRecyclerViewItemsCount(expectedUiResultsSize)))
-        Thread.sleep(3000)
     }
 
     @And("^Select the first location result$")

@@ -8,6 +8,8 @@ import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.*
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.*
+import androidx.test.espresso.contrib.DrawerActions
+import androidx.test.espresso.contrib.NavigationViewActions
 import androidx.test.espresso.matcher.RootMatchers
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
@@ -82,16 +84,18 @@ class ReceiveWeatherAlertNotificationSteps(
 
     @And("^Open settings screen$")
     fun open_settings_screen() {
-        openActionBarOverflowOrOptionsMenu(getApplicationContext())
-        onView(withText(R.string.title_settings))
-            .perform(click())
+        onView(withId(R.id.drawerLayout))
+            .perform(DrawerActions.open())
+
+        onView(withId(R.id.nav_view))
+            .perform(NavigationViewActions.navigateTo(R.id.nav_settings))
+        Thread.sleep(1000)
     }
 
     @And("^Enable weather alert notification$")
     fun enable_weather_alert_notification() {
         onView(withText(R.string.pref_alert_notification_title))
             .perform(click())
-        Thread.sleep(1000)
     }
 
     @When("^Weather alert for user location is received$")
@@ -102,7 +106,6 @@ class ReceiveWeatherAlertNotificationSteps(
         val testDriver = WorkManagerTestInitHelper.getTestDriver(context)!!
         testDriver.setPeriodDelayMet(workInfo.id)
         testDriver.setAllConstraintsMet(workInfo.id)
-        Thread.sleep(1000)
     }
 
     @Then("^App should show alert info in a status bar notification$")
@@ -116,7 +119,7 @@ class ReceiveWeatherAlertNotificationSteps(
         DeviceUtil.pressBack()
     }
 
-    private class TestDispatcher() : Dispatcher() {
+    private class TestDispatcher : Dispatcher() {
         val weatherAlertRes = "assets/json/weather_alert.json"
         private val path = "/data/2.5/onecall"
 
@@ -142,6 +145,5 @@ class ReceiveWeatherAlertNotificationSteps(
                 else -> MockResponse().setResponseCode(404)
             }
         }
-
     }
 }
