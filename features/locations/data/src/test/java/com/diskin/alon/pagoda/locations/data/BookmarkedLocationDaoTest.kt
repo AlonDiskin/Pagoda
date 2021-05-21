@@ -43,7 +43,7 @@ class BookmarkedLocationDaoTest {
     }
 
     @Test
-    fun getAllStartWithWhenQueried() = runBlocking {
+    fun getAllWhenQueried() = runBlocking {
         // Given
         val insert1 = "INSERT INTO bookmarked_locations (lat, lon)" +
                 "VALUES (10.3, 23.4)"
@@ -63,5 +63,28 @@ class BookmarkedLocationDaoTest {
 
         // Then
         assertThat(result.data.size).isEqualTo(3)
+    }
+
+    @Test
+    fun deleteLocationWhenDeleted() = runBlocking {
+        // Given
+        val insert1 = "INSERT INTO bookmarked_locations (lat, lon)" +
+                "VALUES (10.3, 23.4)"
+        val insert2 = "INSERT INTO bookmarked_locations (lat, lon)" +
+                "VALUES (40.3, 23.4)"
+        val insert3 = "INSERT INTO bookmarked_locations (lat, lon)" +
+                "VALUES (10.3, 53.4)"
+
+        db.compileStatement(insert1).executeInsert()
+        db.compileStatement(insert2).executeInsert()
+        db.compileStatement(insert3).executeInsert()
+
+        // When
+        dao.delete(BookmarkedLocationEntity(10.3,23.4)).blockingAwait()
+
+        // Then
+        val count = db.compileStatement("SELECT COUNT(*) FROM bookmarked_locations")
+            .simpleQueryForLong()
+        assertThat(count).isEqualTo(2)
     }
 }

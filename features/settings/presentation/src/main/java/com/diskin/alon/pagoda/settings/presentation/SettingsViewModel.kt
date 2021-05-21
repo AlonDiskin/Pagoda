@@ -27,10 +27,7 @@ class SettingsViewModel @Inject constructor(
         return enableAlert
             .switchMapSingle { model.execute(ScheduleAlertModelRequest(it)) }
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                this::handleSchedulingResult,
-                this::handleSchedulingSubscriptionError
-            )
+            .subscribe(::handleSchedulingResult, ::handleSchedulingSubscriptionError)
     }
 
     private fun handleSchedulingResult(result: AppResult<Unit>) {

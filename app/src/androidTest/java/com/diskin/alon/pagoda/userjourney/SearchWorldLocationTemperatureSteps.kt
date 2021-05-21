@@ -84,7 +84,7 @@ class SearchWorldLocationTemperatureSteps(db: TestDatabase, server: MockWebServe
         // Click on first search result
         onView(withId(R.id.searchResults))
             .perform(actionOnItemAtPosition<LocationSearchResultViewHolder>(0, click()))
-        Thread.sleep(2000)
+        Thread.sleep(1000)
     }
 
     @Then("^Selected location temperature should be shown$")

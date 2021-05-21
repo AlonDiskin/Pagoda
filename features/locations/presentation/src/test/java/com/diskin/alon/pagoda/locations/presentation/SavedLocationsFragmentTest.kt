@@ -1,7 +1,9 @@
 package com.diskin.alon.pagoda.locations.presentation
 
+import android.content.Context
 import android.os.Bundle
 import android.os.Looper
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -13,6 +15,7 @@ import androidx.paging.LoadStates
 import androidx.paging.PagingData
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -21,8 +24,11 @@ import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
+import com.diskin.alon.pagoda.common.appservices.AppError
+import com.diskin.alon.pagoda.common.appservices.ErrorType
 import com.diskin.alon.pagoda.common.presentation.LOCATION_LAT
 import com.diskin.alon.pagoda.common.presentation.LOCATION_LON
+import com.diskin.alon.pagoda.common.presentation.SingleLiveEvent
 import com.diskin.alon.pagoda.common.uitesting.HiltTestActivity
 import com.diskin.alon.pagoda.common.uitesting.RecyclerViewMatcher.withRecyclerView
 import com.diskin.alon.pagoda.common.uitesting.launchFragmentInHiltContainer
@@ -40,6 +46,8 @@ import org.junit.runner.RunWith
 import org.robolectric.Shadows
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import org.robolectric.shadows.ShadowAlertDialog
+import org.robolectric.shadows.ShadowToast
 
 /**
  * [SavedLocationsFragment] hermetic ui test.
@@ -59,6 +67,7 @@ class SavedLocationsFragmentTest {
 
     // Stub data
     private val locations = MutableLiveData<PagingData<UiLocation>>()
+    private val error = SingleLiveEvent<AppError>()
 
     @Before
     fun setUp() {
@@ -68,6 +77,7 @@ class SavedLocationsFragmentTest {
 
         // Stub view model
         every { viewModel.locations } returns locations
+        every { viewModel.error } returns error
 
         // Launch fragment under test
 
@@ -210,5 +220,50 @@ class SavedLocationsFragmentTest {
 
         assertThat(bundleSlot.captured.get(LOCATION_LAT)).isEqualTo(savedLocations.first().lat)
         assertThat(bundleSlot.captured.get(LOCATION_LON)).isEqualTo(savedLocations.first().lon)
+    }
+
+    @Test
+    fun deleteLocationUponUserSelection() {
+        // Test case fixture
+        every { viewModel.deleteSavedLocation(any()) } returns Unit
+
+        // Given
+        val savedLocations = createSavedLocations()
+        locations.value = PagingData.from(listOf(savedLocations.first()))
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // When
+        onView(withId(R.id.locationOptions))
+            .perform(click())
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        onView(withText(R.string.title_action_location_delete))
+            .perform(click())
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // Then
+        val dialog = (ShadowAlertDialog.getLatestDialog() as AlertDialog)
+        assertThat(dialog.isShowing).isTrue()
+
+        // When
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).performClick()
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // Then
+        verify { viewModel.deleteSavedLocation(savedLocations.first()) }
+    }
+
+    @Test
+    fun notifyUserWhenDeleteLocationFail() {
+        // Given
+
+        // When
+        error.value = AppError(ErrorType.DB_ERROR)
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // Then
+        val expectedToastMessage = ApplicationProvider.getApplicationContext<Context>()
+            .getString(R.string.text_locations_db_error)
+        assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo(expectedToastMessage)
     }
 }

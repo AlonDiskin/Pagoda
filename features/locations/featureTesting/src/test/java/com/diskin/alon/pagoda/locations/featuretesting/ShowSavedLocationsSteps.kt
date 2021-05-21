@@ -162,8 +162,7 @@ class ShowSavedLocationsSteps(
                                   val country: String,
                                   val state: String)
 
-    private data class DbBookmarkedLocation(val lat: Double,
-                                       val lon: Double)
+    private data class DbBookmarkedLocation(val lat: Double, val lon: Double)
 
     private data class UiLocation(val name: String,
                                   val country: String)

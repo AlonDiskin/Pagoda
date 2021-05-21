@@ -14,8 +14,8 @@ class LocationMapper @Inject constructor() : Mapper<Observable<PagingData<Locati
         return source.map {
             it.map { dto ->
                 UiLocation(
-                    dto.lat,
-                    dto.lon,
+                    dto.id.lat,
+                    dto.id.lon,
                     dto.name,
                     mapLocationCountry(dto)
                 )

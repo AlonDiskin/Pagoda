@@ -2,11 +2,9 @@ package com.diskin.alon.pagoda.di
 
 import android.app.Application
 import androidx.room.Room
-import androidx.room.RoomDatabase
-import androidx.sqlite.db.SupportSQLiteDatabase
 import com.diskin.alon.pagoda.AppDatabase
+import com.diskin.alon.pagoda.locations.data.local.BookmarkedLocationDao
 import com.diskin.alon.pagoda.locations.data.local.LocationDao
-import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -30,5 +28,11 @@ object AppDataModule {
     @Provides
     fun provideLocationDao(database: AppDatabase): LocationDao {
         return database.locationDao()
+    }
+
+    @Singleton
+    @Provides
+    fun provideBookmarkedLocationsDao(database: AppDatabase): BookmarkedLocationDao {
+        return database.bookmarksDao()
     }
 }

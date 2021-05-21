@@ -9,8 +9,7 @@ package com.diskin.alon.pagoda.locations.appservices.model
  * @param country location country, optionally empty,  if location has non
  * @param state location country, optionally empty,  if location has non
  */
-data class LocationDto(val lat: Double,
-                       val lon: Double,
+data class LocationDto(val id: CoordinatesDto,
                        val name: String,
                        val country: String,
                        val state: String)

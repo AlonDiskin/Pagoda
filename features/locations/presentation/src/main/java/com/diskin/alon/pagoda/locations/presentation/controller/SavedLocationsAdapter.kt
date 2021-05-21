@@ -1,6 +1,7 @@
 package com.diskin.alon.pagoda.locations.presentation.controller
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
@@ -13,7 +14,8 @@ import com.diskin.alon.pagoda.locations.presentation.model.UiLocation
  * Layout adapter that display [UiLocation]s for user saved locations.
  */
 class SavedLocationsAdapter(
-    private val locationClickListener: (UiLocation) -> (Unit)
+    private val locationClickListener: (UiLocation) -> (Unit),
+    private val optionsClickListener: (UiLocation, View) -> (Unit),
 ) : PagingDataAdapter<UiLocation, SavedLocationViewHolder>(
     DIFF_CALLBACK
 ) {
@@ -50,8 +52,9 @@ class SavedLocationsAdapter(
             parent,
             false
         )
-
         binding.locationClickListener = locationClickListener
+        binding.optionsClickListener = optionsClickListener
+
         return SavedLocationViewHolder(binding)
     }
 }

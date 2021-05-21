@@ -3,16 +3,19 @@ package com.diskin.alon.pagoda.locations.data
 import androidx.paging.PagingData
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.diskin.alon.pagoda.common.appservices.AppResult
 import com.diskin.alon.pagoda.common.util.Mapper
 import com.diskin.alon.pagoda.locations.data.implementations.LocationRepositoryImpl
 import com.diskin.alon.pagoda.locations.data.local.BookmarkedLocationDao
 import com.diskin.alon.pagoda.locations.data.local.BookmarkedLocationEntity
 import com.diskin.alon.pagoda.locations.data.local.LocationDao
 import com.diskin.alon.pagoda.locations.data.local.LocationEntity
+import com.diskin.alon.pagoda.locations.domain.Coordinates
 import com.diskin.alon.pagoda.locations.domain.Location
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import io.reactivex.Completable
 import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.schedulers.Schedulers
 import org.junit.Before
@@ -102,5 +105,22 @@ class LocationRepositoryImplTest {
 
         // Then
         verify { bookmarkedDao.getAll() }
+    }
+
+    @Test
+    fun removeLocationFromBookmarkedWhenUnsaved() {
+        // Test fixture
+
+        every { bookmarkedDao.delete(any()) } returns Completable.complete()
+
+        // Given
+
+        // When
+        val id = Coordinates(80.6,56.9)
+        val observer = repository.unSave(id).test()
+
+        // Then
+        verify { bookmarkedDao.delete(BookmarkedLocationEntity(id.lat,id.lon)) }
+        observer.assertValue(AppResult.Success(Unit))
     }
 }

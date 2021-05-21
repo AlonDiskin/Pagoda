@@ -13,7 +13,7 @@ sealed class AppResult<T : Any> {
 
 enum class ErrorType{
     UNKNOWN_ERR,DEVICE_NETWORK,REMOTE_SERVER,DEVICE_LOCATION,LOCATION_PERMISSION,
-    LOCATION_BACKGROUND_PERMISSION
+    LOCATION_BACKGROUND_PERMISSION,DB_ERROR
 }
 
 data class AppError(val type: ErrorType,val origin: Throwable? = null): Throwable()
