@@ -8,5 +8,8 @@ import androidx.room.Query
 interface LocationDao {
 
     @Query("SELECT * FROM locations WHERE name LIKE :query || '%'")
-    fun getAllStartWith(query: String): PagingSource<Int, LocationEntity>
+    fun getStartsWith(query: String): PagingSource<Int, LocationEntity>
+
+    @Query("SELECT * FROM locations WHERE lat = :lat AND lon = :lon")
+    fun getById(lat: Double, lon: Double): LocationEntity
 }

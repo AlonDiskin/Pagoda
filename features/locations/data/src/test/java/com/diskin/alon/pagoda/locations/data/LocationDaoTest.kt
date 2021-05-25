@@ -8,7 +8,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.diskin.alon.pagoda.locations.data.local.LocationDao
 import com.diskin.alon.pagoda.locations.data.local.LocationEntity
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
@@ -42,7 +42,7 @@ class LocationDaoTest {
     }
 
     @Test
-    fun createPagingSourceWhenQueried() = runBlocking {
+    fun getAllStartWithWhenQueried() = runBlocking {
         // Given
         val insert1 = "INSERT INTO locations (lat, lon, name, country, state)" +
                 "VALUES (10.3, 23.4, 'London', 'England', 'London')"
@@ -65,11 +65,11 @@ class LocationDaoTest {
         db.compileStatement(insert6).executeInsert()
 
         // When
-        val result = dao.getAllStartWith("lon").load(
+        val result = dao.getStartsWith("lon").load(
             LoadParams.Refresh(null,20,false)
         ) as LoadResult.Page<Int, LocationEntity>
 
         // Then
-        Truth.assertThat(result.data.size).isEqualTo(3)
+        assertThat(result.data.size).isEqualTo(3)
     }
 }

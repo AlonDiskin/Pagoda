@@ -5,28 +5,29 @@ import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.diskin.alon.pagoda.locations.appservices.model.LocationSearchResult
+import com.diskin.alon.pagoda.locations.appservices.model.LocationDto
 import com.diskin.alon.pagoda.locations.presentation.controller.LocationSearchResultsAdapter.LocationSearchResultViewHolder
 import com.diskin.alon.pagoda.locations.presentation.databinding.LocationSearchResultBinding
+import com.diskin.alon.pagoda.locations.presentation.model.UiLocation
 
 /**
- * Layout adapter that display [LocationSearchResult]s data.
+ * Layout adapter that display [LocationDto]s search results.
  */
 class LocationSearchResultsAdapter(
-    private val resultClickListener: (LocationSearchResult) -> (Unit)
-) : PagingDataAdapter<LocationSearchResult, LocationSearchResultViewHolder>(
+    private val resultClickListener: (UiLocation) -> (Unit)
+) : PagingDataAdapter<UiLocation, LocationSearchResultViewHolder>(
     DIFF_CALLBACK
 ) {
 
     companion object {
 
-        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<LocationSearchResult>() {
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<UiLocation>() {
 
-            override fun areItemsTheSame(oldItem: LocationSearchResult, newItem: LocationSearchResult): Boolean {
+            override fun areItemsTheSame(oldItem: UiLocation, newItem: UiLocation): Boolean {
                 return (oldItem.lat == newItem.lat) && (oldItem.lon == newItem.lon)
             }
 
-            override fun areContentsTheSame(oldItem: LocationSearchResult, newItem: LocationSearchResult) =
+            override fun areContentsTheSame(oldItem: UiLocation, newItem: UiLocation) =
                 oldItem == newItem
         }
     }
@@ -35,7 +36,7 @@ class LocationSearchResultsAdapter(
         private val binding: LocationSearchResultBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(location: LocationSearchResult) {
+        fun bind(location: UiLocation) {
             binding.location = location
         }
     }

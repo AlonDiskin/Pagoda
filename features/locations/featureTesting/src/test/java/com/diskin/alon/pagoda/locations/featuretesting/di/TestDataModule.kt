@@ -2,6 +2,7 @@ package com.diskin.alon.pagoda.locations.featuretesting.di
 
 import android.app.Application
 import androidx.room.Room
+import com.diskin.alon.pagoda.locations.data.local.BookmarkedLocationDao
 import com.diskin.alon.pagoda.locations.data.local.LocationDao
 import com.diskin.alon.pagoda.locations.featuretesting.TestDatabase
 import dagger.Module
@@ -27,5 +28,11 @@ object TestDataModule {
     @Provides
     fun provideLocationsDao(database: TestDatabase): LocationDao {
         return database.locationDao()
+    }
+
+    @Singleton
+    @Provides
+    fun provideBookmarkedLocationsDao(database: TestDatabase): BookmarkedLocationDao {
+        return database.bookmarkedLocationDao()
     }
 }

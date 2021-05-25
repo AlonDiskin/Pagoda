@@ -15,11 +15,11 @@ import com.diskin.alon.pagoda.common.uitesting.RecyclerViewMatcher.withRecyclerV
 import com.diskin.alon.pagoda.common.uitesting.isRecyclerViewItemsCount
 import com.diskin.alon.pagoda.common.uitesting.launchFragmentInHiltContainer
 import com.diskin.alon.pagoda.common.uitesting.typeSearchViewText
-import com.diskin.alon.pagoda.locations.appservices.model.LocationSearchResult
+import com.diskin.alon.pagoda.locations.appservices.model.LocationDto
 import com.diskin.alon.pagoda.locations.presentation.R
 import com.diskin.alon.pagoda.locations.presentation.controller.LocationSearchResultsAdapter
 import com.diskin.alon.pagoda.locations.presentation.controller.LocationSearchResultsAdapter.LocationSearchResultViewHolder
-import com.diskin.alon.pagoda.locations.presentation.controller.SearchLocationFragment
+import com.diskin.alon.pagoda.locations.presentation.controller.SearchLocationsFragment
 import com.mauriciotogneri.greencoffee.GreenCoffeeSteps
 import com.mauriciotogneri.greencoffee.annotations.Given
 import com.mauriciotogneri.greencoffee.annotations.Then
@@ -31,6 +31,7 @@ import org.robolectric.Shadows
  * Step definitions for 'User search for location' scenario.
  */
 class SearchLocationSteps(db: TestDatabase) : GreenCoffeeSteps() {
+
     private lateinit var scenario: ActivityScenario<HiltTestActivity>
     private val partialLocationQuery = "los"
     private val fullLocationName = "los angeles"
@@ -49,7 +50,7 @@ class SearchLocationSteps(db: TestDatabase) : GreenCoffeeSteps() {
     @Given("^User open location search screen$")
     fun user_open_location_search_screen() {
         // Launch search fragment
-        scenario = launchFragmentInHiltContainer<SearchLocationFragment>()
+        scenario = launchFragmentInHiltContainer<SearchLocationsFragment>()
         Shadows.shadowOf(Looper.getMainLooper()).runToEndOfTasks()
 
         scenario.onActivity {
@@ -65,7 +66,7 @@ class SearchLocationSteps(db: TestDatabase) : GreenCoffeeSteps() {
             val differField = PagingDataAdapter::class.java.getDeclaredField("differ")
             differField.isAccessible = true
             @Suppress("UNCHECKED_CAST")
-            val differ = differField.get(adapter) as AsyncPagingDataDiffer<LocationSearchResult>
+            val differ = differField.get(adapter) as AsyncPagingDataDiffer<LocationDto>
 
             // set worker dispatcher on differ
             val workerDispatcherField = AsyncPagingDataDiffer::class.java.getDeclaredField("workerDispatcher")
@@ -118,9 +119,6 @@ class SearchLocationSteps(db: TestDatabase) : GreenCoffeeSteps() {
 
             onView(withRecyclerView(R.id.searchResults).atPositionOnView(index,R.id.locationCountry))
                 .check(matches(withText(result.country)))
-
-            onView(withRecyclerView(R.id.searchResults).atPositionOnView(index,R.id.locationState))
-                .check(matches(withText(result.state)))
         }
     }
 
@@ -131,8 +129,7 @@ class SearchLocationSteps(db: TestDatabase) : GreenCoffeeSteps() {
                           val state: String)
 
     private data class UiLocation(val name: String,
-                                  val country: String,
-                                  val state: String)
+                                  val country: String)
 
     private fun createDbLocations(): List<DbLocation> {
         return listOf(
@@ -161,7 +158,7 @@ class SearchLocationSteps(db: TestDatabase) : GreenCoffeeSteps() {
                 18.213001,
                 59.195999,
                 "Los Angeles",
-                "Use",
+                "Usa",
                 "CA"
             ),
             DbLocation(
@@ -175,7 +172,7 @@ class SearchLocationSteps(db: TestDatabase) : GreenCoffeeSteps() {
                 13.213001,
                 50.195999,
                 "Los Angeles County",
-                "Use",
+                "Usa",
                 "CA"
             ),
             DbLocation(
@@ -189,7 +186,7 @@ class SearchLocationSteps(db: TestDatabase) : GreenCoffeeSteps() {
                 29.213001,
                 11.195999,
                 "New York",
-                "Use",
+                "Usa",
                 "NY"
             ),
 
@@ -211,8 +208,7 @@ class SearchLocationSteps(db: TestDatabase) : GreenCoffeeSteps() {
                 expectedUiLocations.add(
                     UiLocation(
                         it.name,
-                        it.country,
-                        if (it.state.isEmpty()) "" else ", ".plus(it.state)
+                        it.country.plus(if (it.state.isEmpty()) "" else ", ".plus(it.state))
                     )
                 )
             }
@@ -229,8 +225,7 @@ class SearchLocationSteps(db: TestDatabase) : GreenCoffeeSteps() {
                 expectedUiLocations.add(
                     UiLocation(
                         it.name,
-                        it.country,
-                        if (it.state.isEmpty()) "" else ", ".plus(it.state)
+                        it.country.plus(if (it.state.isEmpty()) "" else ", ".plus(it.state))
                     )
                 )
             }

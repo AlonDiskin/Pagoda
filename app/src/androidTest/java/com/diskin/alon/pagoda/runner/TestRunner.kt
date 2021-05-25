@@ -73,6 +73,7 @@ class TestRunner : AndroidJUnitRunner() {
             Rx2Idler.create("RxJava 2.x IO Scheduler"))
         // Start test server
         NetworkUtil.initServer()
+
         super.onStart()
     }
 

@@ -1,7 +1,6 @@
 package com.diskin.alon.pagoda.home.presentation
 
 import android.os.Bundle
-import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -72,6 +71,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
             R.id.nav_search -> controller.navigate(graphProvider.getSearchLocationsDestId())
             R.id.nav_settings -> controller.navigate(graphProvider.getSettingsDestId())
+            R.id.nav_locations -> controller.navigate(graphProvider.getSavedLocationsDestId())
         }
         return true
     }

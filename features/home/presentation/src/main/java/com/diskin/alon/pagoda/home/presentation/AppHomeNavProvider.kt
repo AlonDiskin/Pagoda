@@ -13,4 +13,7 @@ interface AppHomeNavProvider {
 
     @IdRes
     fun getSearchLocationsDestId(): Int
+
+    @IdRes
+    fun getSavedLocationsDestId(): Int
 }

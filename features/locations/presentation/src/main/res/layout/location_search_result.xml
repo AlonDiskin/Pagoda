@@ -6,15 +6,15 @@
     <data>
         <import type="kotlin.jvm.functions.Function1"/>
         <import type="kotlin.Unit"/>
-        <import type="com.diskin.alon.pagoda.locations.appservices.model.LocationSearchResult" />
+        <import type="com.diskin.alon.pagoda.locations.presentation.model.UiLocation" />
 
         <variable
             name="location"
-            type="LocationSearchResult" />
+            type="UiLocation" />
 
         <variable
             name="resultClickListener"
-            type="Function1&lt;LocationSearchResult,Unit>" />
+            type="Function1&lt;UiLocation,Unit>" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -44,19 +44,9 @@
             app:layout_constraintStart_toStartOf="@+id/locationName"
             app:layout_constraintTop_toBottomOf="@+id/locationName"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:setLocationCountry="@{location.country}"
+            android:text="@{location.country}"
             android:layout_marginBottom="8dp"
-            tools:text="United States"/>
-
-        <TextView
-            android:id="@+id/locationState"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?attr/textAppearanceBody2"
-            app:setLocationState="@{location.state}"
-            app:layout_constraintBottom_toBottomOf="@+id/locationCountry"
-            app:layout_constraintStart_toEndOf="@+id/locationCountry"
-            tools:text=", CA"/>
+            tools:text="United States, CA"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
