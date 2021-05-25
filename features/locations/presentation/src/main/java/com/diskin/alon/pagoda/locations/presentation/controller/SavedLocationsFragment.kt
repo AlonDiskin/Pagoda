@@ -21,6 +21,7 @@ import com.diskin.alon.pagoda.common.presentation.LOCATION_LON
 import com.diskin.alon.pagoda.locations.presentation.R
 import com.diskin.alon.pagoda.locations.presentation.model.UiLocation
 import com.diskin.alon.pagoda.locations.presentation.viewmodel.SavedLocationsViewModel
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.migration.OptionalInject
 import javax.inject.Inject
@@ -83,6 +84,11 @@ class SavedLocationsFragment : Fragment() {
 
         // Observe view model errors
         viewModel.error.observe(viewLifecycleOwner) { handleLocationsError(it) }
+
+        // Handle floating action button click
+        view.findViewById<FloatingActionButton>(R.id.add_fab).setOnClickListener {
+            findNavController().navigate(appNav.getLocationsSearchDest())
+        }
     }
 
     private fun handleLocationsError(error: AppError) {

@@ -3,6 +3,7 @@ package com.diskin.alon.pagoda.di
 import android.app.Application
 import androidx.room.Room
 import com.diskin.alon.pagoda.AppDatabase
+import com.diskin.alon.pagoda.MIGRATION_1_2
 import com.diskin.alon.pagoda.locations.data.local.BookmarkedLocationDao
 import com.diskin.alon.pagoda.locations.data.local.LocationDao
 import dagger.Module
@@ -21,6 +22,7 @@ object AppDataModule {
         return Room.databaseBuilder(app,
             AppDatabase::class.java, "pagoda-db")
             .createFromAsset("pagoda.db")
+            .addMigrations(MIGRATION_1_2)
             .build()
     }
 

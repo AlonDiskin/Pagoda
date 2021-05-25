@@ -185,6 +185,34 @@ class SavedLocationsFragmentTest {
     }
 
     @Test
+    fun openLocationsSearchScreenWhenFabSelected() {
+        // Test case fixture
+        val destId = 10
+
+        mockkStatic(Fragment::findNavController)
+        scenario.onActivity {
+            val fragment = it.supportFragmentManager.fragments[0] as SavedLocationsFragment
+            fragment.appNav = appNav
+            every { fragment.findNavController().navigate(any<Int>()) } returns Unit
+        }
+        every { appNav.getLocationsSearchDest() } returns destId
+
+        // Given
+
+        // When
+        onView(withId(R.id.add_fab))
+            .perform(click())
+
+        // Then
+        verify { appNav.getLocationsSearchDest() }
+
+        scenario.onActivity {
+            val fragment = it.supportFragmentManager.fragments[0] as SavedLocationsFragment
+            verify { fragment.findNavController().navigate(destId) }
+        }
+    }
+
+    @Test
     fun openWeatherDataScreenWhenResultSelected() {
         // Test case fixture
         val destId = 10

@@ -9,4 +9,7 @@ interface AppLocationsNavProvider {
 
     @IdRes
     fun getWeatherDest(): Int
+
+    @IdRes
+    fun getLocationsSearchDest(): Int
 }
