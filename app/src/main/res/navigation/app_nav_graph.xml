@@ -37,8 +37,17 @@
     </fragment>
     <fragment
         android:id="@+id/savedLocationsFragment"
-        android:name="com.diskin.alon.pagoda.locations.presentation.controller.SavedLocationsFragment"
+        android:name="com.diskin.alon.pagoda.locations.presentation.controller.BookmarkedLocationsFragment"
         android:label="Locations"
-        tools:layout="@layout/fragment_saved_locations"/>
+        tools:layout="@layout/fragment_bookmarked_locations">
+        <action
+            android:id="@+id/action_savedLocationsFragment_to_searchLocationFragment"
+            app:destination="@id/searchLocationFragment" />
+        <action
+            android:id="@+id/action_savedLocationsFragment_to_weatherFragment"
+            app:popUpToInclusive="true"
+            app:popUpTo="@id/weatherFragment"
+            app:destination="@id/weatherFragment" />
+    </fragment>
 
 </navigation>

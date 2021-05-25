@@ -84,7 +84,7 @@ class WorldLocationWeatherShownSteps(
         val weather = getExpectedUiWeather()
 
         // Verify location name
-        onView(withId(R.id.locationName))
+        onView(withId(R.id.location_name))
             .check(matches(withText(weather.name)))
 
         // Verify location weather clock data

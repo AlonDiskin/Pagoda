@@ -18,7 +18,8 @@ class LocationMapper @Inject constructor() : Mapper<PagingData<Location>, Paging
                 ),
                 it.name,
                 it.country,
-                it.state
+                it.state,
+                it.bookmarked
             )
         }
     }

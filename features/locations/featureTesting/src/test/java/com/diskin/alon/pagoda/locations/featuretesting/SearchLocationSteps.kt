@@ -40,8 +40,8 @@ class SearchLocationSteps(db: TestDatabase) : GreenCoffeeSteps() {
     init {
         // Prepare test db for scenario
         locations.forEach {
-            val insertSql = "INSERT INTO locations (lat,lon,name,country,state)" +
-                    "VALUES(${it.lat},${it.lon},'${it.name}','${it.country}','${it.state}');"
+            val insertSql = "INSERT INTO locations (lat,lon,name,country,state,bookmarked)" +
+                    "VALUES(${it.lat},${it.lon},'${it.name}','${it.country}','${it.state}',0);"
 
             db.compileStatement(insertSql).executeInsert()
         }
@@ -54,7 +54,7 @@ class SearchLocationSteps(db: TestDatabase) : GreenCoffeeSteps() {
         Shadows.shadowOf(Looper.getMainLooper()).runToEndOfTasks()
 
         scenario.onActivity {
-            val rv = it.findViewById<RecyclerView>(R.id.searchResults)
+            val rv = it.findViewById<RecyclerView>(R.id.search_location_results)
             val adapter = rv.adapter as LocationSearchResultsAdapter
 
             // Disable PagingDataAdapter animation for testing
@@ -106,18 +106,18 @@ class SearchLocationSteps(db: TestDatabase) : GreenCoffeeSteps() {
     }
 
     private fun checkUiLocationsShow(locations: List<UiLocation>) {
-        onView(withId(R.id.searchResults))
+        onView(withId(R.id.search_location_results))
             .check(matches(isRecyclerViewItemsCount(locations.size)))
 
         locations.forEachIndexed { index, result ->
-            onView(withId(R.id.searchResults))
+            onView(withId(R.id.search_location_results))
                 .perform(scrollToPosition<LocationSearchResultViewHolder>(index))
             Shadows.shadowOf(Looper.getMainLooper()).idle()
 
-            onView(withRecyclerView(R.id.searchResults).atPositionOnView(index,R.id.locationName))
+            onView(withRecyclerView(R.id.search_location_results).atPositionOnView(index,R.id.location_name))
                 .check(matches(withText(result.name)))
 
-            onView(withRecyclerView(R.id.searchResults).atPositionOnView(index,R.id.locationCountry))
+            onView(withRecyclerView(R.id.search_location_results).atPositionOnView(index,R.id.location_country))
                 .check(matches(withText(result.country)))
         }
     }

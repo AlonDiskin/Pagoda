@@ -6,7 +6,7 @@ import androidx.paging.PagingData
 import com.diskin.alon.pagoda.common.presentation.Model
 import com.diskin.alon.pagoda.common.presentation.ModelRequest
 import com.diskin.alon.pagoda.locations.presentation.model.SearchLocationsModelRequest
-import com.diskin.alon.pagoda.locations.presentation.model.UiLocation
+import com.diskin.alon.pagoda.locations.presentation.model.UiLocationSearchResult
 import com.diskin.alon.pagoda.locations.presentation.viewmodel.SearchLocationsViewModel
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
@@ -49,7 +49,7 @@ class SearchLocationsViewModelTest {
     private val savedState: SavedStateHandle = SavedStateHandle()
 
     // Stub data
-    private val searchResultsSubject = BehaviorSubject.create<PagingData<UiLocation>>()
+    private val searchResultsSubject = BehaviorSubject.create<PagingData<UiLocationSearchResult>>()
     private val modelRequestSlot = slot<ModelRequest<*, *>>()
 
     @Before
@@ -94,7 +94,7 @@ class SearchLocationsViewModelTest {
 
         // And
         assertThat(viewModel.results.value).isNull()
-        val paging: PagingData<UiLocation> = PagingData.from(emptyList())
+        val paging: PagingData<UiLocationSearchResult> = PagingData.from(emptyList())
         searchResultsSubject.onNext(paging)
 
         // Then

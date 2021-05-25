@@ -8,8 +8,9 @@ import androidx.paging.PagingData
 import androidx.paging.rxjava2.cachedIn
 import com.diskin.alon.pagoda.common.presentation.Model
 import com.diskin.alon.pagoda.common.presentation.RxViewModel
+import com.diskin.alon.pagoda.locations.presentation.model.BookmarkLocationModelRequest
 import com.diskin.alon.pagoda.locations.presentation.model.SearchLocationsModelRequest
-import com.diskin.alon.pagoda.locations.presentation.model.UiLocation
+import com.diskin.alon.pagoda.locations.presentation.model.UiLocationSearchResult
 import com.diskin.alon.pagoda.locations.presentation.util.LocationsModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -28,12 +29,16 @@ class SearchLocationsViewModel @Inject constructor(
         const val DEFAULT_QUERY = ""
     }
 
+    private val bookmarkSubject = BehaviorSubject.create<UiLocationSearchResult>()
     private val _query: BehaviorSubject<String> = BehaviorSubject.createDefault(getQueryState() ?: DEFAULT_QUERY)
     val query: String get() = _query.value!!
-    private val _results = MutableLiveData<PagingData<UiLocation>>()
-    val results: LiveData<PagingData<UiLocation>> get() = _results
+    private val _results = MutableLiveData<PagingData<UiLocationSearchResult>>()
+    val results: LiveData<PagingData<UiLocationSearchResult>> get() = _results
 
-    init { addSubscription(createQuerySubscription()) }
+    init {
+        addSubscription(createQuerySubscription())
+        addSubscription(createBookmarkingSubscription())
+    }
 
     /**
      * Create rx chain for performing search against model from query values
@@ -46,12 +51,26 @@ class SearchLocationsViewModel @Inject constructor(
             .subscribe { paging -> _results.value = paging }
     }
 
+    private fun createBookmarkingSubscription(): Disposable {
+        return bookmarkSubject
+            .concatMapSingle { model.execute(BookmarkLocationModelRequest(it.lat,it.lon)) }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe()
+    }
+
     /**
      * Perform world locations search.
      */
     fun search(query: String) {
         storeQueryState(query)
         _query.onNext(query)
+    }
+
+    /**
+     * Add location result to users bookmarked location.
+     */
+    fun addToBookmarked(location: UiLocationSearchResult) {
+        bookmarkSubject.onNext(location)
     }
 
     private fun storeQueryState(query: String) {

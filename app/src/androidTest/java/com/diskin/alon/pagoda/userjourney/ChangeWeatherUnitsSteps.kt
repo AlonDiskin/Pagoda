@@ -8,7 +8,9 @@ import androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.DrawerActions
+import androidx.test.espresso.contrib.DrawerActions.*
 import androidx.test.espresso.contrib.NavigationViewActions
+import androidx.test.espresso.contrib.NavigationViewActions.*
 import androidx.test.espresso.matcher.RootMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -55,10 +57,10 @@ class ChangeWeatherUnitsSteps(private val server: MockWebServer) : GreenCoffeeSt
     @And("^Open settings screen$")
     fun open_settings_screen() {
         onView(withId(R.id.drawerLayout))
-            .perform(DrawerActions.open())
+            .perform(open())
 
         onView(withId(R.id.nav_view))
-            .perform(NavigationViewActions.navigateTo(R.id.nav_settings))
+            .perform(navigateTo(R.id.nav_settings))
         Thread.sleep(1000)
     }
 
@@ -104,6 +106,20 @@ class ChangeWeatherUnitsSteps(private val server: MockWebServer) : GreenCoffeeSt
         onView(withId(R.id.textClock))
             .check(matches(withTimeFormat24(null)))
 
+        // Return temp unit setting to metric
+        onView(withId(R.id.drawerLayout))
+            .perform(open())
+
+        onView(withId(R.id.nav_view))
+            .perform(navigateTo(R.id.nav_settings))
+        Thread.sleep(2000)
+
+        onView(withText(R.string.pref_temperature_title))
+            .perform(click())
+
+        onView(withText(R.string.pref_temperature_metric_entry))
+            .inRoot(RootMatchers.isDialog())
+            .perform(click())
     }
 
     private fun clearSharedPrefs() {

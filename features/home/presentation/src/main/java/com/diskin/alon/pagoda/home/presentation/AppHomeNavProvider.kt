@@ -9,11 +9,11 @@ interface AppHomeNavProvider {
     fun getAppNavGraph(): Int
 
     @IdRes
-    fun getSettingsDestId(): Int
+    fun getWeatherDataToSettingsNavRoute(): Int
 
     @IdRes
-    fun getSearchLocationsDestId(): Int
+    fun getWeatherDataSearchLocationsNavRoute(): Int
 
     @IdRes
-    fun getSavedLocationsDestId(): Int
+    fun getWeatherDataToSavedLocationsNavRoute(): Int
 }

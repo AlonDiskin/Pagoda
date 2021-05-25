@@ -4,6 +4,10 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'dagger.hilt.android.plugin'
 
+project.ext {
+    pckg = "com.diskin.alon.pagoda.locations.featuretesting"
+}
+
 android {
     compileSdkVersion 29
 
@@ -77,6 +81,7 @@ dependencies {
 
     // Room
     testImplementation "androidx.room:room-testing:$room_version"
+    testImplementation "androidx.room:room-rxjava2:$room_version"
     kaptTest "androidx.room:room-compiler:$room_version"
 
     // Paging

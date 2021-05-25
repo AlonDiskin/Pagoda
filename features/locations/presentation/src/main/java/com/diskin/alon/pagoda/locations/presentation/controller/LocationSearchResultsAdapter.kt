@@ -8,26 +8,27 @@ import androidx.recyclerview.widget.RecyclerView
 import com.diskin.alon.pagoda.locations.appservices.model.LocationDto
 import com.diskin.alon.pagoda.locations.presentation.controller.LocationSearchResultsAdapter.LocationSearchResultViewHolder
 import com.diskin.alon.pagoda.locations.presentation.databinding.LocationSearchResultBinding
-import com.diskin.alon.pagoda.locations.presentation.model.UiLocation
+import com.diskin.alon.pagoda.locations.presentation.model.UiLocationSearchResult
 
 /**
  * Layout adapter that display [LocationDto]s search results.
  */
 class LocationSearchResultsAdapter(
-    private val resultClickListener: (UiLocation) -> (Unit)
-) : PagingDataAdapter<UiLocation, LocationSearchResultViewHolder>(
+    private val resultClickListener: (UiLocationSearchResult) -> (Unit),
+    private val addClickListener: (UiLocationSearchResult) -> (Unit)
+) : PagingDataAdapter<UiLocationSearchResult, LocationSearchResultViewHolder>(
     DIFF_CALLBACK
 ) {
 
     companion object {
 
-        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<UiLocation>() {
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<UiLocationSearchResult>() {
 
-            override fun areItemsTheSame(oldItem: UiLocation, newItem: UiLocation): Boolean {
+            override fun areItemsTheSame(oldItem: UiLocationSearchResult, newItem: UiLocationSearchResult): Boolean {
                 return (oldItem.lat == newItem.lat) && (oldItem.lon == newItem.lon)
             }
 
-            override fun areContentsTheSame(oldItem: UiLocation, newItem: UiLocation) =
+            override fun areContentsTheSame(oldItem: UiLocationSearchResult, newItem: UiLocationSearchResult) =
                 oldItem == newItem
         }
     }
@@ -36,7 +37,7 @@ class LocationSearchResultsAdapter(
         private val binding: LocationSearchResultBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(location: UiLocation) {
+        fun bind(location: UiLocationSearchResult) {
             binding.location = location
         }
     }
@@ -51,8 +52,9 @@ class LocationSearchResultsAdapter(
             parent,
             false
         )
-
         binding.resultClickListener = resultClickListener
+        binding.addClickListener = addClickListener
+
         return LocationSearchResultViewHolder(binding)
     }
 }
