@@ -6,15 +6,17 @@
     <data>
         <import type="kotlin.jvm.functions.Function1"/>
         <import type="kotlin.Unit"/>
-        <import type="com.diskin.alon.pagoda.locations.presentation.model.UiLocation" />
+        <import type="com.diskin.alon.pagoda.locations.presentation.model.UiLocationSearchResult" />
 
         <variable
             name="location"
-            type="UiLocation" />
-
+            type="UiLocationSearchResult" />
         <variable
             name="resultClickListener"
-            type="Function1&lt;UiLocation,Unit>" />
+            type="Function1&lt;UiLocationSearchResult,Unit>" />
+        <variable
+            name="addClickListener"
+            type="Function1&lt;UiLocationSearchResult,Unit>" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -24,7 +26,7 @@
         android:onClick="@{() -> resultClickListener.invoke(location)}">
 
         <TextView
-            android:id="@+id/locationName"
+            android:id="@+id/location_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/item_margin"
@@ -37,16 +39,28 @@
             tools:text="Los Angeles"/>
 
         <TextView
-            android:id="@+id/locationCountry"
+            android:id="@+id/location_country"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?attr/textAppearanceBody2"
-            app:layout_constraintStart_toStartOf="@+id/locationName"
-            app:layout_constraintTop_toBottomOf="@+id/locationName"
+            app:layout_constraintStart_toStartOf="@+id/location_name"
+            app:layout_constraintTop_toBottomOf="@+id/location_name"
             app:layout_constraintBottom_toBottomOf="parent"
             android:text="@{location.country}"
             android:layout_marginBottom="8dp"
             tools:text="United States, CA"/>
+
+        <ImageButton
+            android:id="@+id/add_bookmark_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:setAddButton="@{location}"
+            android:onClick="@{() -> addClickListener.invoke(location)}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            style="@style/Widget.AppCompat.ActionButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:srcCompat="@drawable/ic_baseline_add_24" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

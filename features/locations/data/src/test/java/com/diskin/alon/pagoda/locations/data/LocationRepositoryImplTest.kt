@@ -6,8 +6,6 @@ import androidx.paging.PagingState
 import com.diskin.alon.pagoda.common.appservices.AppResult
 import com.diskin.alon.pagoda.common.util.Mapper
 import com.diskin.alon.pagoda.locations.data.implementations.LocationRepositoryImpl
-import com.diskin.alon.pagoda.locations.data.local.BookmarkedLocationDao
-import com.diskin.alon.pagoda.locations.data.local.BookmarkedLocationEntity
 import com.diskin.alon.pagoda.locations.data.local.LocationDao
 import com.diskin.alon.pagoda.locations.data.local.LocationEntity
 import com.diskin.alon.pagoda.locations.domain.Coordinates
@@ -42,16 +40,15 @@ class LocationRepositoryImplTest {
 
     // Collaborators
     private val locationDao: LocationDao = mockk()
-    private val bookmarkedDao: BookmarkedLocationDao = mockk()
     private val locationMapper: Mapper<PagingData<LocationEntity>, PagingData<Location>> = mockk()
 
     @Before
     fun setUp() {
-        repository = LocationRepositoryImpl(locationDao, bookmarkedDao ,locationMapper)
+        repository = LocationRepositoryImpl(locationDao, locationMapper)
     }
 
     @Test
-    fun searchLocalSourceWhenSearched() {
+    fun searchLocalLocationsWhenLocationSearched() {
         // Test case fixture
         val daoRes: PagingSource<Int, LocationEntity> = object : PagingSource<Int, LocationEntity>() {
             override fun getRefreshKey(state: PagingState<Int, LocationEntity>): Int? {
@@ -81,46 +78,61 @@ class LocationRepositoryImplTest {
     }
 
     @Test
-    fun getAllBookmarkedLocationsWhenQueriedForSavedLocations() {
+    fun getAllLocalBookmarkedLocationsWhenQueriedForBookmarks() {
         // Test case fixture
-        val daoRes: PagingSource<Int, BookmarkedLocationEntity> = object : PagingSource<Int, BookmarkedLocationEntity>() {
-            override fun getRefreshKey(state: PagingState<Int, BookmarkedLocationEntity>): Int? {
+        val daoRes: PagingSource<Int, LocationEntity> = object : PagingSource<Int, LocationEntity>() {
+            override fun getRefreshKey(state: PagingState<Int, LocationEntity>): Int? {
                 TODO("Not yet implemented")
             }
 
-            override suspend fun load(params: LoadParams<Int>): LoadResult<Int, BookmarkedLocationEntity> {
+            override suspend fun load(params: LoadParams<Int>): LoadResult<Int, LocationEntity> {
                 TODO("Not yet implemented")
             }
 
         }
         val mappedRes: PagingData<Location> = mockk()
 
-        every { bookmarkedDao.getAll() } returns daoRes
+        every { locationDao.getBookmarked() } returns daoRes
         every { locationMapper.map(any()) } returns mappedRes
 
         // Given
 
         // When
-        val observer = repository.getSaved().test()
+        val observer = repository.getBookmarked().test()
 
         // Then
-        verify { bookmarkedDao.getAll() }
+        verify { locationDao.getBookmarked() }
     }
 
     @Test
-    fun removeLocationFromBookmarkedWhenUnsaved() {
+    fun unBookmarkLocalLocationWhenBookmarkedDeleted() {
         // Test fixture
-
-        every { bookmarkedDao.delete(any()) } returns Completable.complete()
+        every { locationDao.unBookmark(any(),any()) } returns Completable.complete()
 
         // Given
 
         // When
         val id = Coordinates(80.6,56.9)
-        val observer = repository.unSave(id).test()
+        val observer = repository.unBookmark(id).test()
 
         // Then
-        verify { bookmarkedDao.delete(BookmarkedLocationEntity(id.lat,id.lon)) }
+        verify { locationDao.unBookmark(id.lat,id.lon) }
+        observer.assertValue(AppResult.Success(Unit))
+    }
+
+    @Test
+    fun bookmarkLocalLocationWhenBookmarked() {
+        // Test fixture
+        every { locationDao.bookmark(any(),any()) } returns Completable.complete()
+
+        // Given
+
+        // When
+        val id = Coordinates(80.6,56.9)
+        val observer = repository.bookmark(id).test()
+
+        // Then
+        verify { locationDao.bookmark(id.lat,id.lon) }
         observer.assertValue(AppResult.Success(Unit))
     }
 }

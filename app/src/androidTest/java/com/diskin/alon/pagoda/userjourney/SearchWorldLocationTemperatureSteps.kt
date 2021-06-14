@@ -42,8 +42,8 @@ class SearchWorldLocationTemperatureSteps(db: TestDatabase, server: MockWebServe
 
         // Prepare test database
         locations.forEach {
-            val insertSql = "INSERT INTO locations (lat,lon,name,country,state)" +
-                    "VALUES(${it.lat},${it.lon},'${it.name}','${it.country}','${it.state}');"
+            val insertSql = "INSERT INTO locations (lat,lon,name,country,state,bookmarked)" +
+                    "VALUES(${it.lat},${it.lon},'${it.name}','${it.country}','${it.state}',0);"
 
             db.compileStatement(insertSql).executeInsert()
         }
@@ -75,16 +75,16 @@ class SearchWorldLocationTemperatureSteps(db: TestDatabase, server: MockWebServe
         val expectedUiResultsSize = locations.filter { it.name.startsWith(query, ignoreCase = true) }.size
 
         // Verify expected search results are shown
-        onView(withId(R.id.searchResults))
+        onView(withId(R.id.search_location_results))
             .check(matches(isRecyclerViewItemsCount(expectedUiResultsSize)))
     }
 
     @And("^Select the first location result$")
     fun select_the_first_location_result() {
         // Click on first search result
-        onView(withId(R.id.searchResults))
+        onView(withId(R.id.search_location_results))
             .perform(actionOnItemAtPosition<LocationSearchResultViewHolder>(0, click()))
-        Thread.sleep(1000)
+        Thread.sleep(2000)
     }
 
     @Then("^Selected location temperature should be shown$")

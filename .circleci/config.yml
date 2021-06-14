@@ -18,20 +18,8 @@ jobs:
             - ~/.gradle
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
       - run:
-          name: Unit test common
-          command: ./gradlew :features:common:events:testDebugUnitTest --no-daemon --max-workers=2 --stacktrace
-      - run:
-          name: Unit test home feature
-          command: ./gradlew :features:home:presentation:testDebugUnitTest --tests 'com.diskin.alon.pagoda.home.presentation.*' --no-daemon --max-workers=2 --stacktrace
-      - run:
-          name: Unit test weather info feature
-          command: ./gradlew :features:weatherInfo:presentation:testDebugUnitTest :features:weatherInfo:infrastructure:testDebugUnitTest :features:weatherInfo:data:testDebugUnitTest :features:weatherInfo:appServices:test :features:weatherInfo:domain:test --no-daemon --max-workers=2 --stacktrace
-      - run:
-          name: Unit test settings feature
-          command: ./gradlew :features:settings:presentation:testDebugUnitTest :features:settings:appServices:test :features:settings:data:testDebugUnitTest :features:settings:infrastructure:testDebugUnitTest --no-daemon --max-workers=2 --stacktrace
-      - run:
-          name: Unit test locations feature
-          command: ./gradlew :features:locations:presentation:testDebugUnitTest :features:locations:data:testDebugUnitTest :features:locations:appServices:test :features:locations:domain:test --no-daemon --max-workers=2 --stacktrace
+          name: Run unit tests
+          command: ./gradlew unitTests --no-daemon --max-workers=2 --stacktrace
       - store_artifacts:
           path: app/build/reports
           destination: reports
@@ -79,14 +67,8 @@ jobs:
             - ~/.gradle
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
       - run:
-          name: Integration test weather info feature
-          command: ./gradlew :features:weatherInfo:featureTesting:testDebugUnitTest --tests 'com.diskin.alon.pagoda.weatherinfo.featuretesting.*' --no-daemon --max-workers=2 --stacktrace
-      - run:
-          name: Integration test settings feature
-          command: ./gradlew :features:settings:featureTesting:testDebugUnitTest --tests 'com.diskin.alon.pagoda.settings.featuretesting.*' --no-daemon --max-workers=2 --stacktrace
-      - run:
-          name: Integration test locations feature
-          command: ./gradlew :features:locations:featureTesting:testDebugUnitTest --tests 'com.diskin.alon.pagoda.locations.featuretesting.*' --no-daemon --max-workers=2 --stacktrace
+          name: Run integration tests
+          command: ./gradlew integrationTests --no-daemon --max-workers=2 --stacktrace
       - store_artifacts:
           path: app/build/reports
           destination: reports

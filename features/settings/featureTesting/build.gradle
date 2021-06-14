@@ -4,6 +4,10 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'dagger.hilt.android.plugin'
 
+project.ext {
+    pckg = "com.diskin.alon.pagoda.settings.featuretesting"
+}
+
 android {
     compileSdkVersion 29
 

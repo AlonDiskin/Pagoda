@@ -43,3 +43,46 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+task unitTests {
+    doLast {
+        subprojects.forEach {
+            String path = it.path
+
+            // Run unit test for a java library/kotlin module
+            if ((it.plugins.findPlugin('java-library') != null) && it.name != "featureTesting") {
+                exec {
+                    executable './gradlew'
+                    args "${path}:test"
+                }
+            }
+
+            // Run unit test for android library module
+            if ((it.plugins.findPlugin('com.android.library') != null) && it.name != "featureTesting") {
+                exec {
+                    executable './gradlew'
+                    args "${path}:testDebugUnitTest"
+                }
+            }
+        }
+    }
+}
+
+task integrationTests {
+    doLast {
+        subprojects.forEach {
+            String path = it.path
+
+            // Run integration test
+            if (it.name == "featureTesting" && it.properties.containsKey('pckg')) {
+                String pckg = it.getProperties().get('pckg')
+
+                exec {
+                    executable './gradlew'
+                    args "$path:testDebugUnitTest", '--tests', "$pckg.*"
+
+                }
+            }
+        }
+    }
+}

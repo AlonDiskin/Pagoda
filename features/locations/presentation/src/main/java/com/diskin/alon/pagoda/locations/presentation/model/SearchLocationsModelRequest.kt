@@ -7,6 +7,6 @@ import io.reactivex.Observable
 
 data class SearchLocationsModelRequest(
     val query: String
-) : ModelRequest<SearchLocationsRequest,Observable<PagingData<UiLocation>>>(
+) : ModelRequest<SearchLocationsRequest,Observable<PagingData<UiLocationSearchResult>>>(
     SearchLocationsRequest(query)
 )

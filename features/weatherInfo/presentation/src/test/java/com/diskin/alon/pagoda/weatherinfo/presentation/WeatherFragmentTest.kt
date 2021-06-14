@@ -27,7 +27,6 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.diskin.alon.pagoda.common.appservices.AppError
-import com.diskin.alon.pagoda.common.appservices.ErrorType
 import com.diskin.alon.pagoda.common.appservices.ErrorType.*
 import com.diskin.alon.pagoda.common.presentation.ErrorViewData
 import com.diskin.alon.pagoda.common.presentation.ImageLoader
@@ -136,7 +135,7 @@ class WeatherFragmentTest {
         }
 
         // Verify location name
-        onView(withId(R.id.locationName))
+        onView(withId(R.id.location_name))
             .check(matches(withText(weatherData.locationName)))
 
         // Verify location weather clock data
@@ -384,6 +383,10 @@ class WeatherFragmentTest {
 
     @Test
     fun showLocationNameAsAppbarTitleWheAppbarCollapses() {
+        // Test fixture
+        mockkObject(ImageLoader)
+        every { ImageLoader.loadIconResIntoImageView(any(),any()) } returns Unit
+
         // Given
         val weatherData = createTestWeather()
         this.weather.value = weatherData
@@ -403,9 +406,12 @@ class WeatherFragmentTest {
 
     @Test
     fun hideLocationNameAsAppbarTitleWheAppbarExpanded() {
+        // Test fixture
+        mockkObject(ImageLoader)
+        every { ImageLoader.loadIconResIntoImageView(any(),any()) } returns Unit
+
         // Given
-        val weatherData = createTestWeather()
-        this.weather.value = weatherData
+        weather.value = createTestWeather()
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
         // When

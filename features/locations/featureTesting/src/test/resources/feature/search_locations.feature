@@ -19,4 +19,16 @@ Feature: Search world locations
     And Select the first search result
     Then Selected location weather should be shown in weather data screen
 
+  #Rule: Allow to add searched locations to user manged list
+
+  @bookmark-search-result
+  Scenario: User bookmark location result
+    Given User open location search screen
+    When User search for location
+    And Select to bookmark first result
+    Then App should bookmark select location
+    When User open bookmarked locations screen
+    Then Bookmarked location should be listed
+
+
 

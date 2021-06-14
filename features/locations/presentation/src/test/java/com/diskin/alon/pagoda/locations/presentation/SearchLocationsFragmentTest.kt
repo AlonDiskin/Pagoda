@@ -3,6 +3,7 @@ package com.diskin.alon.pagoda.locations.presentation
 import android.os.Bundle
 import android.os.Looper
 import android.view.KeyEvent
+import android.widget.ImageButton
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
@@ -25,6 +26,7 @@ import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
+import com.diskin.alon.pagoda.common.presentation.ImageLoader
 import com.diskin.alon.pagoda.common.presentation.LOCATION_LAT
 import com.diskin.alon.pagoda.common.presentation.LOCATION_LON
 import com.diskin.alon.pagoda.common.uitesting.HiltTestActivity
@@ -33,8 +35,9 @@ import com.diskin.alon.pagoda.common.uitesting.launchFragmentInHiltContainer
 import com.diskin.alon.pagoda.common.uitesting.withSearchViewHint
 import com.diskin.alon.pagoda.common.uitesting.withSearchViewQuery
 import com.diskin.alon.pagoda.locations.presentation.controller.*
+import com.diskin.alon.pagoda.locations.presentation.controller.BookmarkedLocationsAdapter.*
 import com.diskin.alon.pagoda.locations.presentation.controller.LocationSearchResultsAdapter.LocationSearchResultViewHolder
-import com.diskin.alon.pagoda.locations.presentation.model.UiLocation
+import com.diskin.alon.pagoda.locations.presentation.model.UiLocationSearchResult
 import com.diskin.alon.pagoda.locations.presentation.viewmodel.SearchLocationsViewModel
 import com.google.common.truth.Truth.assertThat
 import io.mockk.*
@@ -63,7 +66,7 @@ class SearchLocationsFragmentTest {
     private val appNav: AppLocationsNavProvider = mockk()
 
     // Stub data
-    private val results = MutableLiveData<PagingData<UiLocation>>()
+    private val results = MutableLiveData<PagingData<UiLocationSearchResult>>()
     private val query = "query"
 
     @Before
@@ -138,7 +141,7 @@ class SearchLocationsFragmentTest {
 
         // When
         scenario.onActivity {
-            val rv = it.findViewById<RecyclerView>(R.id.searchResults)
+            val rv = it.findViewById<RecyclerView>(R.id.search_location_results)
             val listener = getSearchResultsAdapterLoadStatesListener(
                 rv.adapter as LocationSearchResultsAdapter
             )
@@ -170,7 +173,7 @@ class SearchLocationsFragmentTest {
 
         // When
         scenario.onActivity {
-            val rv = it.findViewById<RecyclerView>(R.id.searchResults)
+            val rv = it.findViewById<RecyclerView>(R.id.search_location_results)
             val listener = getSearchResultsAdapterLoadStatesListener(
                 rv.adapter as LocationSearchResultsAdapter
             )
@@ -199,7 +202,9 @@ class SearchLocationsFragmentTest {
     @Test
     fun showSearchResultsWhenResultsAvailable() {
         // Test case fixture
-        scenario.onActivity { it.findViewById<RecyclerView>(R.id.searchResults).itemAnimator = null }
+        mockkObject(ImageLoader)
+        every { ImageLoader.loadIconResIntoImageButton(any(),any()) } returns Unit
+        scenario.onActivity { it.findViewById<RecyclerView>(R.id.search_location_results).itemAnimator = null }
 
         // Given a resumed fragment
 
@@ -210,23 +215,34 @@ class SearchLocationsFragmentTest {
 
         // Then
         scenario.onActivity { activity ->
-            val recyclerView = activity.findViewById<RecyclerView>(R.id.searchResults)
+            val recyclerView = activity.findViewById<RecyclerView>(R.id.search_location_results)
             val adapter = recyclerView.adapter!!
 
             assertThat(adapter.itemCount).isEqualTo(searchResults.size)
         }
 
         searchResults.forEachIndexed { index, result ->
-            onView(withId(R.id.searchResults))
+            onView(withId(R.id.search_location_results))
                 .perform(scrollToPosition<LocationSearchResultViewHolder>(index))
 
             Shadows.shadowOf(Looper.getMainLooper()).idle()
 
-            onView(withRecyclerView(R.id.searchResults).atPositionOnView(index,R.id.locationName))
+            onView(withRecyclerView(R.id.search_location_results).atPositionOnView(index,R.id.location_name))
                 .check(matches(withText(result.name)))
 
-            onView(withRecyclerView(R.id.searchResults).atPositionOnView(index,R.id.locationCountry))
+            onView(withRecyclerView(R.id.search_location_results).atPositionOnView(index,R.id.location_country))
                 .check(matches(withText(result.country)))
+
+            scenario.onActivity { activity ->
+                val recyclerView = activity.findViewById<RecyclerView>(R.id.search_location_results)
+                val imageButton = recyclerView.findViewHolderForAdapterPosition(index)?.itemView
+                    ?.findViewById<ImageButton>(R.id.add_bookmark_button)!!
+
+                when(result.bookmarked) {
+                    true -> verify { ImageLoader.loadIconResIntoImageButton(imageButton,R.drawable.ic_baseline_done_24) }
+                    false -> verify { ImageLoader.loadIconResIntoImageButton(imageButton,R.drawable.ic_baseline_add_24) }
+                }
+            }
         }
     }
 
@@ -275,7 +291,7 @@ class SearchLocationsFragmentTest {
             every { fragment.findNavController().navigate(any(),capture(bundleSlot)) } returns Unit
         }
 
-        every { appNav.getWeatherDest() } returns destId
+        every { appNav.getSearchLocationsToWeatherDataNavRoute() } returns destId
 
         // Given
 
@@ -285,11 +301,11 @@ class SearchLocationsFragmentTest {
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
         // And
-        onView(withId(R.id.searchResults))
-            .perform(actionOnItemAtPosition<SavedLocationsAdapter.SavedLocationViewHolder>(0, click()))
+        onView(withId(R.id.search_location_results))
+            .perform(actionOnItemAtPosition<BookmarkedLocationViewHolder>(0, click()))
 
         // Then
-        verify { appNav.getWeatherDest() }
+        verify { appNav.getSearchLocationsToWeatherDataNavRoute() }
 
         scenario.onActivity {
             val fragment = it.supportFragmentManager.fragments[0] as SearchLocationsFragment
@@ -298,5 +314,47 @@ class SearchLocationsFragmentTest {
 
         assertThat(bundleSlot.captured.get(LOCATION_LAT)).isEqualTo(searchResults.first().lat)
         assertThat(bundleSlot.captured.get(LOCATION_LON)).isEqualTo(searchResults.first().lon)
+    }
+
+    @Test
+    fun addBookmarkLocationResultWhenBookmaekedByUser() {
+        // Test case fixture
+        scenario.onActivity { it.findViewById<RecyclerView>(R.id.search_location_results).itemAnimator = null }
+        every { viewModel.addToBookmarked(any()) } returns Unit
+
+        // Given
+
+        // When
+        val result = UiLocationSearchResult(12.5,67.8,"","",false)
+        results.value = PagingData.from(listOf(result))
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        onView(withId(R.id.add_bookmark_button))
+            .perform(click())
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // Then
+        verify { viewModel.addToBookmarked(result) }
+    }
+
+    @Test
+    fun disableAddingResultToBookmarkedWhenAlreadyAdded() {
+        // Test case fixture
+        scenario.onActivity { it.findViewById<RecyclerView>(R.id.search_location_results).itemAnimator = null }
+        every { viewModel.addToBookmarked(any()) } returns Unit
+
+        // Given
+
+        // When
+        val result = UiLocationSearchResult(12.5,67.8,"","",true)
+        results.value = PagingData.from(listOf(result))
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        onView(withId(R.id.add_bookmark_button))
+            .perform(click())
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // Then
+        verify(exactly = 0) { viewModel.addToBookmarked(result) }
     }
 }

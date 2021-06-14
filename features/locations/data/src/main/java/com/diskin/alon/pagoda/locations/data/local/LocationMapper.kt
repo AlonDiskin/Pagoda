@@ -14,7 +14,8 @@ class LocationMapper @Inject constructor() : Mapper<PagingData<LocationEntity>,P
                 Coordinates(it.lat,it.lon),
                 it.name,
                 it.country,
-                it.state
+                it.state,
+                it.bookmarked
             )
         }
     }

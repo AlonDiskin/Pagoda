@@ -1,3 +1,5 @@
+import org.gradle.execution.BuildConfigurationAction
+
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
@@ -62,6 +64,7 @@ android {
         exclude 'META-INF/di_release.kotlin_module'
         exclude 'META-INF/data_release.kotlin_module'
         exclude 'META-INF/infrastructure_debug.kotlin_module'
+        exclude 'META-INF/infrastructure_release.kotlin_module'
     }
 }
 

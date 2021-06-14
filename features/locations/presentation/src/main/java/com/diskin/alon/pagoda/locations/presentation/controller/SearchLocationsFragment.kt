@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.diskin.alon.pagoda.common.presentation.LOCATION_LAT
 import com.diskin.alon.pagoda.common.presentation.LOCATION_LON
 import com.diskin.alon.pagoda.locations.presentation.R
-import com.diskin.alon.pagoda.locations.presentation.model.UiLocation
+import com.diskin.alon.pagoda.locations.presentation.model.UiLocationSearchResult
 import com.diskin.alon.pagoda.locations.presentation.viewmodel.SearchLocationsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.migration.OptionalInject
@@ -44,8 +44,8 @@ class SearchLocationsFragment : Fragment(), SearchView.OnQueryTextListener, Menu
         super.onViewCreated(view, savedInstanceState)
 
         // Setup search results ui adapter
-        val rv = view.findViewById<RecyclerView>(R.id.searchResults)
-        val adapter = LocationSearchResultsAdapter(::handleResultClick)
+        val rv = view.findViewById<RecyclerView>(R.id.search_location_results)
+        val adapter = LocationSearchResultsAdapter(::handleResultClick,::handleAddResultClick)
         rv.adapter = adapter
 
         // Handle adapter paging load state updates
@@ -113,9 +113,13 @@ class SearchLocationsFragment : Fragment(), SearchView.OnQueryTextListener, Menu
         return true
     }
 
-    private fun handleResultClick(result: UiLocation) {
+    private fun handleResultClick(result: UiLocationSearchResult) {
         // Navigate to weather info screen and pass selected result coordinates
         val bundle = bundleOf(LOCATION_LAT to result.lat, LOCATION_LON to result.lon)
-        findNavController().navigate(appNav.getWeatherDest(), bundle)
+        findNavController().navigate(appNav.getSearchLocationsToWeatherDataNavRoute(), bundle)
+    }
+
+    private fun handleAddResultClick(result: UiLocationSearchResult) {
+        viewModel.addToBookmarked(result)
     }
 }

@@ -7,15 +7,14 @@ import com.diskin.alon.pagoda.common.presentation.ModelDispatcher
 import com.diskin.alon.pagoda.common.presentation.ModelRequest
 import com.diskin.alon.pagoda.common.util.Mapper
 import com.diskin.alon.pagoda.locations.appservices.model.LocationDto
-import com.diskin.alon.pagoda.locations.appservices.usecase.BrowseSavedLocationsUseCase
-import com.diskin.alon.pagoda.locations.appservices.usecase.DeleteSavedLocationUseCase
+import com.diskin.alon.pagoda.locations.appservices.usecase.BookmarkLocationUseCase
+import com.diskin.alon.pagoda.locations.appservices.usecase.BrowseBookmarkdLocationsUseCase
+import com.diskin.alon.pagoda.locations.appservices.usecase.UnBookmarkLocationUseCase
 import com.diskin.alon.pagoda.locations.appservices.usecase.SearchLocationsUseCase
-import com.diskin.alon.pagoda.locations.presentation.model.DeleteSavedLocationModelRequest
-import com.diskin.alon.pagoda.locations.presentation.model.SavedLocationsModelRequest
-import com.diskin.alon.pagoda.locations.presentation.model.SearchLocationsModelRequest
-import com.diskin.alon.pagoda.locations.presentation.model.UiLocation
-import com.diskin.alon.pagoda.locations.presentation.util.LocationMapper
+import com.diskin.alon.pagoda.locations.presentation.model.*
+import com.diskin.alon.pagoda.locations.presentation.util.BookmarkedLocationMapper
 import com.diskin.alon.pagoda.locations.presentation.util.LocationsModel
+import com.diskin.alon.pagoda.locations.presentation.util.SearchedLocationMapper
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -32,21 +31,27 @@ abstract class LocationsUiModel {
         @LocationsModel
         @Provides
         fun provideModelDispatcherMap(
-            searchUseCase: SearchLocationsUseCase,
-            savedLocationsUseCase: BrowseSavedLocationsUseCase,
-            deleteLocationUseCase: DeleteSavedLocationUseCase,
-            uiLocationMapper: Mapper<Observable<PagingData<LocationDto>>, Observable<PagingData<UiLocation>>>
+            searchLocationUseCase: SearchLocationsUseCase,
+            browseBookmarkedLocationsUseCase: BrowseBookmarkdLocationsUseCase,
+            unbookmarkLocationUseCase: UnBookmarkLocationUseCase,
+            bookmarkLocationUseCase: BookmarkLocationUseCase,
+            searchedLocationMapper: Mapper<Observable<PagingData<LocationDto>>,Observable<PagingData<UiLocationSearchResult>>>,
+            bookmarkedLocationMapper: Mapper<Observable<PagingData<LocationDto>>,Observable<PagingData<UiBookmarkedLocation>>>
         ): Model {
             val map = HashMap<Class<out ModelRequest<*, *>>,Pair<UseCase<*, *>, Mapper<*, *>?>>()
 
-            map[SearchLocationsModelRequest::class.java] = Pair(searchUseCase,uiLocationMapper)
-            map[SavedLocationsModelRequest::class.java] = Pair(savedLocationsUseCase,uiLocationMapper)
-            map[DeleteSavedLocationModelRequest::class.java] = Pair(deleteLocationUseCase,null)
+            map[SearchLocationsModelRequest::class.java] = Pair(searchLocationUseCase,searchedLocationMapper)
+            map[BookmarkedLocationsModelRequest::class.java] = Pair(browseBookmarkedLocationsUseCase,bookmarkedLocationMapper)
+            map[UnBookmarkLocationModelRequest::class.java] = Pair(unbookmarkLocationUseCase,null)
+            map[BookmarkLocationModelRequest::class.java] = Pair(bookmarkLocationUseCase,null)
 
             return ModelDispatcher(map)
         }
     }
 
     @Binds
-    abstract fun bindUiLocationMapper(mapper: LocationMapper): Mapper<Observable<PagingData<LocationDto>>, Observable<PagingData<UiLocation>>>
+    abstract fun bindSearchLocationMapper(mapper: SearchedLocationMapper): Mapper<Observable<PagingData<LocationDto>>,Observable<PagingData<UiLocationSearchResult>>>
+
+    @Binds
+    abstract fun bindBookmarkedLocationMapper(mapper: BookmarkedLocationMapper): Mapper<Observable<PagingData<LocationDto>>,Observable<PagingData<UiBookmarkedLocation>>>
 }

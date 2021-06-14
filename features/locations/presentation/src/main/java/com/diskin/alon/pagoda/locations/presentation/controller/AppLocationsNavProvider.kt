@@ -8,5 +8,11 @@ import androidx.annotation.IdRes
 interface AppLocationsNavProvider {
 
     @IdRes
-    fun getWeatherDest(): Int
+    fun getSearchLocationsToWeatherDataNavRoute(): Int
+
+    @IdRes
+    fun getBookmarkedLocationsToWeatherDataNavRoute(): Int
+
+    @IdRes
+    fun getBookmarkedLocationsLocationsSearchNavRoute(): Int
 }

@@ -49,14 +49,14 @@ class ShowLocationResultWeatherSteps(
 
     init {
         // Prepare nav dest provider
-        every { navProvider.getWeatherDest() } returns weatherDataDetId
+        every { navProvider.getSearchLocationsToWeatherDataNavRoute() } returns weatherDataDetId
 
         // Prepare nav controller
         mockkStatic(Fragment::findNavController)
 
         // Prepare test db
-        val insertSql = "INSERT INTO locations (lat,lon,name,country,state)" +
-                "VALUES(${lat},${lon},'${query}','country','state');"
+        val insertSql = "INSERT INTO locations (lat,lon,name,country,state,bookmarked)" +
+                "VALUES(${lat},${lon},'${query}','country','state',0);"
 
         db.compileStatement(insertSql).executeInsert()
     }
@@ -84,7 +84,7 @@ class ShowLocationResultWeatherSteps(
     @And("^Select the first search result$")
     fun select_the_first_search_result(){
         Thread.sleep(1000)
-        onView(withId(R.id.searchResults))
+        onView(withId(R.id.search_location_results))
             .perform(
                 actionOnItemAtPosition<LocationSearchResultViewHolder>(
                     0,

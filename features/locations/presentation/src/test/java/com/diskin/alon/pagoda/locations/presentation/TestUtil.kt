@@ -5,56 +5,60 @@ import androidx.paging.CombinedLoadStates
 import androidx.paging.PagingDataAdapter
 import androidx.paging.PagingDataDiffer
 import com.diskin.alon.pagoda.locations.appservices.model.LocationDto
-import com.diskin.alon.pagoda.locations.presentation.model.UiLocation
+import com.diskin.alon.pagoda.locations.presentation.model.UiBookmarkedLocation
+import com.diskin.alon.pagoda.locations.presentation.model.UiLocationSearchResult
 import java.util.concurrent.CopyOnWriteArrayList
 
 fun createSearchResults() = listOf(
-    UiLocation(
+    UiLocationSearchResult(
+        10.0,
+        20.7,
+        "Location1",
+        "Country1",
+        true
+    ),
+    UiLocationSearchResult(
+        10.0,
+        20.7,
+        "Location2",
+        "Country2, State2",
+        false
+    ),
+    UiLocationSearchResult(
+        10.0,
+        20.7,
+        "Location3",
+        "Country3",
+        true
+    ),
+    UiLocationSearchResult(
+        10.0,
+        20.7,
+        "Location4",
+        "Country4, State 4",false
+    )
+)
+
+fun createBookmarkedLocations() = listOf(
+    UiBookmarkedLocation(
         10.0,
         20.7,
         "Location1",
         "Country1"
     ),
-    UiLocation(
+    UiBookmarkedLocation(
         10.0,
         20.7,
         "Location2",
         "Country2, State2"
     ),
-    UiLocation(
+    UiBookmarkedLocation(
         10.0,
         20.7,
         "Location3",
-        "Country3"
+        "Country3, State3"
     ),
-    UiLocation(
-        10.0,
-        20.7,
-        "Location4",
-        "Country4, State 4"
-    )
-)
-
-fun createSavedLocations() = listOf(
-    UiLocation(
-        10.0,
-        20.7,
-        "Location1",
-        "Country1",
-    ),
-    UiLocation(
-        10.0,
-        20.7,
-        "Location2",
-        "Country2, State2",
-    ),
-    UiLocation(
-        10.0,
-        20.7,
-        "Location3",
-        "Country3, State3",
-    ),
-    UiLocation(
+    UiBookmarkedLocation(
         10.0,
         20.7,
         "Location4",

@@ -7,4 +7,5 @@ data class LocationEntity(val lat: Double,
                           val lon: Double,
                           val name: String,
                           val country: String,
-                          val state: String)
+                          val state: String,
+                          val bookmarked: Boolean)

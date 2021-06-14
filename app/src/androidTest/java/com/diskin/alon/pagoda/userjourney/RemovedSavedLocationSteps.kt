@@ -31,25 +31,17 @@ class RemovedSavedLocationSteps(
 
     private val dispatcher = TestDispatcher()
     private val locations = createDbLocations()
-    private val bookmarkedLocations = createDbBookmarkedLocations()
 
     init {
         // Prepare test server
         server.setDispatcher(dispatcher)
     }
 
-    @Given("^User has previously  saved locations$")
+    @Given("^User has previously saved locations$")
     fun user_has_previously_saved_locations() {
         locations.forEach {
-            val insertSql = "INSERT INTO locations (lat,lon,name,country,state)" +
-                    "VALUES(${it.lat},${it.lon},'${it.name}','${it.country}','${it.state}');"
-
-            db.compileStatement(insertSql).executeInsert()
-        }
-
-        bookmarkedLocations.forEach {
-            val insertSql = "INSERT INTO bookmarked_locations (lat,lon)" +
-                    "VALUES(${it.lat},${it.lon});"
+            val insertSql = "INSERT INTO locations (lat,lon,name,country,state,bookmarked)" +
+                    "VALUES(${it.lat},${it.lon},'${it.name}','${it.country}','${it.state}',1);"
 
             db.compileStatement(insertSql).executeInsert()
         }
@@ -86,8 +78,8 @@ class RemovedSavedLocationSteps(
     @Then("^App should show updated locations accordingly$")
     fun app_should_show_updated_locations_accordingly() {
         Thread.sleep(2000)
-        onView(withId(R.id.saved_locations))
-            .check(ViewAssertions.matches(isRecyclerViewItemsCount(0)))
+        onView(withId(R.id.bookmarked_locations))
+            .check(ViewAssertions.matches(isRecyclerViewItemsCount(locations.size - 1)))
     }
 
     private fun createDbLocations(): List<DbLocation> {
@@ -98,30 +90,9 @@ class RemovedSavedLocationSteps(
                 "Losevo",
                 "Russia",
                 ""
-            ),
-            DbLocation(
-                26.213001,
-                19.195999,
-                "Losal",
-                "India",
-                ""
-            ),
-            DbLocation(
-                28.213001,
-                39.195999,
-                "Los Banos",
-                "Brazil",
-                ""
             )
         )
     }
-
-    private fun createDbBookmarkedLocations() = listOf(
-        DbBookmarkedLocation(
-            26.213001,
-            19.195999
-        )
-    )
 
     private data class DbLocation(
         val lat: Double,

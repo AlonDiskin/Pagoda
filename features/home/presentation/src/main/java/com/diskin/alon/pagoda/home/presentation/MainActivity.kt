@@ -31,9 +31,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val navigationView = findViewById<NavigationView>(R.id.nav_view)
         navigationView.setNavigationItemSelectedListener(this)
 
-
         // Set toolbar
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        toolbar.title = ""
         setSupportActionBar(toolbar)
 
         // Set navigation
@@ -69,9 +69,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 controller.popBackStack(homeDest,true)
                 controller.navigate(homeDest)
             }
-            R.id.nav_search -> controller.navigate(graphProvider.getSearchLocationsDestId())
-            R.id.nav_settings -> controller.navigate(graphProvider.getSettingsDestId())
-            R.id.nav_locations -> controller.navigate(graphProvider.getSavedLocationsDestId())
+            R.id.nav_search -> controller.navigate(graphProvider.getWeatherDataSearchLocationsNavRoute())
+            R.id.nav_settings -> controller.navigate(graphProvider.getWeatherDataToSettingsNavRoute())
+            R.id.nav_locations -> controller.navigate(graphProvider.getWeatherDataToSavedLocationsNavRoute())
         }
         return true
     }

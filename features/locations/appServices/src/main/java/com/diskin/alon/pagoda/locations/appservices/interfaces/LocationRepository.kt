@@ -15,7 +15,9 @@ interface LocationRepository {
 
     fun search(query: String): Observable<PagingData<Location>>
 
-    fun getSaved(): Observable<PagingData<Location>>
+    fun getBookmarked(): Observable<PagingData<Location>>
 
-    fun unSave(id: Coordinates): Single<AppResult<Unit>>
+    fun unBookmark(id: Coordinates): Single<AppResult<Unit>>
+
+    fun bookmark(id: Coordinates): Single<AppResult<Unit>>
 }

@@ -4,7 +4,7 @@ Feature: Remove saved location
   to remove previously saved world location
 
   Scenario: User remove saved location
-    Given User has previously  saved locations
+    Given User has previously saved locations
     And User launch app from device home
     And Open locations screen
     And Removes first listed location
