@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="title_hourly_forecast">Hourly</string>
+    <string name="title_daily_forecast">Daily</string>
+    <string name="title_weather_detail">Detail</string>
+</resources>

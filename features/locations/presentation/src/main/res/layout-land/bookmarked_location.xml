@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="kotlin.jvm.functions.Function1"/>
+        <import type="kotlin.jvm.functions.Function2"/>
+        <import type="kotlin.Unit"/>
+        <import type="android.view.View"/>
+        <import type="com.diskin.alon.pagoda.locations.presentation.model.UiBookmarkedLocation" />
+
+        <variable
+            name="location"
+            type="UiBookmarkedLocation" />
+        <variable
+            name="locationClickListener"
+            type="Function1&lt;UiBookmarkedLocation,Unit>" />
+        <variable
+            name="optionsClickListener"
+            type="Function2&lt;UiBookmarkedLocation, View, Unit>" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:onClick="@{() -> locationClickListener.invoke(location)}">
+
+        <TextView
+            android:id="@+id/location_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/item_margin"
+            android:layout_marginTop="8dp"
+            android:textAppearance="?attr/textAppearanceHeadline6"
+            android:textSize="18sp"
+            android:text="@{location.name}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Los Angeles"/>
+
+        <TextView
+            android:id="@+id/location_country"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?attr/textAppearanceBody2"
+            app:layout_constraintStart_toStartOf="@+id/location_name"
+            app:layout_constraintTop_toBottomOf="@+id/location_name"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:text="@{location.country}"
+            android:layout_marginBottom="8dp"
+            tools:text="United States, CA"/>
+
+        <ImageButton
+            android:id="@+id/locationOptions"
+            style="@style/Widget.AppCompat.ActionButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:onClick="@{(v) -> optionsClickListener.invoke(location,v)}"
+            app:srcCompat="@drawable/ic_baseline_more_vert_24" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
