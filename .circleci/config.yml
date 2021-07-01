@@ -121,8 +121,4 @@ workflows:
     jobs:
       - unit_tests
       - integration_tests
-      - e2e_tests:
-          filters:
-            branches:
-              only:
-                - master
+      - e2e_tests

@@ -36,12 +36,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         toolbar.title = ""
         setSupportActionBar(toolbar)
 
-        // Set navigation
-        val finalHost = NavHostFragment.create(graphProvider.getAppNavGraph())
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.nav_host_container, finalHost)
-            .setPrimaryNavigationFragment(finalHost) // equivalent to app:defaultNavHost="true"
-            .commit()
+        // Set navigation graph manually since it available only at runtime
+        if (savedInstanceState == null) {
+            val host = NavHostFragment.create(graphProvider.getAppNavGraph())
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.nav_host_container, host)
+                .setPrimaryNavigationFragment(host) // equivalent to app:defaultNavHost="true"
+                .commit()
+        }
     }
 
     override fun onStart() {
