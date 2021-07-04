@@ -1,7 +1,9 @@
 package com.diskin.alon.pagoda.locations.featuretesting
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.databinding.ViewDataBinding
 import androidx.test.filters.MediumTest
+import com.diskin.alon.pagoda.common.featuretesting.setFinalStatic
 import com.diskin.alon.pagoda.locations.presentation.controller.AppLocationsNavProvider
 import com.mauriciotogneri.greencoffee.GreenCoffeeConfig
 import com.mauriciotogneri.greencoffee.GreenCoffeeTest
@@ -69,7 +71,13 @@ class ShowLocationResultWeatherStepsRunner(scenario: ScenarioConfig) : GreenCoff
 
     @Test
     fun test() {
+        // Disable data binding Choreographer
+        setFinalStatic(ViewDataBinding::class.java.getDeclaredField("USE_CHOREOGRAPHER"),false)
+
+        // Inject test dependencies
         hiltRule.inject()
+
+        // Start test
         start(ShowLocationResultWeatherSteps(db,navProvider))
     }
 }

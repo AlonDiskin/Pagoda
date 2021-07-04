@@ -4,10 +4,15 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.location.Location
+import android.os.SystemClock
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
+import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiDevice
+import androidx.test.uiautomator.UiSelector
+import androidx.test.uiautomator.Until
 import androidx.test.uiautomator.Until.hasObject
 import org.hamcrest.CoreMatchers.notNullValue
 import org.hamcrest.MatcherAssert.assertThat
@@ -102,5 +107,31 @@ object DeviceUtil {
     fun launchAppFromHome() {
         openDeviceHome()
         launchApp()
+    }
+
+    fun disconnectNetwork() {
+        UiDevice.getInstance(getInstrumentation())
+            .executeShellCommand("svc wifi disable")
+        UiDevice.getInstance(getInstrumentation())
+            .executeShellCommand("svc data disable")
+    }
+
+    fun connectNetwork() {
+        UiDevice.getInstance(getInstrumentation())
+            .executeShellCommand("svc wifi enable")
+        UiDevice.getInstance(getInstrumentation())
+            .executeShellCommand("svc data enable")
+    }
+
+    fun approveLocationDialogIfExist() {
+        val dialogShowing: Boolean = getDevice().wait(
+            hasObject(By.textContains("location service")),
+            5000L
+        )
+
+        if (dialogShowing) {
+            getDevice().findObject(UiSelector().text("OK")).click()
+        }
+
     }
 }

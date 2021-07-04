@@ -12,3 +12,5 @@ Feature: World location bookmarking
     When User find wanted location
     And Select to bookmark it
     Then App should bookmark location and update locations list
+    When User select to remove bookmark
+    Then App should remove bookmark from user bookmarks listing

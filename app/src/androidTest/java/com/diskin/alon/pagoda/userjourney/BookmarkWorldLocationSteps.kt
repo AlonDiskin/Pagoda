@@ -6,53 +6,37 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.DrawerActions.open
 import androidx.test.espresso.contrib.NavigationViewActions.navigateTo
+import androidx.test.espresso.matcher.RootMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.diskin.alon.pagoda.R
 import com.diskin.alon.pagoda.common.uitesting.isRecyclerViewItemsCount
 import com.diskin.alon.pagoda.common.uitesting.typeSearchViewText
 import com.diskin.alon.pagoda.util.DeviceUtil
-import com.diskin.alon.pagoda.util.TestDatabase
-import com.google.common.truth.Truth.assertThat
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.mauriciotogneri.greencoffee.GreenCoffeeSteps
 import com.mauriciotogneri.greencoffee.annotations.And
 import com.mauriciotogneri.greencoffee.annotations.Given
 import com.mauriciotogneri.greencoffee.annotations.Then
 import com.mauriciotogneri.greencoffee.annotations.When
-import okhttp3.mockwebserver.Dispatcher
-import okhttp3.mockwebserver.MockResponse
-import okhttp3.mockwebserver.MockWebServer
-import okhttp3.mockwebserver.RecordedRequest
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.hamcrest.CoreMatchers.allOf
 
 /**
  * Step definitions for 'User bookmark location' scenario.
  */
-class BookmarkWorldLocationSteps(
-    private val db: TestDatabase,
-    server: MockWebServer
-) : GreenCoffeeSteps() {
-
-    private val location = createDbLocation()
-
-    init {
-        // Prepare test server
-        server.setDispatcher(TestDispatcher())
-
-        // Prepare test db
-        val insertSql = "INSERT INTO locations (lat,lon,name,country,state,bookmarked)" +
-                "VALUES(${location.lat},${location.lon},'${location.name}','${location.country}','${location.state}',0);"
-
-        db.compileStatement(insertSql).executeInsert()
-    }
+@ExperimentalCoroutinesApi
+class BookmarkWorldLocationSteps : GreenCoffeeSteps() {
 
     @Given("^User has no bookmarked locations$")
     fun user_has_no_bookmarked_locations() {
         // Verify test db does not contain any bookmarked locations
+        // TODO
     }
 
     @And("^User launch app from device home$")
     fun user_launch_app_from_device_home() {
         DeviceUtil.launchAppFromHome()
-        Thread.sleep(1000)
+        DeviceUtil.approveLocationDialogIfExist()
     }
 
     @And("^Open locations screen$")
@@ -62,14 +46,15 @@ class BookmarkWorldLocationSteps(
 
         onView(withId(R.id.nav_view))
             .perform(navigateTo(R.id.nav_locations))
-        Thread.sleep(1000)
     }
 
     @And("^Select to add a new location$")
     fun select_to_add_a_new_location() {
         onView(withId(R.id.add_fab))
-            .perform(click())
-        Thread.sleep(1000)
+            .check { view, _ ->
+                val fab = view as FloatingActionButton
+                fab.performClick()
+            }
     }
 
     @Then("^App should open world locations search screen$")
@@ -82,24 +67,20 @@ class BookmarkWorldLocationSteps(
     fun user_find_wanted_location() {
         onView(isAssignableFrom(SearchView::class.java))
             .perform(typeSearchViewText("london"))
-        Thread.sleep(1000)
     }
 
     @And("^Select to bookmark it$")
     fun select_to_bookmark_it() {
-        onView(withId(R.id.add_bookmark_button))
+        onView(allOf(
+            withId(R.id.add_bookmark_button),
+            hasSibling(withText("London")),
+            hasSibling(withText("GB"))
+        ))
             .perform(click())
-        Thread.sleep(1000)
     }
 
     @Then("^App should bookmark location and update locations list$")
     fun app_should_bookmark_location_and_update_locations_list() {
-        // Verify location was bookmarked in db
-        val bookmarked = db.compileStatement("SELECT COUNT(*) FROM locations WHERE bookmarked = 1")
-            .simpleQueryForLong()
-
-        assertThat(bookmarked).isEqualTo(1)
-
         // Close search view
         DeviceUtil.pressBack()
 
@@ -107,31 +88,32 @@ class BookmarkWorldLocationSteps(
         DeviceUtil.pressBack()
 
         // Verify bookmarked listed locations ui is updated
-        onView(withId(com.diskin.alon.pagoda.locations.presentation.R.id.bookmarked_locations))
+        onView(withId(R.id.bookmarked_locations))
             .check(matches(isRecyclerViewItemsCount(1)))
+        onView(withText("London"))
+            .check(matches(isDisplayed()))
+        onView(withText("GB"))
+            .check(matches(isDisplayed()))
     }
 
-    private fun createDbLocation(): DbLocation {
-        return DbLocation(
-            36.213001,
-            49.195999,
-            "London",
-            "GB",
-            ""
-        )
+    @When("^User select to remove bookmark$")
+    fun user_select_to_remove_bookmark() {
+        // Remove bookmark
+        onView(withId(R.id.locationOptions))
+            .perform(click())
+
+        onView(withText("Delete"))
+            .perform(click())
+
+        onView(withText("OK"))
+            .inRoot(RootMatchers.isDialog())
+            .perform(click())
     }
 
-    private data class DbLocation(
-        val lat: Double,
-        val lon: Double,
-        val name: String,
-        val country: String,
-        val state: String
-    )
-
-    private class TestDispatcher : Dispatcher() {
-        override fun dispatch(request: RecordedRequest): MockResponse {
-            return MockResponse().setResponseCode(404)
-        }
+    @Then("^App should remove bookmark from user bookmarks listing$")
+    fun app_should_remove_bookmark_from_user_bookmarks_listing() {
+        // Verify bookmarked listed locations ui is updated
+        onView(withId(R.id.bookmarked_locations))
+            .check(matches(isRecyclerViewItemsCount(0)))
     }
 }

@@ -6,6 +6,7 @@ import android.content.SharedPreferences
 import com.diskin.alon.pagoda.common.eventcontracts.AppEventProvider
 import com.diskin.alon.pagoda.common.eventcontracts.AppEventPublisher
 import io.reactivex.Observable
+import io.reactivex.schedulers.Schedulers
 
 abstract class SharedPrefsEventHandler<E : Any>(
     private val default: E,
@@ -15,7 +16,7 @@ abstract class SharedPrefsEventHandler<E : Any>(
     companion object { const val EVENTS_FILE = "app_events" }
 
     override fun get(): Observable<E> {
-        return Observable.create { emitter ->
+        return Observable.create<E> { emitter ->
             val sp = app.getSharedPreferences(EVENTS_FILE,Context.MODE_PRIVATE)
             val current = sp.getStringSet(eventKey(), convert(default))!!
             val unitsListener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
@@ -33,7 +34,7 @@ abstract class SharedPrefsEventHandler<E : Any>(
 
             // Set observable to unregister listener when terminated
             emitter.setCancellable { sp.unregisterOnSharedPreferenceChangeListener(unitsListener) }
-        }
+        }.subscribeOn(Schedulers.io())
     }
 
     override fun publish(event: E) {

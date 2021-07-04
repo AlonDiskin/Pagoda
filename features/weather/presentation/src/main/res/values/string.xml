@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="feel_temp">Feels like %1$d&#xb0;</string>
+    <string name="min_max_temp">min %1$d&#xb0;/max %2$d&#xb0;</string>
+    <string name="last_weather_update">Last updated: %1$s</string>
+    <string name="wind_speed_metric">%1$dkm/h</string>
+    <string name="wind_speed_imperial">%1$dmph</string>
+    <string name="hour">%1$d:00</string>
+    <string name="temp">%1$d°</string>
+    <string name="time_format_24">HH:mm</string>
+    <string name="time_format_12">hh:mm aa</string>
+    <string name="clock_time_format_24">E, dd MMM yyyy HH:mm</string>
+    <string name="clock_time_format_12">E, dd MMM yyyy hh:mm aa</string>
+    <string name="update_time_format_24">dd MMM, HH:mm</string>
+    <string name="update_time_format_12">dd MMM, hh:mm aa</string>
+    <string name="unknown_error">Unknown error</string>
+    <string name="device_network_error">No network connection</string>
+    <string name="remote_server_error">Server error,please try later</string>
+    <string name="action_retry">retry</string>
+    <string name="device_location_error">Device location off</string>
+    <string name="location_permission_error">Location permission needed via device settings</string>
+    <string name="uv_index_very_high">Very high</string>
+    <string name="uv_index_high">High</string>
+    <string name="uv_index_moderate">Moderate</string>
+    <string name="uv_index_low">Low</string>
+    <string name="week_day_sunday">Sun</string>
+    <string name="week_day_monday">Mon</string>
+    <string name="week_day_tuesday">Tue</string>
+    <string name="week_day_wednesday">Wed</string>
+    <string name="week_day_thursday">Thu</string>
+    <string name="week_day_friday">Fri</string>
+    <string name="week_day_saturday">Sat</string>
+</resources>

@@ -3,8 +3,6 @@ package com.diskin.alon.pagoda.userjourney
 import android.Manifest
 import androidx.test.filters.LargeTest
 import androidx.test.rule.GrantPermissionRule
-import com.diskin.alon.pagoda.di.AppDataModule
-import com.diskin.alon.pagoda.di.AppNetworkingModule
 import com.diskin.alon.pagoda.settings.di.SettingsNetworkingModule
 import com.diskin.alon.pagoda.settings.infrastructure.interfaces.WeatherAlertProvider
 import com.diskin.alon.pagoda.util.NetworkUtil
@@ -25,7 +23,7 @@ import javax.inject.Inject
  * Step definitions runner for 'User receive weather alert notification' scenario.
  */
 @HiltAndroidTest
-@UninstallModules(SettingsNetworkingModule::class,WeatherNetworkingModule::class,AppDataModule::class)
+@UninstallModules(SettingsNetworkingModule::class,WeatherNetworkingModule::class)
 @RunWith(Parameterized::class)
 @LargeTest
 class ReceiveWeatherAlertNotificationStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTest(scenario) {

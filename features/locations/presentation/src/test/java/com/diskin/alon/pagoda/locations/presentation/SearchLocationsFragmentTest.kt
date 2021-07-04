@@ -141,18 +141,14 @@ class SearchLocationsFragmentTest {
 
         // When
         scenario.onActivity {
-            val rv = it.findViewById<RecyclerView>(R.id.search_location_results)
-            val listener = getSearchResultsAdapterLoadStatesListener(
-                rv.adapter as LocationSearchResultsAdapter
-            )
-
-            listener.invoke(
+            val fragment = it.supportFragmentManager.fragments.first() as SearchLocationsFragment
+            fragment.handleSearchResultsLoadStates(
                 CombinedLoadStates(
                     LoadState.Loading,
                     LoadState.NotLoading(true),
                     LoadState.NotLoading(true),
                     LoadStates(
-                        LoadState.Loading,
+                        LoadState.NotLoading(true),
                         LoadState.NotLoading(true),
                         LoadState.NotLoading(true)
                     )
@@ -173,12 +169,8 @@ class SearchLocationsFragmentTest {
 
         // When
         scenario.onActivity {
-            val rv = it.findViewById<RecyclerView>(R.id.search_location_results)
-            val listener = getSearchResultsAdapterLoadStatesListener(
-                rv.adapter as LocationSearchResultsAdapter
-            )
-
-            listener.invoke(
+            val fragment = it.supportFragmentManager.fragments.first() as SearchLocationsFragment
+            fragment.handleSearchResultsLoadStates(
                 CombinedLoadStates(
                     LoadState.NotLoading(true),
                     LoadState.NotLoading(true),

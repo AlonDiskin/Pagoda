@@ -5,7 +5,6 @@ Feature: Browse world location temperature
 
   Scenario: User browse world location temperature
     Given User launch app from device home
-    And User search for location other then his current one
-    Then All matching locations by name should be shown
-    And Select the first location result
+    And User search for a world location
+    When User select to browse location result weather
     Then Selected location temperature should be shown

@@ -33,8 +33,7 @@ import com.diskin.alon.pagoda.common.uitesting.HiltTestActivity
 import com.diskin.alon.pagoda.common.uitesting.RecyclerViewMatcher.withRecyclerView
 import com.diskin.alon.pagoda.common.uitesting.launchFragmentInHiltContainer
 import com.diskin.alon.pagoda.locations.presentation.controller.AppLocationsNavProvider
-import com.diskin.alon.pagoda.locations.presentation.controller.BookmarkedLocationsAdapter
-import com.diskin.alon.pagoda.locations.presentation.controller.BookmarkedLocationsAdapter.*
+import com.diskin.alon.pagoda.locations.presentation.controller.BookmarkedLocationsAdapter.BookmarkedLocationViewHolder
 import com.diskin.alon.pagoda.locations.presentation.controller.BookmarkedLocationsFragment
 import com.diskin.alon.pagoda.locations.presentation.model.UiBookmarkedLocation
 import com.diskin.alon.pagoda.locations.presentation.viewmodel.BookmarkedLocationsViewModel
@@ -85,6 +84,7 @@ class BookmarkedLocationsFragmentTest {
         // test activity(uses activity scenario)
         scenario = launchFragmentInHiltContainer<BookmarkedLocationsFragment>()
         Shadows.shadowOf(Looper.getMainLooper()).idle()
+        scenario.onActivity { it.findViewById<RecyclerView>(R.id.bookmarked_locations).itemAnimator = null }
     }
 
     @Test
@@ -93,17 +93,14 @@ class BookmarkedLocationsFragmentTest {
 
         // When
         scenario.onActivity {
-            val rv = it.findViewById<RecyclerView>(R.id.bookmarked_locations)
-            val listener = getSearchResultsAdapterLoadStatesListener(
-                rv.adapter as BookmarkedLocationsAdapter)
-
-            listener.invoke(
+            val fragment = it.supportFragmentManager.fragments.first() as BookmarkedLocationsFragment
+            fragment.handleBookmarksLoadStates(
                 CombinedLoadStates(
                     LoadState.Loading,
                     LoadState.NotLoading(true),
                     LoadState.NotLoading(true),
                     LoadStates(
-                        LoadState.Loading,
+                        LoadState.NotLoading(true),
                         LoadState.NotLoading(true),
                         LoadState.NotLoading(true)
                     )
@@ -124,12 +121,8 @@ class BookmarkedLocationsFragmentTest {
 
         // When
         scenario.onActivity {
-            val rv = it.findViewById<RecyclerView>(R.id.bookmarked_locations)
-            val listener = getSearchResultsAdapterLoadStatesListener(
-                rv.adapter as BookmarkedLocationsAdapter
-            )
-
-            listener.invoke(
+            val fragment = it.supportFragmentManager.fragments.first() as BookmarkedLocationsFragment
+            fragment.handleBookmarksLoadStates(
                 CombinedLoadStates(
                     LoadState.NotLoading(true),
                     LoadState.NotLoading(true),
@@ -152,9 +145,6 @@ class BookmarkedLocationsFragmentTest {
 
     @Test
     fun showSavedLocationsWhenLoaded() {
-        // Test case fixture
-        scenario.onActivity { it.findViewById<RecyclerView>(R.id.bookmarked_locations).itemAnimator = null }
-
         // Given
 
         // When
@@ -186,7 +176,7 @@ class BookmarkedLocationsFragmentTest {
 
     @Test
     fun openLocationsSearchScreenWhenFabSelected() {
-        // Test case fixture
+        // Given
         val destId = 10
 
         mockkStatic(Fragment::findNavController)
@@ -196,8 +186,6 @@ class BookmarkedLocationsFragmentTest {
             every { fragment.findNavController().navigate(any<Int>()) } returns Unit
         }
         every { appNav.getBookmarkedLocationsLocationsSearchNavRoute() } returns destId
-
-        // Given
 
         // When
         onView(withId(R.id.add_fab))
@@ -214,7 +202,7 @@ class BookmarkedLocationsFragmentTest {
 
     @Test
     fun openWeatherDataScreenWhenResultSelected() {
-        // Test case fixture
+        // Given
         val destId = 10
         val bundleSlot = slot<Bundle>()
         mockkStatic(Fragment::findNavController)
@@ -226,8 +214,6 @@ class BookmarkedLocationsFragmentTest {
         }
 
         every { appNav.getBookmarkedLocationsToWeatherDataNavRoute() } returns destId
-
-        // Given
 
         // When
         val savedLocations = createBookmarkedLocations()
@@ -252,13 +238,11 @@ class BookmarkedLocationsFragmentTest {
 
     @Test
     fun deleteLocationUponUserSelection() {
-        // Test case fixture
-        every { viewModel.deleteSavedLocation(any()) } returns Unit
-
         // Given
         val locations = createBookmarkedLocations()
         this.locations.value = PagingData.from(listOf(locations.first()))
         Shadows.shadowOf(Looper.getMainLooper()).idle()
+        every { viewModel.deleteSavedLocation(any()) } returns Unit
 
         // When
         onView(withId(R.id.locationOptions))

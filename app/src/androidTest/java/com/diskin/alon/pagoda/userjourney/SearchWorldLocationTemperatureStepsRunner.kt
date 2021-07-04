@@ -3,10 +3,8 @@ package com.diskin.alon.pagoda.userjourney
 import android.Manifest
 import androidx.test.filters.LargeTest
 import androidx.test.rule.GrantPermissionRule
-import com.diskin.alon.pagoda.di.AppDataModule
 import com.diskin.alon.pagoda.settings.di.SettingsNetworkingModule
 import com.diskin.alon.pagoda.util.NetworkUtil
-import com.diskin.alon.pagoda.util.TestDatabase
 import com.diskin.alon.pagoda.weatherinfo.di.WeatherNetworkingModule
 import com.mauriciotogneri.greencoffee.GreenCoffeeConfig
 import com.mauriciotogneri.greencoffee.GreenCoffeeTest
@@ -18,13 +16,12 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
-import javax.inject.Inject
 
 /**
  * Step definitions runner for 'User browse world location temperature' scenario.
  */
 @HiltAndroidTest
-@UninstallModules(SettingsNetworkingModule::class,WeatherNetworkingModule::class,AppDataModule::class)
+@UninstallModules(SettingsNetworkingModule::class, WeatherNetworkingModule::class)
 @RunWith(Parameterized::class)
 @LargeTest
 class SearchWorldLocationTemperatureStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTest(scenario) {
@@ -45,12 +42,8 @@ class SearchWorldLocationTemperatureStepsRunner(scenario: ScenarioConfig) : Gree
     @get:Rule
     val permissionRule = GrantPermissionRule.grant(Manifest.permission.ACCESS_FINE_LOCATION)!!
 
-    @Inject
-    lateinit var db: TestDatabase
-
     @Test
     fun test() {
-        hiltRule.inject()
-        start(SearchWorldLocationTemperatureSteps(db,NetworkUtil.server))
+        start(SearchWorldLocationTemperatureSteps(NetworkUtil.server))
     }
 }

@@ -10,6 +10,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
+import com.diskin.alon.pagoda.common.presentation.EspressoIdlingResource
 import com.google.android.material.navigation.NavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -80,17 +81,20 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun closeDrawer(smooth: Boolean) {
         val drawerLayout = findViewById<DrawerLayout>(R.id.drawerLayout)
+        drawerLayout.closeDrawer(GravityCompat.START)
 
-        if (smooth) {
-            Thread {
-                Thread.sleep(200)
-                runOnUiThread {
-                    drawerLayout.closeDrawer(GravityCompat.START)
-                }
-            }.start()
-        } else {
-            drawerLayout.closeDrawer(GravityCompat.START)
-        }
+//        if (smooth) {
+//            EspressoIdlingResource.increment()
+//            Thread {
+//                Thread.sleep(200)
+//                runOnUiThread {
+//                    drawerLayout.closeDrawer(GravityCompat.START)
+//                    EspressoIdlingResource.decrement()
+//                }
+//            }.start()
+//        } else {
+//            drawerLayout.closeDrawer(GravityCompat.START)
+//        }
     }
 
     private fun isDrawerOpen(): Boolean {

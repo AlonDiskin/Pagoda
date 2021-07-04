@@ -2,16 +2,13 @@ package com.diskin.alon.pagoda.userjourney
 
 import android.content.Context
 import android.util.Log
-import androidx.test.core.app.ApplicationProvider
-import androidx.test.core.app.ApplicationProvider.*
-import androidx.test.espresso.Espresso
-import androidx.test.espresso.Espresso.*
-import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.action.ViewActions.*
+import androidx.recyclerview.widget.RecyclerView
+import androidx.test.core.app.ApplicationProvider.getApplicationContext
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.contrib.DrawerActions
 import androidx.test.espresso.contrib.NavigationViewActions
-import androidx.test.espresso.matcher.RootMatchers
-import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItem
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.uiautomator.UiSelector
 import androidx.work.*
@@ -23,10 +20,9 @@ import com.diskin.alon.pagoda.settings.infrastructure.implementation.WeatherAler
 import com.diskin.alon.pagoda.settings.infrastructure.interfaces.WeatherAlertProvider
 import com.diskin.alon.pagoda.util.DeviceUtil
 import com.diskin.alon.pagoda.util.FileUtil
+import com.diskin.alon.pagoda.util.NetworkUtil
 import com.diskin.alon.pagoda.weatherinfo.data.BuildConfig
 import com.google.common.truth.Truth
-import com.google.gson.JsonArray
-import com.google.gson.JsonObject
 import com.mauriciotogneri.greencoffee.GreenCoffeeSteps
 import com.mauriciotogneri.greencoffee.annotations.And
 import com.mauriciotogneri.greencoffee.annotations.Given
@@ -46,7 +42,7 @@ class ReceiveWeatherAlertNotificationSteps(
     alertProvider: WeatherAlertProvider
 ) : GreenCoffeeSteps() {
 
-    private val dispatcher = TestDispatcher()
+    private val dispatcher = ScenarioTestDispatcher()
     private val context = getApplicationContext<Context>()
 
     init {
@@ -79,7 +75,7 @@ class ReceiveWeatherAlertNotificationSteps(
     @Given("^User launch app from device home$")
     fun user_launch_app_from_device_home() {
         DeviceUtil.launchAppFromHome()
-        Thread.sleep(1000)
+        DeviceUtil.approveLocationDialogIfExist()
     }
 
     @And("^Open settings screen$")
@@ -89,13 +85,17 @@ class ReceiveWeatherAlertNotificationSteps(
 
         onView(withId(R.id.nav_view))
             .perform(NavigationViewActions.navigateTo(R.id.nav_settings))
-        Thread.sleep(1000)
     }
 
     @And("^Enable weather alert notification$")
     fun enable_weather_alert_notification() {
-        onView(withText(R.string.pref_alert_notification_title))
-            .perform(click())
+        onView(withId(androidx.preference.R.id.recycler_view))
+            .perform(
+                actionOnItem<RecyclerView.ViewHolder>(
+                    hasDescendant(withText("Weather alerts")),
+                    click()
+                )
+            )
     }
 
     @When("^Weather alert for user location is received$")
@@ -116,18 +116,21 @@ class ReceiveWeatherAlertNotificationSteps(
 
         DeviceUtil.getDevice().openNotification()
         Truth.assertThat(DeviceUtil.getDevice().findObject(UiSelector().text(alert))).isNotNull()
-        DeviceUtil.pressBack()
     }
 
-    private class TestDispatcher : Dispatcher() {
+    private class ScenarioTestDispatcher : NetworkUtil.TestDispatcher() {
         val weatherAlertRes = "assets/json/weather_alert.json"
         private val path = "/data/2.5/onecall"
+        private val longitude = JSONObject(FileUtil.readStringFromFile(weatherAlertRes))
+            .getDouble("lon")
+        private val latitude = JSONObject(FileUtil.readStringFromFile(weatherAlertRes))
+            .getDouble("lat")
 
         override fun dispatch(request: RecordedRequest): MockResponse {
             return when(request.requestUrl.uri().path){
                 path -> {
-                    if (request.requestUrl.queryParameterNames().contains("lat") &&
-                        request.requestUrl.queryParameterNames().contains("lon") &&
+                    if (request.requestUrl.queryParameter("lat") == latitude.toString() &&
+                        request.requestUrl.queryParameter("lon") == longitude.toString() &&
                         request.requestUrl.queryParameter("exclude") == "current,minutely,hourly,daily" &&
                         request.requestUrl.queryParameter("units") == "metric" &&
                         request.requestUrl.queryParameter("appid") == BuildConfig.OPEN_WEATHER_MAP_API_KEY
@@ -138,11 +141,11 @@ class ReceiveWeatherAlertNotificationSteps(
                             .setResponseCode(200)
 
                     } else {
-                        MockResponse().setResponseCode(404)
+                        super.dispatch(request)
                     }
                 }
 
-                else -> MockResponse().setResponseCode(404)
+                else -> super.dispatch(request)
             }
         }
     }

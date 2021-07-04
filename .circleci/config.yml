@@ -49,7 +49,7 @@ jobs:
           path: features/locations/appServices/build/test-results
       - store_test_results:
           path: features/locations/domain/build/test-results
-  integration_tests:
+  feature_tests:
     working_directory: ~/code
     docker:
       - image: circleci/android:api-28
@@ -68,7 +68,7 @@ jobs:
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
       - run:
           name: Run integration tests
-          command: ./gradlew integrationTests --no-daemon --max-workers=2 --stacktrace
+          command: ./gradlew featureTests --no-daemon --max-workers=2 --stacktrace
       - store_artifacts:
           path: app/build/reports
           destination: reports
@@ -113,12 +113,12 @@ jobs:
               --type instrumentation \
               --app app/build/outputs/apk/debug/app-debug.apk \
               --test app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk \
-              --device model=Pixel2,version=29,locale=en,orientation=portrait \
+              --device model=flame,version=29,locale=en,orientation=portrait \
               --use-orchestrator
 workflows:
   version: 2
   build_and_test:
     jobs:
       - unit_tests
-      - integration_tests
+      - feature_tests
       - e2e_tests
