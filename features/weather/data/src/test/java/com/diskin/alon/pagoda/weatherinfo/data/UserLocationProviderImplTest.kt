@@ -1,7 +1,7 @@
 package com.diskin.alon.pagoda.weatherinfo.data
 
 import com.diskin.alon.pagoda.common.appservices.AppError
-import com.diskin.alon.pagoda.common.appservices.AppResult
+import com.diskin.alon.pagoda.common.appservices.Result
 import com.diskin.alon.pagoda.common.util.Mapper
 import com.diskin.alon.pagoda.weatherinfo.data.local.implementations.UserLocationProviderImpl
 import com.diskin.alon.pagoda.weatherinfo.data.local.model.UserLocation
@@ -38,8 +38,8 @@ class UserLocationProviderImplTest {
     }
 
     @Test
-    fun provideDeviceCurrentLocationWhenQueried() {
-        // Test case fixture
+    fun provideDeviceCurrentLocation_WhenQueried() {
+        // Given
         val settingsCheckTask: Task<LocationSettingsResponse> = mockk()
         val onSuccessListenerSlot = slot<OnSuccessListener<LocationSettingsResponse>>()
         val locationUpdatesTask: Task<Void> = mockk()
@@ -57,36 +57,32 @@ class UserLocationProviderImplTest {
         every { locationClient.removeLocationUpdates(capture(removedCallbackSlot)) } returns mockk()
         every { mapper.map(any()) } returns mappedLocation
 
-        // Given an initialized provider
-
-        // When provider is queried for current device location
+        // When
         val observer = provider.getLocation().test()
 
-        // Then provider should check location settings on device
+        // Then
         verify { settingsClient.checkLocationSettings(any()) }
 
-        // When settings check is successful
+        // When
         onSuccessListenerSlot.captured.onSuccess(mockk())
 
-        // Then provider should register location updates callback
+        // Then
         verify { locationClient.requestLocationUpdates(any(),any(),any()) }
-        assertThat(locationRequestSlot.captured.priority).isEqualTo(LocationRequest.PRIORITY_HIGH_ACCURACY)
-        assertThat(locationRequestSlot.captured.isWaitForAccurateLocation).isTrue()
+        assertThat(locationRequestSlot.captured.priority).isEqualTo(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY)
 
-        // When location updated is issued to callback listener
+        // When
         val locationRes: LocationResult = mockk()
         locationCallbackSlot.captured.onLocationResult(locationRes)
 
-        // Then provider should propagate first mapped update result and unregister callback listener
+        // Then
         verify { mapper.map(locationRes) }
-        observer.assertValueAt(0) { it is AppResult.Loading }
-        observer.assertValueAt(1) { it == AppResult.Success(mappedLocation) }
+        observer.assertValue(Result.Success(mappedLocation))
         assertThat(locationCallbackSlot.captured).isEqualTo(removedCallbackSlot.captured)
     }
 
     @Test
-    fun handleErrorWhenLocationSettingCheckFail() {
-        // Test case fixture
+    fun handleError_WhenLocationSettingCheckFail() {
+        // Given
         val settingsCheckTask: Task<LocationSettingsResponse> = mockk()
         val onFailureListenerSlot = slot<OnFailureListener>()
         val onSuccessListenerSlot = slot<OnSuccessListener<LocationSettingsResponse>>()
@@ -97,24 +93,21 @@ class UserLocationProviderImplTest {
         every { settingsCheckTask.addOnFailureListener(capture(onFailureListenerSlot)) } returns settingsCheckTask
         every { errorHandler.handle(any()) } returns appError
 
-        // Given an initialized provider
-
-        // When provider is queried for current device location
+        // When
         val observer = provider.getLocation().test()
 
-        // And settings check results in failure
+        // And
         val settingsError = Exception()
         onFailureListenerSlot.captured.onFailure(settingsError)
 
-        // Then provider should propagate handled error result
+        // Then
         verify { errorHandler.handle(settingsError) }
-        observer.assertValueAt(0) { it is AppResult.Loading }
-        observer.assertValueAt(1,AppResult.Error(appError))
+        observer.assertValue(Result.Error(appError))
     }
 
     @Test
-    fun handleErrorWhenLocationPermissionNotGranted() {
-        // Test case fixture
+    fun handleError_WhenLocationPermissionNotGranted() {
+        // Given
         val settingsCheckTask: Task<LocationSettingsResponse> = mockk()
         val onSuccessListenerSlot = slot<OnSuccessListener<LocationSettingsResponse>>()
         val locationUpdatesTask: Task<Void> = mockk()
@@ -128,24 +121,21 @@ class UserLocationProviderImplTest {
         every { locationUpdatesTask.addOnFailureListener(capture(onFailureListenerSlot)) } returns locationUpdatesTask
         every { errorHandler.handle(any()) } returns appError
 
-        // Given an initialized provider
-
-        // When provider is queried for current device location
+        // When
         val observer = provider.getLocation().test()
 
-        // Then provider should check location settings on device
+        // Then
         verify { settingsClient.checkLocationSettings(any()) }
 
-        // When settings check is successful
+        // When
         onSuccessListenerSlot.captured.onSuccess(mockk())
 
-        // And location update request fail dou to missing permission
+        // And
         val permissionError = Exception()
         onFailureListenerSlot.captured.onFailure(permissionError)
 
-        // Then provider should propagate handled error result
+        // Then
         verify { errorHandler.handle(permissionError) }
-        observer.assertValueAt(0) { it is AppResult.Loading }
-        observer.assertValueAt(1,AppResult.Error(appError))
+        observer.assertValue(Result.Error(appError))
     }
 }

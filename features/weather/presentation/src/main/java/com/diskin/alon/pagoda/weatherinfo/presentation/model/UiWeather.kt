@@ -21,4 +21,5 @@ data class UiWeather(val locationName: String,
                      val uvIndex: String,
                      val hourlyForecast: List<UiHourForecast>,
                      val dailyForecast: List<UiDayForecast>,
-                     val updated: String)
+                     val updated: String,
+                     val currentTempUnit: String)

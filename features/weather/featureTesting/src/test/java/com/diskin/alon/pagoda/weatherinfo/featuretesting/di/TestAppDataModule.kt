@@ -3,7 +3,7 @@ package com.diskin.alon.pagoda.weatherinfo.featuretesting.di
 import android.app.Application
 import androidx.room.Room
 import com.diskin.alon.pagoda.weatherinfo.data.local.interfaces.CurrentWeatherDao
-import com.diskin.alon.pagoda.weatherinfo.featuretesting.TestDatabase
+import com.diskin.alon.pagoda.weatherinfo.featuretesting.util.TestDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

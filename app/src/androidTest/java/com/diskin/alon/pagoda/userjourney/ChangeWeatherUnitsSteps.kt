@@ -1,7 +1,6 @@
 package com.diskin.alon.pagoda.userjourney
 
 import android.content.Context
-import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -24,13 +23,12 @@ import com.mauriciotogneri.greencoffee.annotations.And
 import com.mauriciotogneri.greencoffee.annotations.Given
 import com.mauriciotogneri.greencoffee.annotations.Then
 import com.mauriciotogneri.greencoffee.annotations.When
-import okhttp3.mockwebserver.MockWebServer
 import org.json.JSONObject
 
 /**
  * Step definitions for 'User changes weather units' scenario.
  */
-class ChangeWeatherUnitsSteps(server: MockWebServer) : GreenCoffeeSteps() {
+class ChangeWeatherUnitsSteps : GreenCoffeeSteps() {
 
     @Given("^User has not changed default units preferences$")
     fun user_has_not_changed_default_units_preferences() {
@@ -93,6 +91,10 @@ class ChangeWeatherUnitsSteps(server: MockWebServer) : GreenCoffeeSteps() {
         // Verify current temp
         onView(withId(R.id.currentTemp))
             .check(matches(withText(expectedTemp)))
+
+        // Verify current temp unit
+        onView(withId(R.id.currentTempUnit))
+            .check(matches(withText("F")))
 
         // Verify current location time shown in 12 hor format
         onView(withId(R.id.textClock))

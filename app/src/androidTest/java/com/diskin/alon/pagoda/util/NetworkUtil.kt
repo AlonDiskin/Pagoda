@@ -37,10 +37,10 @@ object NetworkUtil {
         val geoRes = "assets/json/geocoding.json"
         private val weatherPath = "/data/2.5/onecall"
         private val geocodingPath = "/geo/1.0/reverse"
-        private val longitude = JSONObject(FileUtil.readStringFromFile(weatherRes))
-            .getDouble("lon")
         private val latitude = JSONObject(FileUtil.readStringFromFile(weatherRes))
             .getDouble("lat")
+        private val longitude = JSONObject(FileUtil.readStringFromFile(weatherRes))
+            .getDouble("lon")
 
         override fun dispatch(request: RecordedRequest): MockResponse {
             return when(request.requestUrl.uri().path){

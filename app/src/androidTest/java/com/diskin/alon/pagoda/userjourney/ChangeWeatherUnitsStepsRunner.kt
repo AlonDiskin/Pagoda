@@ -9,7 +9,6 @@ import androidx.work.Configuration
 import androidx.work.impl.utils.SynchronousExecutor
 import androidx.work.testing.WorkManagerTestInitHelper
 import com.diskin.alon.pagoda.settings.di.SettingsNetworkingModule
-import com.diskin.alon.pagoda.util.NetworkUtil
 import com.diskin.alon.pagoda.weatherinfo.di.WeatherNetworkingModule
 import com.mauriciotogneri.greencoffee.GreenCoffeeConfig
 import com.mauriciotogneri.greencoffee.GreenCoffeeTest
@@ -59,7 +58,7 @@ class ChangeWeatherUnitsStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTest(
             .build()
 
         WorkManagerTestInitHelper.initializeTestWorkManager(getApplicationContext(), config)
-        scenarioSteps = ChangeWeatherUnitsSteps(NetworkUtil.server)
+        scenarioSteps = ChangeWeatherUnitsSteps()
         start(scenarioSteps)
     }
 

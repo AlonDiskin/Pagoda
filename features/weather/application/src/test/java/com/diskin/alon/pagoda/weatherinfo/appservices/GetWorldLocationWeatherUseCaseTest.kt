@@ -36,7 +36,7 @@ class GetWorldLocationWeatherUseCaseTest {
         val repoWeather = mockk<Weather>()
         val repoRes = AppResult.Success(repoWeather)
 
-        every { weatherRepo.get(any(),any()) } returns Observable.just(repoRes)
+        every { weatherRepo.getLocationWeather(any(),any()) } returns Observable.just(repoRes)
         every { weatherUnitsMapper.mapWeather(any()) } returns Observable.just(mockk())
 
         // When
@@ -44,7 +44,7 @@ class GetWorldLocationWeatherUseCaseTest {
         useCase.execute(request).test()
 
         // Then
-        verify { weatherRepo.get(request.lat,request.lon) }
+        verify { weatherRepo.getLocationWeather(request.lat,request.lon) }
         verify { weatherUnitsMapper.mapWeather(repoWeather) }
     }
 }

@@ -2,12 +2,14 @@ package com.diskin.alon.pagoda.weatherinfo.data.local.implementations
 
 import com.diskin.alon.pagoda.common.appservices.*
 import com.diskin.alon.pagoda.common.util.Mapper
-import com.diskin.alon.pagoda.weatherinfo.data.local.interfaces.WeatherCache
 import com.diskin.alon.pagoda.weatherinfo.data.local.interfaces.CurrentWeatherDao
+import com.diskin.alon.pagoda.weatherinfo.data.local.interfaces.WeatherCache
 import com.diskin.alon.pagoda.weatherinfo.data.local.model.CurrentWeatherEntity
 import com.diskin.alon.pagoda.weatherinfo.data.local.model.CurrentWeatherEntity.Companion.WEATHER_ID
 import com.diskin.alon.pagoda.weatherinfo.domain.Weather
 import io.reactivex.Observable
+import io.reactivex.Single
+import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 class WeatherCacheImpl @Inject constructor(
@@ -16,23 +18,24 @@ class WeatherCacheImpl @Inject constructor(
     private val entityMapper: Mapper<Weather,CurrentWeatherEntity>
 ) : WeatherCache {
 
-    override fun getCurrentLocation(): Observable<AppResult<Weather>> {
+    override fun getCurrentLocationWeather(): Observable<Result<Weather>> {
         return weatherDao.getWeather(WEATHER_ID)
             .map(weatherMapper::map)
-            .toIOLoadingResult(::handleError)
+            .toResult(::handleError)
     }
 
-    override fun cacheCurrentLocation(weather: Weather): Observable<AppResult<Unit>> {
+    override fun cacheCurrentLocation(weather: Weather): Single<Result<Unit>> {
         return weatherDao.insert(entityMapper.map(weather))
-            .andThen(Observable.just(Unit))
-            .toIOLoadingResult(::handleError)
+            .subscribeOn(Schedulers.io())
+            .toSingle { }
+            .toSingleResult(::handleError)
     }
 
-    override fun hasCurrentLocation(): Observable<AppResult<Boolean>> {
+    override fun hasCurrentLocation(): Single<Result<Boolean>> {
         return weatherDao.isWeatherExist(WEATHER_ID)
+            .subscribeOn(Schedulers.io())
             .map { it == 1 }
-            .toObservable()
-            .toIOLoadingResult(::handleError)
+            .toSingleResult(::handleError)
     }
 
     private fun handleError(throwable: Throwable): AppError {

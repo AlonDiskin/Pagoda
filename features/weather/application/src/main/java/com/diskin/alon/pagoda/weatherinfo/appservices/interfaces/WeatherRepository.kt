@@ -16,11 +16,11 @@ interface WeatherRepository {
      * @param lat latitude value of location.
      * @param lon longitude value of location.
      */
-    fun get(lat: Double, lon: Double): Observable<AppResult<Weather>>
+    fun getLocationWeather(lat: Double, lon: Double): Observable<AppResult<Weather>>
 
     /**
      * Get a [Weather] that holds the weather info for current device location. Unit system
      * for data is metric.
      */
-    fun getCurrentLocation(): Observable<AppResult<Weather>>
+    fun getCurrentLocationWeather(): Observable<AppResult<Weather>>
 }

@@ -1,7 +1,7 @@
 package com.diskin.alon.pagoda.weatherinfo.appservices.usecase
 
 import com.diskin.alon.pagoda.common.appservices.AppResult
-import com.diskin.alon.pagoda.common.appservices.toResult
+import com.diskin.alon.pagoda.common.appservices.toAppResult
 import com.diskin.alon.pagoda.common.eventcontracts.AppEventProvider
 import com.diskin.alon.pagoda.common.eventcontracts.settings.TemperatureUnitPref
 import com.diskin.alon.pagoda.common.eventcontracts.settings.TimeFormatPref
@@ -96,7 +96,7 @@ class WeatherUnitsSettingMapper @Inject constructor(
                     weather.updated
                 )
             })
-            .toResult()
+            .toAppResult()
     }
 
     private fun mapUnitPrefSystem(prefSystem: UnitPrefSystem): UnitSystemDto {

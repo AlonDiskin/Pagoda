@@ -66,7 +66,7 @@
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:setImageRes="@{weather.conditionIconRes}"
+            app:setMainWeatherIconRes="@{weather.conditionIconRes}"
             tools:srcCompat="@drawable/ic_weather_fog_96" />
 
         <Space
@@ -131,12 +131,25 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:text="@{weather.updated}"
-            android:textColor="@color/yellow_100"
             android:textAppearance="?attr/textAppearanceSubtitle2"
+            android:textColor="@color/yellow_100"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/minMaxTemp"
             tools:text="Updated: 19 Mar, 16:03" />
+
+        <TextView
+            android:id="@+id/currentTempUnit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{weather.currentTempUnit}"
+            android:textAppearance="?attr/textAppearanceHeadline2"
+            android:textSize="28sp"
+            app:layout_constraintBaseline_toBaselineOf="@id/currentTemp"
+            app:layout_constraintBottom_toBottomOf="@+id/currentTemp"
+            app:layout_constraintStart_toEndOf="@+id/currentTemp"
+            app:layout_constraintTop_toTopOf="@+id/currentTemp"
+            tools:text="C" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

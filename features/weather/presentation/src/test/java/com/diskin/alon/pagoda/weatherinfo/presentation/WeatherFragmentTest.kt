@@ -154,6 +154,10 @@ class WeatherFragmentTest {
         onView(withId(R.id.currentTemp))
             .check(matches(withText(weatherData.currentTemp)))
 
+        // Verify current temp unit
+        onView(withId(R.id.currentTempUnit))
+            .check(matches(withText(weatherData.currentTempUnit)))
+
         // Verify feel temp data
         onView(withId(R.id.feelTemp))
             .check(matches(withText(weatherData.feelTemp)))

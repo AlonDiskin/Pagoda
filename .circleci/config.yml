@@ -28,25 +28,23 @@ jobs:
       - store_test_results:
           path: features/home/presentation/build/test-results
       - store_test_results:
-          path: features/weatherInfo/presentation/build/test-results
+          path: features/weather/presentation/build/test-results
       - store_test_results:
-          path: features/weatherInfo/data/build/test-results
+          path: features/weather/data/build/test-results
       - store_test_results:
-          path: features/weatherInfo/appServices/build/test-results
+          path: features/weather/application/build/test-results
       - store_test_results:
-          path: features/weatherInfo/domain/build/test-results
-      - store_test_results:
-          path: features/weatherInfo/infrastructure/build/test-results
+          path: features/weather/domain/build/test-results
       - store_test_results:
           path: features/settings/presentation/build/test-results
       - store_test_results:
-          path: features/settings/appServices/build/test-results
+          path: features/settings/application/build/test-results
       - store_test_results:
           path: features/locations/presentation/build/test-results
       - store_test_results:
           path: features/locations/data/build/test-results
       - store_test_results:
-          path: features/locations/appServices/build/test-results
+          path: features/locations/application/build/test-results
       - store_test_results:
           path: features/locations/domain/build/test-results
   feature_tests:
@@ -73,7 +71,7 @@ jobs:
           path: app/build/reports
           destination: reports
       - store_test_results:
-          path: features/weatherInfo/featureTesting/build/test-results
+          path: features/weather/featureTesting/build/test-results
       - store_test_results:
           path: features/settings/featureTesting/build/test-results
       - store_test_results:

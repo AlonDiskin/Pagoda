@@ -8,8 +8,8 @@ import javax.inject.Inject
 class UserLocationMapper @Inject constructor() : Mapper<LocationResult, UserLocation> {
     override fun map(source: LocationResult): UserLocation {
         return UserLocation(
-            source.lastLocation.latitude,
-            source.lastLocation.longitude
+            String.format("%.2f",source.lastLocation.latitude).toDouble(),
+            String.format("%.2f",source.lastLocation.longitude).toDouble()
         )
     }
 }

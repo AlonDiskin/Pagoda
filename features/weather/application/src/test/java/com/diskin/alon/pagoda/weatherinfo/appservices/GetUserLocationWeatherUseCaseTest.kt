@@ -36,7 +36,7 @@ class GetUserLocationWeatherUseCaseTest {
         val repoWeather = mockk<Weather>()
         val repoRes = AppResult.Success(repoWeather)
 
-        every { weatherRepo.getCurrentLocation() } returns Observable.just(repoRes)
+        every { weatherRepo.getCurrentLocationWeather() } returns Observable.just(repoRes)
         every { weatherUnitsMapper.mapWeather(any()) } returns Observable.just(mockk())
 
         // When
@@ -44,7 +44,7 @@ class GetUserLocationWeatherUseCaseTest {
         useCase.execute(request).test()
 
         // Then
-        verify { weatherRepo.getCurrentLocation() }
+        verify { weatherRepo.getCurrentLocationWeather() }
         verify { weatherUnitsMapper.mapWeather(repoWeather) }
     }
 }

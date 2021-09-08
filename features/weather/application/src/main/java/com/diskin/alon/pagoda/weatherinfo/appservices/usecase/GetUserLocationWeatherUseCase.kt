@@ -2,7 +2,7 @@ package com.diskin.alon.pagoda.weatherinfo.appservices.usecase
 
 import com.diskin.alon.pagoda.common.appservices.AppResult
 import com.diskin.alon.pagoda.common.appservices.UseCase
-import com.diskin.alon.pagoda.common.appservices.flatMapResult
+import com.diskin.alon.pagoda.common.appservices.flatMapAppResult
 import com.diskin.alon.pagoda.weatherinfo.appservices.interfaces.WeatherRepository
 import com.diskin.alon.pagoda.weatherinfo.appservices.model.WeatherDto
 import com.diskin.alon.pagoda.weatherinfo.appservices.model.UserLocationWeatherRequest
@@ -19,7 +19,7 @@ class GetUserLocationWeatherUseCase @Inject constructor(
 
     override fun execute(param: UserLocationWeatherRequest): Observable<AppResult<WeatherDto>> {
         return weatherRepo
-            .getCurrentLocation()
-            .flatMapResult(weatherUnitsMapper::mapWeather)
+            .getCurrentLocationWeather()
+            .flatMapAppResult(weatherUnitsMapper::mapWeather)
     }
 }

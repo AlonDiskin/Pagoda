@@ -2,7 +2,7 @@ package com.diskin.alon.pagoda.weatherinfo.presentation.util
 
 import android.app.Application
 import com.diskin.alon.pagoda.common.appservices.AppResult
-import com.diskin.alon.pagoda.common.appservices.mapResult
+import com.diskin.alon.pagoda.common.appservices.mapAppResult
 import com.diskin.alon.pagoda.common.util.Mapper
 import com.diskin.alon.pagoda.weatherinfo.appservices.model.*
 import com.diskin.alon.pagoda.weatherinfo.appservices.model.WeatherDescriptionDto.*
@@ -20,7 +20,7 @@ class UiWeatherMapper @Inject constructor(
 ) : Mapper<Observable<AppResult<WeatherDto>>,Observable<AppResult<UiWeather>>> {
 
     override fun map(source: Observable<AppResult<WeatherDto>>): Observable<AppResult<UiWeather>> {
-        return source.mapResult {
+        return source.mapAppResult {
             UiWeather(
                 it.name,
                 it.timeZone,
@@ -38,8 +38,16 @@ class UiWeatherMapper @Inject constructor(
                 mapUvIndex(it.uvIndex),
                 mapHourForecast(it.hourlyForecast,it.timeFormat),
                 mapDayForecast(it.dailyForecast),
-                mapLastUpdateTime(it.updated,it.timeFormat)
+                mapLastUpdateTime(it.updated,it.timeFormat),
+                mapCurrentTempUnit(it.tempUnitSystem)
             )
+        }
+    }
+
+    private fun mapCurrentTempUnit(unitSystemDto: UnitSystemDto): String {
+        return when(unitSystemDto) {
+            UnitSystemDto.METRIC -> "C"
+            else -> "F"
         }
     }
 
@@ -91,48 +99,48 @@ class UiWeatherMapper @Inject constructor(
         return when(condition.description) {
             Thunderstorm -> {
                 when(condition.isDay) {
-                    true -> R.drawable.ic_weather_thunder_day_96
-                    else -> R.drawable.ic_weather_thunder_night_96
+                    true -> R.drawable.ic_anim_weather_thunder_day_96
+                    else -> R.drawable.ic_anim_weather_thunder_night_96
                 }
             }
             Rain, Drizzle -> {
                 when(condition.isDay) {
-                    true -> R.drawable.ic_weather_rain_day_96
-                    else -> R.drawable.ic_weather_rain_night_96
+                    true -> R.drawable.ic_anim_weather_rain_day_96
+                    else -> R.drawable.ic_anim_weather_rain_night_96
                 }
             }
             Snow -> {
                 when(condition.isDay) {
-                    true -> R.drawable.ic_weather_snow_day_96
-                    else -> R.drawable.ic_weather_snow_night_96
+                    true -> R.drawable.ic_anim_weather_snow_day_96
+                    else -> R.drawable.ic_anim_weather_snow_night_96
                 }
             }
             Mist, Fog -> {
                 when(condition.isDay) {
-                    true -> R.drawable.ic_weather_fog_day_96
-                    else -> R.drawable.ic_weather_fog_night_96
+                    true -> R.drawable.ic_anim_weather_fog_day_96
+                    else -> R.drawable.ic_anim_weather_fog_night_96
                 }
             }
             Clear -> {
                 when(condition.isDay) {
-                    true -> R.drawable.ic_weather_clear_day_96
-                    else -> R.drawable.ic_weather_clear_night_96
+                    true -> R.drawable.ic_anim_weather_clear_day_96
+                    else -> R.drawable.ic_anim_weather_clear_night_96
                 }
             }
             Clouds -> {
                 when(condition.isDay) {
-                    true -> R.drawable.ic_weather_clouds_day_96
-                    else -> R.drawable.ic_weather_clouds_night_96
+                    true -> R.drawable.ic_anim_weather_clouds_day_96
+                    else -> R.drawable.ic_anim_weather_clouds_night_96
                 }
             }
             Haze, Dust, Sand -> {
                 when(condition.isDay) {
-                    true -> R.drawable.ic_weather_haze_day_96
-                    else -> R.drawable.ic_weather_haze_night_96
+                    true -> R.drawable.ic_anim_weather_haze_day_96
+                    else -> R.drawable.ic_anim_weather_haze_night_96
                 }
             }
-            Tornado -> R.drawable.ic_weather_tornado_96
-            Unknown -> R.drawable.ic_weather_unknown_96
+            Tornado -> R.drawable.ic_anim_weather_tornado_96
+            Unknown -> R.drawable.ic_anim_weather_unknown_96
         }
     }
 

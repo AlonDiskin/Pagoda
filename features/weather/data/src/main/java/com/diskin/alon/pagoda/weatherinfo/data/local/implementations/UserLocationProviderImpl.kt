@@ -2,14 +2,13 @@ package com.diskin.alon.pagoda.weatherinfo.data.local.implementations
 
 import android.annotation.SuppressLint
 import android.os.Looper
-import com.diskin.alon.pagoda.common.appservices.AppResult
-import com.diskin.alon.pagoda.common.appservices.toResult
+import com.diskin.alon.pagoda.common.appservices.Result
+import com.diskin.alon.pagoda.common.appservices.toSingleResult
 import com.diskin.alon.pagoda.common.util.Mapper
 import com.diskin.alon.pagoda.weatherinfo.data.local.interfaces.UserLocationProvider
 import com.diskin.alon.pagoda.weatherinfo.data.local.model.UserLocation
 import com.diskin.alon.pagoda.weatherinfo.data.local.util.LocationErrorHandler
 import com.google.android.gms.location.*
-import io.reactivex.Observable
 import io.reactivex.Single
 import javax.inject.Inject
 
@@ -21,13 +20,12 @@ class UserLocationProviderImpl @Inject constructor(
 ) : UserLocationProvider {
 
     @SuppressLint("MissingPermission")
-    override fun getLocation(): Observable<AppResult<UserLocation>> {
+    override fun getLocation(): Single<Result<UserLocation>> {
         return Single.create<UserLocation> { emitter ->
             // Set the location request and settings request for needed location functionality
             // from device
             val locationRequest = LocationRequest.create()
-                .setWaitForAccurateLocation(true)
-                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+                .setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY)
             val locationSettingsRequest = LocationSettingsRequest.Builder()
                 .addLocationRequest(locationRequest)
                 .build()
@@ -55,8 +53,6 @@ class UserLocationProviderImpl @Inject constructor(
                 // handle device location setting error
                 .addOnFailureListener{ emitter.onError(it) }
         }
-            .toObservable()
-            .toResult(errorHandler::handle)
-            .startWith(AppResult.Loading())
+            .toSingleResult(errorHandler::handle)
     }
 }

@@ -81,20 +81,20 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun closeDrawer(smooth: Boolean) {
         val drawerLayout = findViewById<DrawerLayout>(R.id.drawerLayout)
-        drawerLayout.closeDrawer(GravityCompat.START)
+//        drawerLayout.closeDrawer(GravityCompat.START)
 
-//        if (smooth) {
-//            EspressoIdlingResource.increment()
-//            Thread {
-//                Thread.sleep(200)
-//                runOnUiThread {
-//                    drawerLayout.closeDrawer(GravityCompat.START)
-//                    EspressoIdlingResource.decrement()
-//                }
-//            }.start()
-//        } else {
-//            drawerLayout.closeDrawer(GravityCompat.START)
-//        }
+        if (smooth) {
+            EspressoIdlingResource.increment()
+            Thread {
+                Thread.sleep(200)
+                runOnUiThread {
+                    drawerLayout.closeDrawer(GravityCompat.START)
+                    EspressoIdlingResource.decrement()
+                }
+            }.start()
+        } else {
+            drawerLayout.closeDrawer(GravityCompat.START)
+        }
     }
 
     private fun isDrawerOpen(): Boolean {

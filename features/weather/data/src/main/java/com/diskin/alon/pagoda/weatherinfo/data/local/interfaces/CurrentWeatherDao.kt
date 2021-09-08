@@ -12,6 +12,9 @@ interface CurrentWeatherDao {
     @Query("SELECT * FROM current_weather WHERE id = :id")
     fun getWeather(id: Int): Observable<CurrentWeatherEntity>
 
+    @Query("SELECT * FROM current_weather WHERE id = :id")
+    fun getWeatherSingle(id: Int): Single<CurrentWeatherEntity>
+
     @Query("SELECT EXISTS(SELECT 1 FROM current_weather WHERE id = :id)")
     fun isWeatherExist(id: Int): Single<Int>
 

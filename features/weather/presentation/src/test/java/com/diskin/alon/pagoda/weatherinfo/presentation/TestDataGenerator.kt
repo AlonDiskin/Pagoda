@@ -29,6 +29,7 @@ fun createTestWeather(): UiWeather {
             UiDayForecast("Sunday","condition4",45,"-10°","32°"),
             UiDayForecast("Monday","condition7",47,"10°","36°")
         ),
-        "3 Mar, 12:45"
+        "3 Mar, 12:45",
+        "C"
     )
 }

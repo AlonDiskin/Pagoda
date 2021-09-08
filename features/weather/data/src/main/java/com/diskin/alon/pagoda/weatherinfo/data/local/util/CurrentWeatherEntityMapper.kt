@@ -28,7 +28,7 @@ class CurrentWeatherEntityMapper @Inject constructor() : Mapper<Weather, Current
             source.unitSystem,
             source.hourlyForecast,
             source.dailyForecast,
-            Calendar.getInstance().timeInMillis
+            source.updated
         )
     }
 }

@@ -1,7 +1,7 @@
 package com.diskin.alon.pagoda.weatherinfo.data
 
 import com.diskin.alon.pagoda.common.appservices.AppError
-import com.diskin.alon.pagoda.common.appservices.AppResult
+import com.diskin.alon.pagoda.common.appservices.Result
 import com.diskin.alon.pagoda.common.appservices.ErrorType
 import com.diskin.alon.pagoda.common.util.Mapper
 import com.diskin.alon.pagoda.weatherinfo.data.local.implementations.WeatherCacheImpl
@@ -50,14 +50,12 @@ class WeatherCacheImplTest {
     }
 
     @Test
-    fun saveWeatherToLocalStorageWhenCacheCurrent() {
-        // Test case fixture
+    fun saveWeatherToLocalStorage_WhenCacheCurrent() {
+        // Given
         val entity: CurrentWeatherEntity = mockk()
 
         every { entityMapper.map(any()) } returns entity
         every { weatherDao.insert(any()) } returns Completable.complete()
-
-        // Given
 
         // When
         val weather: Weather = mockk()
@@ -66,70 +64,58 @@ class WeatherCacheImplTest {
         // Then
         verify { entityMapper.map(weather) }
         verify { weatherDao.insert(entity) }
-        observer.assertValueAt(0) { it is AppResult.Loading }
-        observer.assertValueAt(1) { it == AppResult.Success(Unit) }
+        observer.assertValue(Result.Success(Unit) )
     }
 
     @Test
-    fun handleErrorWhenSavingCurrentWeatherToStorageFail() {
-        // Test case fixture
+    fun handleError_WhenSavingCurrentWeatherToStorageFail() {
+        // Given
         val entity: CurrentWeatherEntity = mockk()
 
         every { weatherDao.insert(any()) } returns Completable.error(Throwable())
         every { entityMapper.map(any()) } returns entity
 
-        // Given
-
         // When
         val observer = cache.cacheCurrentLocation(mockk()).test()
 
         // Then
-        observer.assertValueAt(0) { it is AppResult.Loading }
-        observer.assertValueAt(1) { it == AppResult.Error<Unit>(AppError(ErrorType.DB_ERROR)) }
+        observer.assertValue(Result.Error(AppError(ErrorType.DB_ERROR)) )
     }
 
     @Test
-    fun getWeatherFromLocalStorageWhenQueriedForCurrent() {
-        // Test case fixture
+    fun getWeatherFromLocalStorage_WhenQueriedForCurrent() {
+        // Given
         val daoEntity: CurrentWeatherEntity = mockk()
         val weather: Weather = mockk()
 
         every { weatherDao.getWeather(any()) } returns Observable.just(daoEntity)
         every { weatherMapper.map(any()) } returns weather
 
-        // Given
-
         // When
-        val observer = cache.getCurrentLocation().test()
+        val observer = cache.getCurrentLocationWeather().test()
 
         // Then
         verify { weatherDao.getWeather(WEATHER_ID) }
         verify { weatherMapper.map(daoEntity) }
-        observer.assertValueAt(0) { it is AppResult.Loading }
-        observer.assertValueAt(1) { it == AppResult.Success(weather) }
+        observer.assertValue(Result.Success(weather))
     }
 
     @Test
-    fun handleErrorWhenRetrievingCurrentWeatherFromStorageFail() {
-        // Test case fixture
+    fun handleError_WhenRetrievingCurrentWeatherFromStorageFail() {
+        // Given
         every { weatherDao.getWeather(any()) } returns Observable.error(Throwable())
 
-        // Given
-
         // When
-        val observer = cache.getCurrentLocation().test()
+        val observer = cache.getCurrentLocationWeather().test()
 
         // Then
-        observer.assertValueAt(0) { it is AppResult.Loading }
-        observer.assertValueAt(1) { it == AppResult.Error<Weather>(AppError(ErrorType.DB_ERROR)) }
+        observer.assertValue(Result.Error(AppError(ErrorType.DB_ERROR)))
     }
 
     @Test
-    fun checkCurrentWeatherInStorageWhenQueriedForCurrentExistence() {
-        // Test case fixture
-        every { weatherDao.isWeatherExist(any()) } returns Single.just(1)
-
+    fun checkCurrentWeatherInStorage_WhenQueriedForCurrentExistence() {
         // Given
+        every { weatherDao.isWeatherExist(any()) } returns Single.just(1)
 
         // When
         val observer = cache.hasCurrentLocation().test()
@@ -138,22 +124,18 @@ class WeatherCacheImplTest {
         val expected = true
 
         verify { weatherDao.isWeatherExist(WEATHER_ID) }
-        observer.assertValueAt(0) { it is AppResult.Loading }
-        observer.assertValueAt(1) { it == AppResult.Success(expected) }
+        observer.assertValue(Result.Success(expected))
     }
 
     @Test
-    fun handleErrorWhenCheckCurrentWeatherExistenceInStorageFail() {
-        // Test case fixture
-        every { weatherDao.isWeatherExist(any()) } returns Single.error(Throwable())
-
+    fun handleError_WhenCheckCurrentWeatherExistenceInStorageFail() {
         // Given
+        every { weatherDao.isWeatherExist(any()) } returns Single.error(Throwable())
 
         // When
         val observer = cache.hasCurrentLocation().test()
 
         // Then
-        observer.assertValueAt(0) { it is AppResult.Loading }
-        observer.assertValueAt(1) { it == AppResult.Error<Boolean>(AppError(ErrorType.DB_ERROR)) }
+        observer.assertValue(Result.Error(AppError(ErrorType.DB_ERROR)))
     }
 }

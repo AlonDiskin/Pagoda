@@ -16,7 +16,10 @@ class RemoteWeatherMapper @Inject constructor() :
 
     override fun map(source1: ApiWeatherResponse, source2: ApiLocationResponse): Weather {
         return Weather(
-            Coordinates(source1.lat, source1.lon),
+            Coordinates(
+                String.format("%.2f",source1.lat).toDouble(),
+                String.format("%.2f",source1.lon).toDouble()
+            ),
             source2.name,
             source2.country,
             source1.timezone,
@@ -62,8 +65,14 @@ class RemoteWeatherMapper @Inject constructor() :
                     it.temp.max
                 )
             },
-            Calendar.getInstance().timeInMillis
+            createUpdateStamp()
         )
+    }
+
+    private fun createUpdateStamp(): Long {
+        val current = LocalDateTime(Calendar.getInstance().timeInMillis)
+        return current.minusMinutes(current.minuteOfHour)
+            .minusSeconds(current.secondOfMinute).toDate().time
     }
 
     private fun mapConditionCode(code: Int): WeatherDescription {
