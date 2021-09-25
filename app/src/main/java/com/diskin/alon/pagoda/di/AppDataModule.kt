@@ -6,6 +6,7 @@ import com.diskin.alon.pagoda.AppDatabase
 import com.diskin.alon.pagoda.MIGRATION_1_2
 import com.diskin.alon.pagoda.MIGRATION_2_3
 import com.diskin.alon.pagoda.locations.data.local.LocationDao
+import com.diskin.alon.pagoda.weatherinfo.data.local.interfaces.CurrentWeatherDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -30,5 +31,11 @@ object AppDataModule {
     @Provides
     fun provideLocationDao(database: AppDatabase): LocationDao {
         return database.locationDao()
+    }
+
+    @Singleton
+    @Provides
+    fun provideCurrentWeatherDao(database: AppDatabase): CurrentWeatherDao {
+        return database.currentWeatherDao()
     }
 }

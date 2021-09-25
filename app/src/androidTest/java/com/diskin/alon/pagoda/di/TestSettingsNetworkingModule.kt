@@ -27,5 +27,4 @@ object TestSettingsNetworkingModule {
             .build()
             .create(OpenWeatherMapApi::class.java)
     }
-
 }

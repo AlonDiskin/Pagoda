@@ -1,0 +1,44 @@
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt">
+    <aapt:attr name="android:drawable">
+        <vector
+            android:height="96dp"
+            android:viewportHeight="57.587"
+            android:viewportWidth="57.587"
+            android:width="96dp">
+            <group android:name="translateXGroup">
+                <path android:fillColor="#00000000"
+                    android:pathData="M34.734,25.161h-21"
+                    android:strokeColor="#83b3cb" android:strokeLineCap="round"
+                    android:strokeLineJoin="round" android:strokeWidth="4"/>
+                <path android:fillColor="#00000000"
+                    android:pathData="M43.734,18.809h-21"
+                    android:strokeColor="#b6d4e3" android:strokeLineCap="round"
+                    android:strokeLineJoin="round" android:strokeWidth="4"/>
+                <path android:fillColor="#00000000"
+                    android:pathData="M43.853,32.128H31.893"
+                    android:strokeColor="#9fa6b7" android:strokeLineCap="round"
+                    android:strokeLineJoin="round" android:strokeWidth="4"/>
+                <path android:fillColor="#00000000"
+                    android:pathData="M34.734,38.778h-21"
+                    android:strokeColor="#615c9a" android:strokeLineCap="round"
+                    android:strokeLineJoin="round" android:strokeWidth="4"/>
+                <path android:fillColor="#00000000"
+                    android:pathData="M24.252,32.124L17.394,32.124"
+                    android:strokeColor="#9fa6b7" android:strokeLineCap="round"
+                    android:strokeLineJoin="round" android:strokeWidth="4"/>
+            </group>
+        </vector>
+    </aapt:attr>
+    <target android:name="translateXGroup">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:duration="3000"
+                android:propertyName="translateX"
+                android:repeatCount="infinite"
+                android:repeatMode="reverse"
+                android:valueFrom="-10"
+                android:valueTo="10" />
+        </aapt:attr>
+    </target>
+</animated-vector>

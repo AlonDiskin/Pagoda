@@ -1,6 +1,8 @@
 package com.diskin.alon.pagoda.common.featuretesting
 
 import java.io.File
+import java.lang.reflect.Field
+import java.lang.reflect.Modifier
 
 fun getJsonFromResource(resource: String): String {
     val topLevelClass = object : Any() {}.javaClass.enclosingClass!!
@@ -8,4 +10,17 @@ fun getJsonFromResource(resource: String): String {
         .getResource(resource)
 
     return File(jsonResource.toURI()).readText()
+}
+
+fun setFinalStatic(field: Field, newValue: Any?) {
+    field.isAccessible = true
+    val modifiersField: Field = try {
+        Field::class.java.getDeclaredField("accessFlags")
+    } catch (e: NoSuchFieldException) {
+        //This is an emulator JVM  ¯\_(ツ)_/¯
+        Field::class.java.getDeclaredField("modifiers")
+    }
+    modifiersField.isAccessible = true
+    modifiersField.setInt(field, field.modifiers and Modifier.FINAL.inv())
+    field.set(null, newValue)
 }

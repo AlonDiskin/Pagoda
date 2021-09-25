@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="weather"
+            type="com.diskin.alon.pagoda.weatherinfo.presentation.model.UiWeather" />
+
+        <variable
+            name="isCurrentLocation"
+            type="Boolean" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toTopOf="@+id/textClock"
+            app:layout_constraintEnd_toEndOf="@id/textClock"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="@id/textClock"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed">
+
+            <ImageView
+                android:id="@+id/locationIndicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                app:setLocationIndicator="@{isCurrentLocation}"
+                tools:srcCompat="@drawable/ic_baseline_location_24" />
+
+            <TextView
+                android:id="@+id/location_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="@{weather.locationName}"
+                android:textAppearance="?attr/textAppearanceHeadline6"
+                tools:text="Moscow" />
+        </LinearLayout>
+
+        <TextClock
+            android:id="@+id/textClock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:format12Hour="@{weather.clock12HourFormat}"
+            android:format24Hour="@{weather.clock24HourFormat}"
+            android:textAppearance="?attr/textAppearanceSubtitle1"
+            app:layout_constraintBottom_toTopOf="@+id/temp"
+            app:layout_constraintEnd_toEndOf="@+id/temp"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="@id/temp"
+            app:layout_constraintTop_toBottomOf="@+id/location"
+            app:setClockTimeZone="@{weather.timeZone}"
+            tools:text="Friday, 19 Mar, 16:03" />
+
+        <LinearLayout
+            android:id="@+id/temp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/description"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textClock">
+
+            <ImageView
+                android:id="@+id/mainWeatherIcon"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_gravity="center_vertical"
+                app:setImageRes="@{weather.conditionIconRes}"
+                tools:srcCompat="@drawable/ic_weather_fog_96" />
+
+            <TextView
+                android:id="@+id/currentTemp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="20dp"
+                android:text="@{weather.currentTemp}"
+                android:textAppearance="?attr/textAppearanceHeadline2"
+                tools:text="22&#xb0;" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="24dp"
+            android:text="@{weather.weatherCondition}"
+            android:textAppearance="?attr/textAppearanceHeadline5"
+            app:layout_constraintBottom_toTopOf="@+id/feelTemp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/temp"
+            app:layout_constraintTop_toTopOf="@id/location"
+            tools:text="Partly Cloudy" />
+
+        <TextView
+            android:id="@+id/feelTemp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{weather.feelTemp}"
+            android:textAppearance="?attr/textAppearanceHeadline6"
+            app:layout_constraintBottom_toTopOf="@+id/minMaxTemp"
+            app:layout_constraintEnd_toEndOf="@id/description"
+            app:layout_constraintStart_toStartOf="@id/description"
+            app:layout_constraintTop_toBottomOf="@+id/description"
+            tools:text="Feels like 20&#xb0;" />
+
+        <TextView
+            android:id="@+id/minMaxTemp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{weather.minMaxTemp}"
+            android:textAppearance="?attr/textAppearanceSubtitle1"
+            app:layout_constraintEnd_toEndOf="@+id/feelTemp"
+            app:layout_constraintStart_toStartOf="@+id/feelTemp"
+            app:layout_constraintTop_toBottomOf="@+id/feelTemp"
+            tools:text="min 20&#xb0;/ max 24&#xb0;" />
+
+        <TextView
+            android:id="@+id/updated"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{weather.updated}"
+            android:textColor="@color/yellow_100"
+            android:textAppearance="?attr/textAppearanceSubtitle1"
+            app:layout_constraintEnd_toEndOf="@id/minMaxTemp"
+            app:layout_constraintStart_toStartOf="@id/minMaxTemp"
+            app:layout_constraintTop_toBottomOf="@+id/minMaxTemp"
+            tools:text="Updated: 19 Mar, 16:03" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>
+

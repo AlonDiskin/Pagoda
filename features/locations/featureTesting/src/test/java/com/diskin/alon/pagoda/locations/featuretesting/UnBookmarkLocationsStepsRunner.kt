@@ -1,7 +1,9 @@
 package com.diskin.alon.pagoda.locations.featuretesting
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.databinding.ViewDataBinding
 import androidx.test.filters.MediumTest
+import com.diskin.alon.pagoda.common.featuretesting.setFinalStatic
 import com.mauriciotogneri.greencoffee.GreenCoffeeConfig
 import com.mauriciotogneri.greencoffee.GreenCoffeeTest
 import com.mauriciotogneri.greencoffee.ScenarioConfig
@@ -66,7 +68,13 @@ class UnBookmarkLocationsStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTest
 
     @Test
     fun test() {
+        // Disable data binding Choreographer
+        setFinalStatic(ViewDataBinding::class.java.getDeclaredField("USE_CHOREOGRAPHER"),false)
+
+        // Inject test dependencies
         hiltRule.inject()
+
+        // Start test
         start(UnBookmarkLocationsSteps(db))
     }
 }

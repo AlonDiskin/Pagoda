@@ -7,7 +7,7 @@ import androidx.paging.rxjava2.observable
 import com.diskin.alon.pagoda.common.appservices.AppError
 import com.diskin.alon.pagoda.common.appservices.AppResult
 import com.diskin.alon.pagoda.common.appservices.ErrorType
-import com.diskin.alon.pagoda.common.appservices.toSingleResult
+import com.diskin.alon.pagoda.common.appservices.toSingleAppResult
 import com.diskin.alon.pagoda.common.util.Mapper
 import com.diskin.alon.pagoda.locations.appservices.interfaces.LocationRepository
 import com.diskin.alon.pagoda.locations.data.local.LocationDao
@@ -47,14 +47,14 @@ class LocationRepositoryImpl @Inject constructor(
         return locationDao.unBookmark(id.lat,id.lon)
             .toSingleDefault(Unit)
             .subscribeOn(Schedulers.io())
-            .toSingleResult(::handleBookmarkRemoveError)
+            .toSingleAppResult(::handleBookmarkRemoveError)
     }
 
     override fun bookmark(id: Coordinates): Single<AppResult<Unit>> {
         return locationDao.bookmark(id.lat,id.lon)
             .toSingleDefault(Unit)
             .subscribeOn(Schedulers.io())
-            .toSingleResult(::handleBookmarkRemoveError)
+            .toSingleAppResult(::handleBookmarkRemoveError)
     }
 
     private fun handleBookmarkRemoveError(throwable: Throwable): AppError {

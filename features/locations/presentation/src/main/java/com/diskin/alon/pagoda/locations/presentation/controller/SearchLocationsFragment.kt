@@ -2,17 +2,19 @@ package com.diskin.alon.pagoda.locations.presentation.controller
 
 import android.os.Bundle
 import android.view.*
-import android.widget.ProgressBar
+import androidx.annotation.VisibleForTesting
 import androidx.appcompat.widget.SearchView
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
-import androidx.recyclerview.widget.RecyclerView
 import com.diskin.alon.pagoda.common.presentation.LOCATION_LAT
 import com.diskin.alon.pagoda.common.presentation.LOCATION_LON
 import com.diskin.alon.pagoda.locations.presentation.R
+import com.diskin.alon.pagoda.locations.presentation.databinding.FragmentSearchLocationsBinding
 import com.diskin.alon.pagoda.locations.presentation.model.UiLocationSearchResult
 import com.diskin.alon.pagoda.locations.presentation.viewmodel.SearchLocationsViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -24,6 +26,7 @@ import javax.inject.Inject
 class SearchLocationsFragment : Fragment(), SearchView.OnQueryTextListener, MenuItem.OnActionExpandListener {
 
     private val viewModel: SearchLocationsViewModel by viewModels()
+    private lateinit var binding: FragmentSearchLocationsBinding
     @Inject
     lateinit var appNav: AppLocationsNavProvider
 
@@ -37,45 +40,25 @@ class SearchLocationsFragment : Fragment(), SearchView.OnQueryTextListener, Menu
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_search_locations, container, false)
+        binding = FragmentSearchLocationsBinding.inflate(inflater,container,false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         // Setup search results ui adapter
-        val rv = view.findViewById<RecyclerView>(R.id.search_location_results)
-        val adapter = LocationSearchResultsAdapter(::handleResultClick,::handleAddResultClick)
-        rv.adapter = adapter
+        val adapter = LocationSearchResultsAdapter(
+            ::handleResultClick,
+            ::handleAddResultClick
+        )
+        binding.searchLocationResults.adapter = adapter
 
         // Handle adapter paging load state updates
-        adapter.addLoadStateListener { state ->
-            val progressBar = view.findViewById<ProgressBar>(R.id.progress_bar)
-            when(state.refresh) {
-                is LoadState.Loading -> progressBar.visibility = View.VISIBLE
-
-                is LoadState.NotLoading -> {
-                    if (state.append is LoadState.NotLoading) {
-                        progressBar.visibility = View.GONE
-                    }
-                }
-            }
-
-            when (state.append) {
-                is LoadState.Loading -> progressBar.visibility = View.VISIBLE
-
-                is LoadState.NotLoading -> {
-                    if (state.refresh is LoadState.NotLoading) {
-                        progressBar.visibility = View.GONE
-                    }
-                }
-            }
-        }
+        adapter.addLoadStateListener(::handleSearchResultsLoadStates)
 
         // Observe view model search results paging state
-        viewModel.results.observe(viewLifecycleOwner) {
-            adapter.submitData(lifecycle, it)
-        }
+        viewModel.results.observe(viewLifecycleOwner) { adapter.submitData(lifecycle, it) }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -121,5 +104,11 @@ class SearchLocationsFragment : Fragment(), SearchView.OnQueryTextListener, Menu
 
     private fun handleAddResultClick(result: UiLocationSearchResult) {
         viewModel.addToBookmarked(result)
+    }
+
+    @VisibleForTesting
+    fun handleSearchResultsLoadStates(state: CombinedLoadStates) {
+        binding.progressBar.isVisible = state.refresh is LoadState.Loading ||
+                state.append is LoadState.Loading
     }
 }

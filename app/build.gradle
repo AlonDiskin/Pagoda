@@ -57,7 +57,7 @@ android {
     packagingOptions {
         exclude 'META-INF/presentation_debug.kotlin_module'
         exclude 'META-INF/presentation_release.kotlin_module'
-        exclude 'META-INF/appServices.kotlin_module'
+        exclude 'META-INF/application.kotlin_module'
         exclude 'META-INF/domain.kotlin_module'
         exclude 'META-INF/di_debug.kotlin_module'
         exclude 'META-INF/data_debug.kotlin_module'
@@ -65,7 +65,13 @@ android {
         exclude 'META-INF/data_release.kotlin_module'
         exclude 'META-INF/infrastructure_debug.kotlin_module'
         exclude 'META-INF/infrastructure_release.kotlin_module'
+        exclude 'META-INF/AL2.0'
+        exclude 'META-INF/LGPL2.1'
     }
+}
+
+kapt {
+    correctErrorTypes true
 }
 
 dependencies {
@@ -82,7 +88,7 @@ dependencies {
     implementation project(':features:home:presentation')
     implementation project(':features:common:presentation')
     implementation project(':features:common:events')
-    implementation project(':features:weatherInfo:di')
+    implementation project(':features:weather:di')
     implementation project(':features:locations:di')
     implementation project(':features:settings:di')
 
@@ -91,7 +97,7 @@ dependencies {
 
     // Hilt
     implementation "com.google.dagger:hilt-android:$hilt_version"
-    kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
+    kapt "com.google.dagger:hilt-compiler:$hilt_version"
     implementation "androidx.hilt:hilt-work:$hilt_worker_version"
 
     // Retrofit
@@ -130,4 +136,5 @@ dependencies {
     androidTestImplementation 'io.mockk:mockk-android:1.10.3-jdk8'
     androidTestImplementation "androidx.work:work-testing:$work_version"
     androidTestImplementation 'androidx.test:rules:1.3.0'
+    androidTestImplementation "androidx.paging:paging-runtime-ktx:$paging_version"
 }

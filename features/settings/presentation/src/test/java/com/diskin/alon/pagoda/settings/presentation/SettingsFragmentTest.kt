@@ -10,12 +10,12 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityOptionsCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
-import androidx.fragment.app.testing.FragmentScenario
 import androidx.lifecycle.ViewModelLazy
 import androidx.preference.ListPreference
 import androidx.preference.PreferenceManager
 import androidx.preference.SwitchPreference
 import androidx.preference.get
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -26,6 +26,8 @@ import androidx.test.filters.SmallTest
 import com.diskin.alon.pagoda.common.appservices.AppError
 import com.diskin.alon.pagoda.common.appservices.ErrorType.LOCATION_BACKGROUND_PERMISSION
 import com.diskin.alon.pagoda.common.presentation.SingleLiveEvent
+import com.diskin.alon.pagoda.common.uitesting.HiltTestActivity
+import com.diskin.alon.pagoda.common.uitesting.launchFragmentInHiltContainer
 import com.diskin.alon.pagoda.settings.appservices.model.WeatherUnit.*
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
@@ -46,10 +48,10 @@ import org.robolectric.annotation.LooperMode
 @LooperMode(LooperMode.Mode.PAUSED)
 @SmallTest
 @Config(sdk = [28])
-class SettingsFragmentTest() {
+class SettingsFragmentTest {
 
     // Test subject
-    private lateinit var scenario: FragmentScenario<SettingsFragment>
+    private lateinit var scenario: ActivityScenario<HiltTestActivity>
 
     // Collaborators
     private val viewModel = mockk<SettingsViewModel>()
@@ -92,11 +94,8 @@ class SettingsFragmentTest() {
         every { viewModel.error } returns error
 
         // Launch fragment under test
-        scenario = FragmentScenario.launchInContainer(
-            SettingsFragment::class.java,
-            null,
-            R.style.Theme_AppCompat_Light_DarkActionBar,
-            object : FragmentFactory() {
+        scenario = launchFragmentInHiltContainer<SettingsFragment>(
+            factory = object :FragmentFactory() {
                 override fun instantiate(classLoader: ClassLoader, className: String): Fragment {
                     return SettingsFragment(testRegistry)
                 }
@@ -108,11 +107,12 @@ class SettingsFragmentTest() {
     fun showTemperatureUnitSelectionPreference() {
         // Given
 
-        scenario.onFragment {
-            val key = it.getString(R.string.pref_temperature_unit_key)
-            val prefUi = it.preferenceScreen.get<ListPreference>(key)!!
-            val prefValue = it.getString(R.string.pref_units_metric_value)
-            val prefUiEntry = it.getString(R.string.pref_temperature_metric_entry)
+        scenario.onActivity {
+            val fragment = it.supportFragmentManager.fragments.first()!! as SettingsFragment
+            val key = fragment.getString(R.string.pref_temperature_unit_key)
+            val prefUi = fragment.preferenceScreen.get<ListPreference>(key)!!
+            val prefValue = fragment.getString(R.string.pref_units_metric_value)
+            val prefUiEntry = fragment.getString(R.string.pref_temperature_metric_entry)
 
             // Then fragment should show temperature unit selection preference with
             // summary entry as metric
@@ -149,10 +149,11 @@ class SettingsFragmentTest() {
     fun showTimeFormatUnitSelectionPreference() {
         // Given
 
-        scenario.onFragment {
-            val key = it.getString(R.string.pref_time_format_key)
-            val prefUi = it.preferenceScreen.get<ListPreference>(key)!!
-            val prefValue = it.getString(R.string.pref_time_format_24_value)
+        scenario.onActivity {
+            val fragment = it.supportFragmentManager.fragments.first()!! as SettingsFragment
+            val key = fragment.getString(R.string.pref_time_format_key)
+            val prefUi = fragment.preferenceScreen.get<ListPreference>(key)!!
+            val prefValue = fragment.getString(R.string.pref_time_format_24_value)
 
             // Then
             assertThat(prefUi.isShown).isTrue()
@@ -188,11 +189,12 @@ class SettingsFragmentTest() {
     fun showWindSpeedUnitSelectionPreference() {
         // Given
 
-        scenario.onFragment {
+        scenario.onActivity {
+            val fragment = it.supportFragmentManager.fragments.first()!! as SettingsFragment
             val key = it.getString(R.string.pref_wind_speed_unit_key)
-            val prefUi = it.preferenceScreen.get<ListPreference>(key)!!
-            val prefValue = it.getString(R.string.pref_units_metric_value)
-            val prefUiEntry = it.getString(R.string.pref_wind_speed_metric_entry)
+            val prefUi = fragment.preferenceScreen.get<ListPreference>(key)!!
+            val prefValue = fragment.getString(R.string.pref_units_metric_value)
+            val prefUiEntry = fragment.getString(R.string.pref_wind_speed_metric_entry)
 
             // Then
             assertThat(prefUi.isShown).isTrue()
@@ -228,11 +230,12 @@ class SettingsFragmentTest() {
     fun showWeatherAlertsNotificationPreference() {
         // Given
 
-        scenario.onFragment {
-            val key = it.getString(R.string.pref_alert_notification_key)
-            val prefUi = it.preferenceScreen.get<SwitchPreference>(key)!!
-            val prefValue = it.getString(R.string.pref_units_metric_value).toBoolean()
-            val prefSummary = it.getString(R.string.pref_alert_notification_summary)
+        scenario.onActivity {
+            val fragment = it.supportFragmentManager.fragments.first()!! as SettingsFragment
+            val key = fragment.getString(R.string.pref_alert_notification_key)
+            val prefUi = fragment.preferenceScreen.get<SwitchPreference>(key)!!
+            val prefValue = fragment.getString(R.string.pref_units_metric_value).toBoolean()
+            val prefSummary = fragment.getString(R.string.pref_alert_notification_summary)
 
             // Then
             assertThat(prefUi.isShown).isTrue()
@@ -252,9 +255,10 @@ class SettingsFragmentTest() {
 
         // When (since pref ui is hidden in scrollable ui and not present in hierarchy,click via
         // preference api directly
-        scenario.onFragment {
-            val key = it.getString(R.string.pref_alert_notification_key)
-            val prefUi = it.preferenceScreen.get<SwitchPreference>(key)!!
+        scenario.onActivity {
+            val fragment = it.supportFragmentManager.fragments.first()!! as SettingsFragment
+            val key = fragment.getString(R.string.pref_alert_notification_key)
+            val prefUi = fragment.preferenceScreen.get<SwitchPreference>(key)!!
 
             prefUi.performClick()
         }
@@ -296,10 +300,11 @@ class SettingsFragmentTest() {
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
         // Then
-        scenario.onFragment {
-            val key = it.getString(R.string.pref_alert_notification_key)
-            val  prefValue = it.preferenceManager.sharedPreferences.getBoolean(key,true)
-            val prefUi = it.preferenceScreen.get<SwitchPreference>(key)!!
+        scenario.onActivity {
+            val fragment = it.supportFragmentManager.fragments.first()!! as SettingsFragment
+            val key = fragment.getString(R.string.pref_alert_notification_key)
+            val  prefValue = fragment.preferenceManager.sharedPreferences.getBoolean(key,true)
+            val prefUi = fragment.preferenceScreen.get<SwitchPreference>(key)!!
 
             assertThat(prefValue).isFalse()
             assertThat(prefUi.isChecked).isFalse()

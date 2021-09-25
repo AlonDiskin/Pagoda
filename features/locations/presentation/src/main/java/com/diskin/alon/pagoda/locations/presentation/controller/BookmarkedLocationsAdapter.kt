@@ -15,7 +15,7 @@ import com.diskin.alon.pagoda.locations.presentation.model.UiBookmarkedLocation
  */
 class BookmarkedLocationsAdapter(
     private val locationClickListener: (UiBookmarkedLocation) -> (Unit),
-    private val optionsClickListener: (UiBookmarkedLocation, View) -> (Unit),
+    private val optionsClickListener: (UiBookmarkedLocation, View) -> (Unit)
 ) : PagingDataAdapter<UiBookmarkedLocation, BookmarkedLocationViewHolder>(
     DIFF_CALLBACK
 ) {

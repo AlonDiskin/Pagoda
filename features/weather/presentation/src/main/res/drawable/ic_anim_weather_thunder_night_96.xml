@@ -1,0 +1,44 @@
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt">
+    <aapt:attr name="android:drawable">
+        <vector android:height="96dp" android:viewportHeight="64"
+            android:viewportWidth="64" android:width="96dp">
+            <group android:name="rotationGroup"
+                android:pivotX="43"
+                android:pivotY="21">
+                <path android:fillColor="#efcc00" android:pathData="M50,20.71A13.88,13.88 0,0 1,37.86 2.77,0.6 0.6,0 0,0 37,2.08 13.88,13.88 0,1 0,55.92 21a0.6,0.6 0,0 0,-0.69 -0.89A13.91,13.91 0,0 1,50 20.71Z"/>
+            </group>
+            <path android:pathData="M23.66,15.9a17.49,17.49 0,0 1,15.47 9.32A13.75,13.75 0,1 1,46 50.84l-22.39,0.06a17.5,17.5 0,0 1,0 -35Z">
+                <aapt:attr name="android:fillColor">
+                    <gradient android:endX="40.34" android:endY="25.08"
+                        android:startX="19.250002" android:startY="52.39" android:type="linear">
+                        <item android:color="#FFF2F2F2" android:offset="0"/>
+                        <item android:color="#FFCFCFCF" android:offset="1"/>
+                    </gradient>
+                </aapt:attr>
+            </path>
+            <path android:pathData="M46.0535,37.089m-3.7,13.2428a13.75,13.75 67.8684,1 1,7.3999 -26.4857a13.75,13.75 67.8684,1 1,-7.3999 26.4857">
+                <aapt:attr name="android:fillColor">
+                    <gradient android:endX="35.735153" android:endY="46.073864"
+                        android:startX="51.66633" android:startY="32.198986" android:type="linear">
+                        <item android:color="#FFFFFFFF" android:offset="0.02"/>
+                        <item android:color="#00FFFFFF" android:offset="1"/>
+                    </gradient>
+                </aapt:attr>
+            </path>
+            <path android:fillColor="#efcc00" android:pathData="M33.13,42.35l-2.13,12.25l4.26,0l-2.13,9.05l10.12,-12.78l-4.79,0l4.26,-8.52l-9.59,0z"/>
+            <path android:fillColor="#0baeff" android:pathData="M28.85,59.28a3.72,3.72 0,1 1,-7.44 0c0,-3.26 3,-6.28 3.72,-6.28S28.85,56 28.85,59.28Z"/>
+        </vector>
+    </aapt:attr>
+    <target android:name="rotationGroup">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:duration="3000"
+                android:propertyName="rotation"
+                android:repeatCount="infinite"
+                android:repeatMode="reverse"
+                android:valueFrom="-20"
+                android:valueTo="20"/>
+        </aapt:attr>
+    </target>
+</animated-vector>

@@ -1,7 +1,7 @@
 package com.diskin.alon.pagoda.di
 
 import com.diskin.alon.pagoda.util.NetworkUtil
-import com.diskin.alon.pagoda.weatherinfo.data.remote.OpenWeatherMapApi
+import com.diskin.alon.pagoda.weatherinfo.data.remote.interfaces.OpenWeatherMapApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
