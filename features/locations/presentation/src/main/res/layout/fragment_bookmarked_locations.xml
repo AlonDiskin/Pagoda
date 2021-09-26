@@ -28,16 +28,6 @@
             tools:visibility="visible"
             android:layout_gravity="center|top"/>
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/add_fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:backgroundTint="@color/blue_400"
-            android:src="@drawable/ic_baseline_add_24"
-            android:contentDescription="@string/add_location_description"
-            android:layout_gravity="bottom|end"
-            android:layout_margin="16dp" />
-
     </FrameLayout>
 
 </layout>

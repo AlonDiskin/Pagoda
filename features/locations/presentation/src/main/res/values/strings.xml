@@ -9,4 +9,5 @@
     <string name="title_dialog_positive_action">ok</string>
     <string name="title_dialog_negative_action">cancel</string>
     <string name="text_locations_db_error">Operation not available temporarily!</string>
+    <string name="title_add_location">Add location</string>
 </resources>

@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_weatherFragment_to_searchLocationsFragment"
             app:destination="@id/searchLocationsFragment" />
+        <action
+            android:id="@+id/action_weatherFragment_to_favoriteLocationsFragment"
+            app:destination="@id/favoriteLocationsFragment" />
     </fragment>
 
     <fragment
@@ -25,6 +28,11 @@
 
     <fragment
         android:id="@+id/searchLocationsFragment"
+        android:name="com.diskin.alon.pagoda.home.presentation.BlankFragment"
+        tools:layout="@layout/fragment_blank"/>
+
+    <fragment
+        android:id="@+id/favoriteLocationsFragment"
         android:name="com.diskin.alon.pagoda.home.presentation.BlankFragment"
         tools:layout="@layout/fragment_blank"/>
 </navigation>

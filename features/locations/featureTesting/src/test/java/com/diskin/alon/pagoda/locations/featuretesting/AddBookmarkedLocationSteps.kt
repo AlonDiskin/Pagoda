@@ -1,12 +1,10 @@
 package com.diskin.alon.pagoda.locations.featuretesting
 
 import android.os.Looper
+import androidx.appcompat.view.menu.ActionMenuItem
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.test.core.app.ActivityScenario
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.diskin.alon.pagoda.common.uitesting.HiltTestActivity
 import com.diskin.alon.pagoda.common.uitesting.launchFragmentInHiltContainer
 import com.diskin.alon.pagoda.locations.presentation.R
@@ -52,8 +50,19 @@ class AddBookmarkedLocationSteps (navProvider: AppLocationsNavProvider): GreenCo
 
     @When("^User select to add a new saved location$")
     fun user_select_to_add_a_new_saved_location() {
-        onView(withId(R.id.add_fab))
-            .perform(click())
+        scenario.onActivity {
+            val fragment = it.supportFragmentManager.fragments[0] as BookmarkedLocationsFragment
+            val addMenuItem = ActionMenuItem(
+                it,
+                0,
+                R.id.action_add,
+                0,
+                0,
+                null
+            )
+
+            fragment.onOptionsItemSelected(addMenuItem)
+        }
     }
 
     @Then("^App should open world location search screen$")

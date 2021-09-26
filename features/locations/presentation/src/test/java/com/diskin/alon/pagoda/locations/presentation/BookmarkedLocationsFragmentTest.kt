@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.os.Looper
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.view.menu.ActionMenuItem
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -175,7 +176,7 @@ class BookmarkedLocationsFragmentTest {
     }
 
     @Test
-    fun openLocationsSearchScreenWhenFabSelected() {
+    fun openLocationsSearchScreenWhenAddingLocationSelected() {
         // Given
         val destId = 10
 
@@ -188,8 +189,20 @@ class BookmarkedLocationsFragmentTest {
         every { appNav.getBookmarkedLocationsLocationsSearchNavRoute() } returns destId
 
         // When
-        onView(withId(R.id.add_fab))
-            .perform(click())
+        scenario.onActivity {
+            val fragment = it.supportFragmentManager.fragments[0] as BookmarkedLocationsFragment
+            val addMenuItem = ActionMenuItem(
+                it,
+                0,
+                R.id.action_add,
+                0,
+                0,
+                null
+            )
+
+            fragment.onOptionsItemSelected(addMenuItem)
+        }
+
 
         // Then
         verify { appNav.getBookmarkedLocationsLocationsSearchNavRoute() }

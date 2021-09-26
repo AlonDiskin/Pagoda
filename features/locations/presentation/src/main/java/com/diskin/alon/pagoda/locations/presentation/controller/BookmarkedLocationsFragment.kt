@@ -1,9 +1,7 @@
 package com.diskin.alon.pagoda.locations.presentation.controller
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Toast
 import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AlertDialog
@@ -15,7 +13,6 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
-import androidx.recyclerview.widget.RecyclerView
 import com.diskin.alon.pagoda.common.appservices.AppError
 import com.diskin.alon.pagoda.common.appservices.ErrorType
 import com.diskin.alon.pagoda.common.presentation.LOCATION_LAT
@@ -69,23 +66,22 @@ class BookmarkedLocationsFragment : Fragment() {
 
         // Observe view model errors
         viewModel.error.observe(viewLifecycleOwner) { handleLocationsError(it) }
+    }
 
-        // Handle floating action button click
-        binding.addFab.setOnClickListener {
-            findNavController().navigate(appNav.getBookmarkedLocationsLocationsSearchNavRoute())
-        }
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        //super.onCreateOptionsMenu(menu, inflater)
+        menu.clear()
+        inflater.inflate(R.menu.menu_favorite_locations, menu)
+    }
 
-        // Hide/Show fab upon rv scrolling
-        binding.bookmarkedLocations.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                if (dy > 0 && binding.addFab.visibility == View.VISIBLE) {
-                    binding.addFab.hide()
-                } else if (dy < 0 && binding.addFab.visibility != View.VISIBLE) {
-                    binding.addFab.show()
-                }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId) {
+            R.id.action_add -> {
+                findNavController().navigate(appNav.getBookmarkedLocationsLocationsSearchNavRoute())
+                true
             }
-        })
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     private fun handleLocationsError(error: AppError) {

@@ -25,8 +25,7 @@ class WeatherRepositoryImpl @Inject constructor(
     }
 
     override fun getCurrentLocationWeather(): Observable<AppResult<Weather>> {
-        val cachedWeather = cache.getCurrentLocationWeather()
-            .toLoadingAppResult()
+        val cachedWeather = cache.getCurrentLocationWeather().toLoadingAppResult()
 
         return cache.hasCurrentLocation()
             .singleResultToAppResult()

@@ -9,15 +9,15 @@ class AppNavigator @Inject constructor() : AppHomeNavProvider, AppLocationsNavPr
         return R.navigation.app_nav_graph
     }
 
-    override fun getWeatherDataToSettingsNavRoute(): Int {
+    override fun getSettingsDest(): Int {
         return R.id.action_weatherFragment_to_settingsFragment
     }
 
-    override fun getWeatherDataSearchLocationsNavRoute(): Int {
+    override fun getSearchDest(): Int {
         return R.id.action_weatherFragment_to_searchLocationFragment
     }
 
-    override fun getWeatherDataToSavedLocationsNavRoute(): Int {
+    override fun getFavoritesDest(): Int {
         return R.id.action_weatherFragment_to_savedLocationsFragment
     }
 
