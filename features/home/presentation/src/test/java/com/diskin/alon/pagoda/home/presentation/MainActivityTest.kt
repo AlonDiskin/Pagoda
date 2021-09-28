@@ -43,7 +43,7 @@ class MainActivityTest {
     // Collaborators
     @BindValue
     @JvmField
-    val graphProvider: AppHomeNavProvider = mockk()
+    val graphProvider: AppNavGraphProvider = mockk()
 
     @Before
     fun setUp() {
@@ -58,7 +58,6 @@ class MainActivityTest {
     @Test
     fun openSettingsScreenWhenUserNavigates() {
         // Given
-        every { graphProvider.getSettingsDest() } returns getTestSettingsGraphId()
 
         // When
         scenario.onActivity {
@@ -95,7 +94,6 @@ class MainActivityTest {
     @Test
     fun showUpNavigationUiWhenSettingsScreenOpen() {
         // Given
-        every { graphProvider.getSettingsDest() } returns getTestSettingsGraphId()
 
         // When
         scenario.onActivity {
@@ -119,7 +117,6 @@ class MainActivityTest {
     @Test
     fun openSearchScreenWhenUserNavigates() {
         // Given
-        every { graphProvider.getSearchDest() } returns getTestSearchLocationsDestId()
 
         // When
         scenario.onActivity {
@@ -168,16 +165,15 @@ class MainActivityTest {
     }
 
     @Test
-    fun openFavoritesScreenWhenUserNavigates() {
+    fun openBookmarksScreenWhenUserNavigates() {
         // Given
-        every { graphProvider.getFavoritesDest() } returns getTestFavoritesLocationsDestId()
 
         // When
         scenario.onActivity {
             val addMenuItem = ActionMenuItem(
                 it,
                 0,
-                R.id.action_favorites,
+                R.id.action_bookmarks,
                 0,
                 0,
                 null
@@ -189,21 +185,20 @@ class MainActivityTest {
         // Then
         scenario.onActivity {
             val controller = it.findNavController(R.id.nav_host_container)
-            assertThat(controller.currentDestination!!.id).isEqualTo(R.id.favoriteLocationsFragment)
+            assertThat(controller.currentDestination!!.id).isEqualTo(R.id.bookmarkedLocationsFragment)
         }
     }
 
     @Test
     fun showUpNavigationUiWhenFavoriteLocationsScreenOpen() {
         // Given
-        every { graphProvider.getFavoritesDest() } returns getTestFavoritesLocationsDestId()
 
         // When
         scenario.onActivity {
             val addMenuItem = ActionMenuItem(
                 it,
                 0,
-                R.id.action_favorites,
+                R.id.action_bookmarks,
                 0,
                 0,
                 null

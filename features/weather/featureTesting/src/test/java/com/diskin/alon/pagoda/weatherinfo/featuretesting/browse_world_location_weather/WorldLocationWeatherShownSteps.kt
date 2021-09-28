@@ -11,8 +11,8 @@ import com.diskin.alon.pagoda.common.eventcontracts.settings.UnitPrefSystem
 import com.diskin.alon.pagoda.common.eventcontracts.settings.WindSpeedUnitPref
 import com.diskin.alon.pagoda.common.featuretesting.getJsonFromResource
 import com.diskin.alon.pagoda.common.presentation.ImageLoader
-import com.diskin.alon.pagoda.common.presentation.LOCATION_LAT
-import com.diskin.alon.pagoda.common.presentation.LOCATION_LON
+import com.diskin.alon.pagoda.common.presentation.ARG_LAT
+import com.diskin.alon.pagoda.common.presentation.ARG_LON
 import com.diskin.alon.pagoda.common.uitesting.HiltTestActivity
 import com.diskin.alon.pagoda.common.uitesting.launchFragmentInHiltContainer
 import com.diskin.alon.pagoda.weatherinfo.data.BuildConfig
@@ -64,8 +64,8 @@ class WorldLocationWeatherShownSteps(
     @Given("^User select to view world location weather$")
     fun user_select_to_view_world_location_weather() {
         bundle = bundleOf(
-            LOCATION_LAT to dispatcher.locationLat,
-            LOCATION_LON to dispatcher.locationLon
+            ARG_LAT to dispatcher.locationLat,
+            ARG_LON to dispatcher.locationLon
         )
     }
 

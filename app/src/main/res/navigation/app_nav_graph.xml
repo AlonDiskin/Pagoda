@@ -3,51 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/app_nav_graph"
-    app:startDestination="@id/weatherFragment">
+    app:startDestination="@id/weather_graph">
 
-    <fragment
-        android:id="@+id/weatherFragment"
-        android:name="com.diskin.alon.pagoda.weatherinfo.presentation.controller.WeatherFragment"
-        android:label=""
-        tools:layout="@layout/fragment_weather">
-        <action
-            android:id="@+id/action_weatherFragment_to_settingsFragment"
-            app:destination="@id/settingsFragment" />
-        <action
-            android:id="@+id/action_weatherFragment_to_searchLocationFragment"
-            app:destination="@id/searchLocationFragment" />
-        <action
-            android:id="@+id/action_weatherFragment_to_savedLocationsFragment"
-            app:destination="@id/savedLocationsFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/settingsFragment"
-        android:name="com.diskin.alon.pagoda.settings.presentation.SettingsFragment"
-        android:label="Settings" />
-    <fragment
-        android:id="@+id/searchLocationFragment"
-        android:name="com.diskin.alon.pagoda.locations.presentation.controller.SearchLocationsFragment"
-        android:label=""
-        tools:layout="@layout/fragment_search_locations">
-        <action
-            android:id="@+id/action_searchLocationFragment_to_weatherFragment"
-            app:popUpToInclusive="true"
-            app:popUpTo="@id/weatherFragment"
-            app:destination="@id/weatherFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/savedLocationsFragment"
-        android:name="com.diskin.alon.pagoda.locations.presentation.controller.BookmarkedLocationsFragment"
-        android:label="Locations"
-        tools:layout="@layout/fragment_bookmarked_locations">
-        <action
-            android:id="@+id/action_savedLocationsFragment_to_searchLocationFragment"
-            app:destination="@id/searchLocationFragment" />
-        <action
-            android:id="@+id/action_savedLocationsFragment_to_weatherFragment"
-            app:popUpToInclusive="true"
-            app:popUpTo="@id/weatherFragment"
-            app:destination="@id/weatherFragment" />
-    </fragment>
+    <include app:graph="@navigation/weather_graph" />
 
+    <include app:graph="@navigation/locations_graph" />
+
+    <include app:graph="@navigation/settings_graph" />
 </navigation>

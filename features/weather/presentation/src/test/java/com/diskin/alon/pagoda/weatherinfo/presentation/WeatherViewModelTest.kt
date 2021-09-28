@@ -28,8 +28,8 @@ import org.junit.runners.Parameterized
  */
 @RunWith(Parameterized::class)
 class WeatherViewModelTest(
-    private val lat: Double?,
-    private val lon: Double?,
+    private val lat: Float?,
+    private val lon: Float?,
     private val request: ModelRequest<*,*>
 ) {
 
@@ -45,7 +45,7 @@ class WeatherViewModelTest(
         @JvmStatic
         @Parameterized.Parameters()
         fun data() = listOf(
-            arrayOf(23.4, 45.7,WorldLocationWeatherModelRequest(23.4, 45.7)),
+            arrayOf(23.4F, 45.7F,WorldLocationWeatherModelRequest(23.4, 45.7)),
             arrayOf<Any?>(null,null,UserLocationWeatherModelRequest)
         )
     }
@@ -72,8 +72,8 @@ class WeatherViewModelTest(
         every { model.execute(any<UserLocationWeatherModelRequest>()) } returns modelWeather
 
         // Init subject
-        lat?.let { savedState.set(LOCATION_LAT,lat) }
-        lon?.let { savedState.set(LOCATION_LON,lon) }
+        lat?.let { savedState.set(ARG_LAT,lat) }
+        lon?.let { savedState.set(ARG_LON,lon) }
         viewModel = WeatherViewModel(model,savedState)
     }
 

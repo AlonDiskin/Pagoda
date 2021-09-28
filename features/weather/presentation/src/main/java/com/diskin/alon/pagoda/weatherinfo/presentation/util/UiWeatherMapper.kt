@@ -14,6 +14,7 @@ import io.reactivex.Observable
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
+import kotlin.math.roundToInt
 
 class UiWeatherMapper @Inject constructor(
     private val app: Application
@@ -76,19 +77,19 @@ class UiWeatherMapper @Inject constructor(
     }
 
     private fun mapTemperature(temp: Double): String {
-        return app.getString(R.string.temp,temp.toInt())
+        return app.getString(R.string.temp,temp.roundToInt())
     }
 
     private fun mapFeelTemperature(temp: Double): String {
-        return app.getString(R.string.feel_temp,temp.toInt())
+        return app.getString(R.string.feel_temp,temp.roundToInt())
     }
 
     private fun mapMinMaxTemperatures(minTemp: Double,maxTemp: Double): String {
-        return app.getString(R.string.min_max_temp,minTemp.toInt(),maxTemp.toInt())
+        return app.getString(R.string.min_max_temp,minTemp.roundToInt(),maxTemp.roundToInt())
     }
 
     private fun mapHumidity(humidity: Double): String {
-        return humidity.toInt().toString().plus("%")
+        return humidity.roundToInt().toString().plus("%")
     }
 
     private fun mapCondition(condition: WeatherConditionDto): String {
@@ -146,8 +147,8 @@ class UiWeatherMapper @Inject constructor(
 
     private fun mapWindSpeed(windSpeed: Double,windUnit: UnitSystemDto): String {
         return when(windUnit) {
-            UnitSystemDto.IMPERIAL -> app.getString(R.string.wind_speed_imperial,windSpeed.toInt())
-            UnitSystemDto.METRIC -> app.getString(R.string.wind_speed_metric,windSpeed.toInt())
+            UnitSystemDto.IMPERIAL -> app.getString(R.string.wind_speed_imperial,windSpeed.roundToInt())
+            UnitSystemDto.METRIC -> app.getString(R.string.wind_speed_metric,windSpeed.roundToInt())
         }
     }
 

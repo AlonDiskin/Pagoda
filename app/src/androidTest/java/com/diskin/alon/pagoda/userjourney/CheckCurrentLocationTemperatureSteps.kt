@@ -16,6 +16,7 @@ import com.mauriciotogneri.greencoffee.annotations.Then
 import com.mauriciotogneri.greencoffee.annotations.When
 import okhttp3.mockwebserver.MockWebServer
 import org.json.JSONObject
+import kotlin.math.roundToInt
 
 /**
  * Step definitions for 'User check current location temperature' scenario.
@@ -59,7 +60,7 @@ class CheckCurrentLocationTemperatureSteps : GreenCoffeeSteps() {
         val weatherJson = FileUtil.readStringFromFile(NetworkUtil.dispatcher.weatherRes)
         val currentTemp = JSONObject(weatherJson).getJSONObject("current")
             .getDouble("temp")
-        val expectedTemp = currentTemp.toInt().toString().plus("°")
+        val expectedTemp = currentTemp.roundToInt().toString().plus("°")
 
         // Verify current temp shown as expected
         onView(withId(R.id.currentTemp))

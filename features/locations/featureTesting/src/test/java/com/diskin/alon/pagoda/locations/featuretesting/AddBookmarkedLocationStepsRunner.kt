@@ -3,7 +3,6 @@ package com.diskin.alon.pagoda.locations.featuretesting
 import androidx.databinding.ViewDataBinding
 import androidx.test.filters.MediumTest
 import com.diskin.alon.pagoda.common.featuretesting.setFinalStatic
-import com.diskin.alon.pagoda.locations.presentation.controller.AppLocationsNavProvider
 import com.mauriciotogneri.greencoffee.GreenCoffeeConfig
 import com.mauriciotogneri.greencoffee.GreenCoffeeTest
 import com.mauriciotogneri.greencoffee.ScenarioConfig
@@ -17,7 +16,6 @@ import org.robolectric.ParameterizedRobolectricTestRunner
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.util.*
-import javax.inject.Inject
 
 /**
  * Step definitions runner for 'User add bookmarked location' scenario.
@@ -50,9 +48,6 @@ class AddBookmarkedLocationStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTe
     @get:Rule
     var hiltRule = HiltAndroidRule(this)
 
-    @Inject
-    lateinit var navProvider: AppLocationsNavProvider
-
     @Test
     fun test() {
         // Disable data binding Choreographer
@@ -62,6 +57,6 @@ class AddBookmarkedLocationStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTe
         hiltRule.inject()
 
         // Start test
-        start(AddBookmarkedLocationSteps(navProvider))
+        start(AddBookmarkedLocationSteps())
     }
 }

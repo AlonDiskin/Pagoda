@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/weather_graph"
+    app:startDestination="@id/weatherFragment">
+
+    <fragment
+        android:id="@+id/weatherFragment"
+        android:name="com.diskin.alon.pagoda.weatherinfo.presentation.controller.WeatherFragment"
+        android:label=""
+        tools:layout="@layout/fragment_weather">
+
+        <argument
+            android:name="@string/arg_lat"
+            app:argType="float" />
+
+        <argument
+            android:name="@string/arg_lon"
+            app:argType="float" />
+
+        <deepLink app:uri="@string/uri_weather" />
+    </fragment>
+</navigation>

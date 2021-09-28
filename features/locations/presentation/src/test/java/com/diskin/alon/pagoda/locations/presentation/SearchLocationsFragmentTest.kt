@@ -1,21 +1,27 @@
 package com.diskin.alon.pagoda.locations.presentation
 
-import android.os.Bundle
+import android.content.Context
+import android.net.Uri
 import android.os.Looper
 import android.view.KeyEvent
 import android.widget.ImageButton
 import androidx.appcompat.widget.SearchView
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelLazy
+import androidx.navigation.NavDestination
+import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.testing.TestNavHostController
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
 import androidx.paging.LoadStates
 import androidx.paging.PagingData
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.action.ViewActions
@@ -26,17 +32,17 @@ import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
+import com.diskin.alon.pagoda.common.presentation.ARG_LAT
+import com.diskin.alon.pagoda.common.presentation.ARG_LON
 import com.diskin.alon.pagoda.common.presentation.ImageLoader
-import com.diskin.alon.pagoda.common.presentation.LOCATION_LAT
-import com.diskin.alon.pagoda.common.presentation.LOCATION_LON
 import com.diskin.alon.pagoda.common.uitesting.HiltTestActivity
 import com.diskin.alon.pagoda.common.uitesting.RecyclerViewMatcher.withRecyclerView
 import com.diskin.alon.pagoda.common.uitesting.launchFragmentInHiltContainer
 import com.diskin.alon.pagoda.common.uitesting.withSearchViewHint
 import com.diskin.alon.pagoda.common.uitesting.withSearchViewQuery
-import com.diskin.alon.pagoda.locations.presentation.controller.*
-import com.diskin.alon.pagoda.locations.presentation.controller.BookmarkedLocationsAdapter.*
+import com.diskin.alon.pagoda.locations.presentation.controller.BookmarkedLocationsAdapter.BookmarkedLocationViewHolder
 import com.diskin.alon.pagoda.locations.presentation.controller.LocationSearchResultsAdapter.LocationSearchResultViewHolder
+import com.diskin.alon.pagoda.locations.presentation.controller.SearchLocationsFragment
 import com.diskin.alon.pagoda.locations.presentation.model.UiLocationSearchResult
 import com.diskin.alon.pagoda.locations.presentation.viewmodel.SearchLocationsViewModel
 import com.google.common.truth.Truth.assertThat
@@ -63,7 +69,7 @@ class SearchLocationsFragmentTest {
 
     // Collaborators
     private val viewModel: SearchLocationsViewModel = mockk()
-    private val appNav: AppLocationsNavProvider = mockk()
+    private val navController: TestNavHostController = TestNavHostController(ApplicationProvider.getApplicationContext())
 
     // Stub data
     private val results = MutableLiveData<PagingData<UiLocationSearchResult>>()
@@ -80,10 +86,15 @@ class SearchLocationsFragmentTest {
         every { viewModel.results } returns results
 
         // Launch fragment under test
-
-        // Fragment scenario has no action bar that needed for test so we use hilt
-        // test activity(uses activity scenario)
         scenario = launchFragmentInHiltContainer<SearchLocationsFragment>()
+
+        // Set test nav controller
+        scenario.onActivity {
+            val fragment = it.supportFragmentManager.fragments.first() as SearchLocationsFragment
+
+            navController.setGraph(R.navigation.locations_graph)
+            Navigation.setViewNavController(fragment.requireView(), navController)
+        }
         Shadows.shadowOf(Looper.getMainLooper()).idle()
     }
 
@@ -239,11 +250,6 @@ class SearchLocationsFragmentTest {
     }
 
     @Test
-    fun highlightQueryInSearchResultsWhenResultsAvailable() {
-        // TODO("Not yet implemented")
-    }
-
-    @Test
     fun navUpWhenUserCloseSearchField() {
         // Test case fixture
         mockkStatic(Fragment::findNavController)
@@ -272,44 +278,37 @@ class SearchLocationsFragmentTest {
 
     @Test
     fun openWeatherDataScreenWhenResultSelected() {
-        // Test case fixture
-        val destId = 10
-        val bundleSlot = slot<Bundle>()
-        mockkStatic(Fragment::findNavController)
-
-        scenario.onActivity {
-            val fragment = it.supportFragmentManager.fragments[0] as SearchLocationsFragment
-            fragment.appNav = appNav
-            every { fragment.findNavController().navigate(any(),capture(bundleSlot)) } returns Unit
-        }
-
-        every { appNav.getSearchLocationsToWeatherDataNavRoute() } returns destId
-
         // Given
-
-        // When
+        val context = ApplicationProvider.getApplicationContext<Context>()
         val searchResults = createSearchResults()
         results.value = PagingData.from(searchResults)
+        val weatherDestId = 10
+
+        navController.graph.addDestination(NavDestination("test navigator").also { dest ->
+            dest.id = weatherDestId
+            dest.addDeepLink(context.getString(R.string.uri_weather))
+        })
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
-        // And
+        // When
         onView(withId(R.id.search_location_results))
             .perform(actionOnItemAtPosition<BookmarkedLocationViewHolder>(0, click()))
 
         // Then
-        verify { appNav.getSearchLocationsToWeatherDataNavRoute() }
+        val expectedDeepLinkUri = Uri.Builder()
+            .scheme(context.getString(R.string.uri_weather).toUri().scheme)
+            .authority(context.getString(R.string.uri_weather).toUri().authority)
+            .path(context.getString(R.string.uri_weather).toUri().path)
+            .appendQueryParameter(ARG_LAT,searchResults.first().lat.toString())
+            .appendQueryParameter(ARG_LON,searchResults.first().lon.toString())
+            .build()
 
-        scenario.onActivity {
-            val fragment = it.supportFragmentManager.fragments[0] as SearchLocationsFragment
-            verify { fragment.findNavController().navigate(destId,any()) }
-        }
-
-        assertThat(bundleSlot.captured.get(LOCATION_LAT)).isEqualTo(searchResults.first().lat)
-        assertThat(bundleSlot.captured.get(LOCATION_LON)).isEqualTo(searchResults.first().lon)
+        assertThat(navController.currentDestination?.id).isEqualTo(weatherDestId)
+        assertThat(navController.currentDestination?.hasDeepLink(expectedDeepLinkUri)).isTrue()
     }
 
     @Test
-    fun addBookmarkLocationResultWhenBookmaekedByUser() {
+    fun addBookmarkLocationResultWhenBookmarkedByUser() {
         // Test case fixture
         scenario.onActivity { it.findViewById<RecyclerView>(R.id.search_location_results).itemAnimator = null }
         every { viewModel.addToBookmarked(any()) } returns Unit

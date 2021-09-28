@@ -25,8 +25,8 @@
         android:icon="@drawable/ic_baseline_place_24" />
 
     <item
-        android:id="@+id/action_favorites"
-        android:title="@string/title_favorite"
+        android:id="@+id/action_bookmarks"
+        android:title="@string/title_bookmarks"
         app:showAsAction="always"
         android:icon="@drawable/ic_baseline_list_add_24" />
 

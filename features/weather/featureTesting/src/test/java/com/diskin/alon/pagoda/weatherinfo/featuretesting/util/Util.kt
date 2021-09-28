@@ -31,6 +31,7 @@ import org.json.JSONObject
 import org.robolectric.Shadows
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.roundToInt
 
 fun createCachedWeather(): CurrentWeatherEntity {
     return CurrentWeatherEntity(
@@ -178,11 +179,11 @@ fun verifyServerWeatherShown(locationWeatherRes: String,locationGeoRes: String,s
 
     // Verify feel temp data
     onView(withId(R.id.feelTemp))
-        .check(matches(withText("Feels like ${feelTemp.toInt()}°")))
+        .check(matches(withText("Feels like ${feelTemp.roundToInt()}°")))
 
     // Verify current temp data
     onView(withId(R.id.currentTemp))
-        .check(matches(withText("${currentTemp.toInt()}°")))
+        .check(matches(withText("${currentTemp.roundToInt()}°")))
 
     // check current temp
     onView(withId(R.id.currentTempUnit))
@@ -218,7 +219,7 @@ fun verifyServerWeatherShown(locationWeatherRes: String,locationGeoRes: String,s
 
     // Verify min and max data
     onView(withId(R.id.minMaxTemp))
-        .check(matches(withText("min ${minTemp.toInt()}°/max ${maxTemp.toInt()}°")))
+        .check(matches(withText("min ${minTemp.roundToInt()}°/max ${maxTemp.roundToInt()}°")))
 
     // Verify index value
     onView(withId(R.id.uvValue))
@@ -226,11 +227,11 @@ fun verifyServerWeatherShown(locationWeatherRes: String,locationGeoRes: String,s
 
     // Verify humidity
     onView(withId(R.id.humidityValue))
-        .check(matches(withText("${humidity.toInt()}%")))
+        .check(matches(withText("${humidity.roundToInt()}%")))
 
     // Verify wind speed
     onView(withId(R.id.windSpeedValue))
-        .check(matches(withText("${windSpeed.toInt()}km/h")))
+        .check(matches(withText("${windSpeed.roundToInt()}km/h")))
 
     // Verify sunrise and sunset data
     onView(withId(R.id.sunriseValue))
@@ -303,7 +304,7 @@ fun verifyServerWeatherShown(locationWeatherRes: String,locationGeoRes: String,s
             withRecyclerView(R.id.hourForecast)
                 .atPositionOnView(i, R.id.temp)
         )
-            .check(matches(withText("${temp.toInt()}°")))
+            .check(matches(withText("${temp.roundToInt()}°")))
 
         // Verify hour forecast icon loaded
         scenario.onActivity { activity ->
@@ -368,11 +369,11 @@ fun verifyDbWeatherShown(db: TestDatabase,scenario: ActivityScenario<HiltTestAct
 
     // Verify feel temp data
     onView(withId(R.id.feelTemp))
-        .check(matches(withText("Feels like ${cachedFeelTemp.toInt()}°")))
+        .check(matches(withText("Feels like ${cachedFeelTemp.roundToInt()}°")))
 
     // Verify current temp data
     onView(withId(R.id.currentTemp))
-        .check(matches(withText("${cachedCurrentTemp.toInt()}°")))
+        .check(matches(withText("${cachedCurrentTemp.roundToInt()}°")))
 
     // Verify clock data
     onView(withId(R.id.textClock))
@@ -387,7 +388,7 @@ fun verifyDbWeatherShown(db: TestDatabase,scenario: ActivityScenario<HiltTestAct
 
     // Verify min and max data
     onView(withId(R.id.minMaxTemp))
-        .check(matches(withText("min ${cachedMinTemp.toInt()}°/max ${cachedMaxTemp.toInt()}°")))
+        .check(matches(withText("min ${cachedMinTemp.roundToInt()}°/max ${cachedMaxTemp.roundToInt()}°")))
 
     // Verify index value
     onView(withId(R.id.uvValue))
@@ -406,11 +407,11 @@ fun verifyDbWeatherShown(db: TestDatabase,scenario: ActivityScenario<HiltTestAct
 
     // Verify humidity
     onView(withId(R.id.humidityValue))
-        .check(matches(withText("${cachedHumidity.toInt()}%")))
+        .check(matches(withText("${cachedHumidity.roundToInt()}%")))
 
     // Verify wind speed
     onView(withId(R.id.windSpeedValue))
-        .check(matches(withText("${cachedWindSpeed.toInt()}km/h")))
+        .check(matches(withText("${cachedWindSpeed.roundToInt()}km/h")))
 
     // Verify sunrise and sunset data
     onView(withId(R.id.sunriseValue))
@@ -486,7 +487,7 @@ fun verifyDbWeatherShown(db: TestDatabase,scenario: ActivityScenario<HiltTestAct
             withRecyclerView(R.id.hourForecast)
                 .atPositionOnView(i, R.id.temp)
         )
-            .check(matches(withText("${temp.toInt()}°")))
+            .check(matches(withText("${temp.roundToInt()}°")))
 
         // Verify hour forecast icon loaded
         scenario.onActivity { activity ->
@@ -505,8 +506,8 @@ fun verifyDbWeatherShown(db: TestDatabase,scenario: ActivityScenario<HiltTestAct
 
     for (i in 0 until 8) {
         val day = cachedDailyForecast.getJSONObject(i).getInt("dayOfWeek")
-        val minTemp = cachedDailyForecast.getJSONObject(i).getInt("minTemp")
-        val maxTemp = cachedDailyForecast.getJSONObject(i).getInt("maxTemp")
+        val minTemp = cachedDailyForecast.getJSONObject(i).getDouble("minTemp")
+        val maxTemp = cachedDailyForecast.getJSONObject(i).getDouble("maxTemp")
         val condition = cachedDailyForecast.getJSONObject(i).getJSONObject("condition")
             .getString("description")
 
@@ -535,13 +536,13 @@ fun verifyDbWeatherShown(db: TestDatabase,scenario: ActivityScenario<HiltTestAct
             withRecyclerView(R.id.dailyForecast)
                 .atPositionOnView(i, R.id.minTemp)
         )
-            .check(matches(withText("${minTemp}°")))
+            .check(matches(withText("${minTemp.roundToInt()}°")))
 
         onView(
             withRecyclerView(R.id.dailyForecast)
                 .atPositionOnView(i, R.id.maxTemp)
         )
-            .check(matches(withText("${maxTemp}°")))
+            .check(matches(withText("${maxTemp.roundToInt()}°")))
 
         // Verify day forecast icon loaded
         scenario.onActivity { activity ->

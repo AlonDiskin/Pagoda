@@ -5,14 +5,12 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.DrawerActions.open
-import androidx.test.espresso.contrib.NavigationViewActions.navigateTo
 import androidx.test.espresso.matcher.RootMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.diskin.alon.pagoda.R
 import com.diskin.alon.pagoda.common.uitesting.isRecyclerViewItemsCount
 import com.diskin.alon.pagoda.common.uitesting.typeSearchViewText
 import com.diskin.alon.pagoda.util.DeviceUtil
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.mauriciotogneri.greencoffee.GreenCoffeeSteps
 import com.mauriciotogneri.greencoffee.annotations.And
 import com.mauriciotogneri.greencoffee.annotations.Given
@@ -41,20 +39,14 @@ class BookmarkWorldLocationSteps : GreenCoffeeSteps() {
 
     @And("^Open locations screen$")
     fun open_locations_screen() {
-        onView(withId(R.id.drawerLayout))
-            .perform(open())
-
-        onView(withId(R.id.nav_view))
-            .perform(navigateTo(R.id.nav_locations))
+        onView(withId(R.id.action_bookmarks))
+            .perform(click())
     }
 
     @And("^Select to add a new location$")
     fun select_to_add_a_new_location() {
-        onView(withId(R.id.add_fab))
-            .check { view, _ ->
-                val fab = view as FloatingActionButton
-                fab.performClick()
-            }
+        onView(withId(R.id.action_add))
+            .perform(click())
     }
 
     @Then("^App should open world locations search screen$")

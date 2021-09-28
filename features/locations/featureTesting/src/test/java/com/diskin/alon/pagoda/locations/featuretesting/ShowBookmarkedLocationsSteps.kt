@@ -1,10 +1,14 @@
 package com.diskin.alon.pagoda.locations.featuretesting
 
-import android.os.Bundle
+import android.content.Context
+import android.net.Uri
 import android.os.Looper
-import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
+import androidx.core.net.toUri
+import androidx.navigation.NavDestination
+import androidx.navigation.Navigation
+import androidx.navigation.testing.TestNavHostController
 import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -12,14 +16,13 @@ import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
-import com.diskin.alon.pagoda.common.presentation.LOCATION_LAT
-import com.diskin.alon.pagoda.common.presentation.LOCATION_LON
+import com.diskin.alon.pagoda.common.presentation.ARG_LAT
+import com.diskin.alon.pagoda.common.presentation.ARG_LON
 import com.diskin.alon.pagoda.common.uitesting.HiltTestActivity
 import com.diskin.alon.pagoda.common.uitesting.RecyclerViewMatcher.withRecyclerView
 import com.diskin.alon.pagoda.common.uitesting.isRecyclerViewItemsCount
 import com.diskin.alon.pagoda.common.uitesting.launchFragmentInHiltContainer
 import com.diskin.alon.pagoda.locations.presentation.R
-import com.diskin.alon.pagoda.locations.presentation.controller.AppLocationsNavProvider
 import com.diskin.alon.pagoda.locations.presentation.controller.BookmarkedLocationsAdapter.BookmarkedLocationViewHolder
 import com.diskin.alon.pagoda.locations.presentation.controller.BookmarkedLocationsFragment
 import com.google.common.truth.Truth.assertThat
@@ -27,32 +30,16 @@ import com.mauriciotogneri.greencoffee.GreenCoffeeSteps
 import com.mauriciotogneri.greencoffee.annotations.Given
 import com.mauriciotogneri.greencoffee.annotations.Then
 import com.mauriciotogneri.greencoffee.annotations.When
-import io.mockk.every
-import io.mockk.mockkStatic
-import io.mockk.slot
-import io.mockk.verify
 import org.robolectric.Shadows
 
 /**
  * Step definitions for 'Bookmarked locations listed' scenario.
  */
-class ShowBookmarkedLocationsSteps(
-    private val db: TestDatabase,
-    navProvider: AppLocationsNavProvider
-) : GreenCoffeeSteps() {
+class ShowBookmarkedLocationsSteps(private val db: TestDatabase) : GreenCoffeeSteps() {
 
     private lateinit var scenario: ActivityScenario<HiltTestActivity>
     private val bookmarkedLocations = createDbBookmarkedLocations()
-    private val weatherDataDetId = 10
-    private val bundleSlot = slot<Bundle>()
-
-    init {
-        // Prepare nav dest provider
-        every { navProvider.getBookmarkedLocationsToWeatherDataNavRoute() } returns weatherDataDetId
-
-        // Prepare nav controller
-        mockkStatic(Fragment::findNavController)
-    }
+    private val navController: TestNavHostController = TestNavHostController(ApplicationProvider.getApplicationContext())
 
     @Given("^Previously bookmarked locations exist$")
     fun previously_bookmarked_locations_exist() {
@@ -68,13 +55,20 @@ class ShowBookmarkedLocationsSteps(
     fun user_open_bookmarked_locations_screen() {
         // Launch bookmarked locations fragment
         scenario = launchFragmentInHiltContainer<BookmarkedLocationsFragment>()
-        Shadows.shadowOf(Looper.getMainLooper()).runToEndOfTasks()
 
-        // Stub mocked nav controller
+        // Set test nav controller
         scenario.onActivity {
-            val fragment = it.supportFragmentManager.fragments[0] as BookmarkedLocationsFragment
-            every { fragment.findNavController().navigate(any(),capture(bundleSlot)) } returns Unit
+            val fragment = it.supportFragmentManager.fragments.first() as BookmarkedLocationsFragment
+
+            navController.setGraph(R.navigation.locations_graph)
+            navController.graph.addDestination(NavDestination("test navigator").also { dest ->
+                dest.id = 10
+                dest.addDeepLink(it.getString(R.string.uri_weather))
+            })
+            Navigation.setViewNavController(fragment.requireView(), navController)
         }
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
     }
 
     @Then("^All bookmarked locations are listed in descending added order$")
@@ -110,13 +104,16 @@ class ShowBookmarkedLocationsSteps(
 
     @Then("^App should show selected location weather data$")
     fun app_should_show_selected_location_weather_data() {
-        scenario.onActivity {
-            val fragment = it.supportFragmentManager.fragments[0] as BookmarkedLocationsFragment
-            verify { fragment.findNavController().navigate(weatherDataDetId,any()) }
-        }
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        val expectedDeepLinkUri = Uri.Builder()
+            .scheme(context.getString(R.string.uri_weather).toUri().scheme)
+            .authority(context.getString(R.string.uri_weather).toUri().authority)
+            .path(context.getString(R.string.uri_weather).toUri().path)
+            .appendQueryParameter(ARG_LAT,bookmarkedLocations.first().lat.toString())
+            .appendQueryParameter(ARG_LON,bookmarkedLocations.first().lon.toString())
+            .build()
 
-        assertThat(bundleSlot.captured.get(LOCATION_LAT)).isEqualTo(bookmarkedLocations.first().lat)
-        assertThat(bundleSlot.captured.get(LOCATION_LON)).isEqualTo(bookmarkedLocations.first().lon)
+        assertThat(navController.currentDestination?.hasDeepLink(expectedDeepLinkUri)).isTrue()
     }
 
     private fun expectedUiLocations(): List<UiLocation> {

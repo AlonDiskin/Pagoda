@@ -1,25 +1,25 @@
 package com.diskin.alon.pagoda.locations.presentation.controller
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import androidx.annotation.VisibleForTesting
 import androidx.appcompat.widget.SearchView
-import androidx.core.os.bundleOf
+import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
-import com.diskin.alon.pagoda.common.presentation.LOCATION_LAT
-import com.diskin.alon.pagoda.common.presentation.LOCATION_LON
+import com.diskin.alon.pagoda.common.presentation.ARG_LAT
+import com.diskin.alon.pagoda.common.presentation.ARG_LON
 import com.diskin.alon.pagoda.locations.presentation.R
 import com.diskin.alon.pagoda.locations.presentation.databinding.FragmentSearchLocationsBinding
 import com.diskin.alon.pagoda.locations.presentation.model.UiLocationSearchResult
 import com.diskin.alon.pagoda.locations.presentation.viewmodel.SearchLocationsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.migration.OptionalInject
-import javax.inject.Inject
 
 @OptionalInject
 @AndroidEntryPoint
@@ -27,8 +27,6 @@ class SearchLocationsFragment : Fragment(), SearchView.OnQueryTextListener, Menu
 
     private val viewModel: SearchLocationsViewModel by viewModels()
     private lateinit var binding: FragmentSearchLocationsBinding
-    @Inject
-    lateinit var appNav: AppLocationsNavProvider
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -98,8 +96,14 @@ class SearchLocationsFragment : Fragment(), SearchView.OnQueryTextListener, Menu
 
     private fun handleResultClick(result: UiLocationSearchResult) {
         // Navigate to weather info screen and pass selected result coordinates
-        val bundle = bundleOf(LOCATION_LAT to result.lat, LOCATION_LON to result.lon)
-        findNavController().navigate(appNav.getSearchLocationsToWeatherDataNavRoute(), bundle)
+        val weatherDestUri = Uri.Builder()
+            .scheme(getString(R.string.uri_weather).toUri().scheme)
+            .authority(getString(R.string.uri_weather).toUri().authority)
+            .path(getString(R.string.uri_weather).toUri().path)
+            .appendQueryParameter(ARG_LAT,result.lat.toString())
+            .appendQueryParameter(ARG_LON,result.lon.toString())
+            .build()
+        findNavController().navigate(weatherDestUri)
     }
 
     private fun handleAddResultClick(result: UiLocationSearchResult) {

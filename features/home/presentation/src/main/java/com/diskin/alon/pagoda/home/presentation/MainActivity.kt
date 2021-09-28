@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
@@ -21,7 +22,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     @Inject
-    lateinit var graphProvider: AppHomeNavProvider
+    lateinit var graphProvider: AppNavGraphProvider
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,7 +37,7 @@ class MainActivity : AppCompatActivity() {
             val host = NavHostFragment.create(graphProvider.getAppNavGraph())
             supportFragmentManager.beginTransaction()
                 .replace(R.id.nav_host_container, host)
-                .setPrimaryNavigationFragment(host) // equivalent to app:defaultNavHost="true"
+                .setPrimaryNavigationFragment(host)
                 .commit()
         }
     }
@@ -48,6 +49,13 @@ class MainActivity : AppCompatActivity() {
         val appBarConfiguration = AppBarConfiguration(navController.graph)
 
         binding.toolbar.setupWithNavController(navController, appBarConfiguration)
+        navController.addOnDestinationChangedListener { controller, destination, arg ->
+            controller.previousBackStackEntry?.let {
+                if (destination.id == R.id.weatherFragment){
+                    controller.setGraph(this.graphProvider.getAppNavGraph(),arg)
+                }
+            }
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -64,24 +72,26 @@ class MainActivity : AppCompatActivity() {
 
         return when (item.itemId) {
             R.id.action_settings -> {
-                controller.navigate(graphProvider.getSettingsDest())
+                val settingsDestUri = getString(R.string.uri_settings).toUri()
+                controller.navigate(settingsDestUri)
                 true
             }
             R.id.action_about -> {
                 true
             }
-            R.id.action_favorites -> {
-                controller.navigate(graphProvider.getFavoritesDest())
+            R.id.action_bookmarks -> {
+                val bookmarksDestUri = getString(R.string.uri_bookmarks).toUri()
+                controller.navigate(bookmarksDestUri)
                 true
             }
             R.id.action_current_location_weather -> {
-                val homeDest = controller.graph.startDestination
-                controller.popBackStack(homeDest,true)
-                controller.navigate(homeDest)
+                val weatherDestUri = getString(R.string.uri_weather).toUri()
+                controller.navigate(weatherDestUri)
                 true
             }
             R.id.action_search -> {
-                controller.navigate(graphProvider.getSearchDest())
+                val searchDestUri = getString(R.string.uri_search).toUri()
+                controller.navigate(searchDestUri)
                 true
             }
             else -> super.onOptionsItemSelected(item)

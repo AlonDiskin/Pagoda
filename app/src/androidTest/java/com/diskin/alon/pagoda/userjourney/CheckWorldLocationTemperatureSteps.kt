@@ -4,8 +4,6 @@ import androidx.appcompat.widget.SearchView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.DrawerActions
-import androidx.test.espresso.contrib.NavigationViewActions
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.diskin.alon.pagoda.R
@@ -24,6 +22,7 @@ import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import okhttp3.mockwebserver.RecordedRequest
 import org.json.JSONObject
+import kotlin.math.roundToInt
 
 /**
  * Step definitions for 'User browse world location temperature' scenario.
@@ -45,11 +44,8 @@ class CheckWorldLocationTemperatureSteps(server: MockWebServer) : GreenCoffeeSte
     @And("^User search for a world location$")
     fun user_search_for_a_world_location() {
         // Open search screen
-        onView(withId(R.id.drawerLayout))
-            .perform(DrawerActions.open())
-
-        onView(withId(R.id.nav_view))
-            .perform(NavigationViewActions.navigateTo(R.id.nav_search))
+        onView(withId(R.id.action_search))
+            .perform(click())
 
         // Perform search
         onView(isAssignableFrom(SearchView::class.java))
@@ -71,16 +67,16 @@ class CheckWorldLocationTemperatureSteps(server: MockWebServer) : GreenCoffeeSte
 
         // Verify current temp show
         onView(withId(R.id.currentTemp))
-            .check(matches(withText(currentTemp.toInt().toString().plus("°"))))
+            .check(matches(withText(currentTemp.roundToInt().toString().plus("°"))))
     }
 
-    private class ScenarioDispatcher(): NetworkUtil.TestDispatcher() {
+    private class ScenarioDispatcher : NetworkUtil.TestDispatcher() {
         val selectedWeatherRes = "assets/json/weather_2.json"
         private val selectedGeoRes = "assets/json/geocoding_2.json"
         private val weatherPath = "/data/2.5/onecall"
         private val geocodingPath = "/geo/1.0/reverse"
-        private val selectedLongitude = 34.650002
-        private val selectedLatitude = 31.816669
+        private val selectedLongitude = 34.65
+        private val selectedLatitude = 31.81667
 
         override fun dispatch(request: RecordedRequest): MockResponse {
             return when(request.requestUrl.uri().path){

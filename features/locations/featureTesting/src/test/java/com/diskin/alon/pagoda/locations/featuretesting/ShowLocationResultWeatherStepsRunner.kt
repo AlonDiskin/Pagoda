@@ -4,7 +4,6 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.databinding.ViewDataBinding
 import androidx.test.filters.MediumTest
 import com.diskin.alon.pagoda.common.featuretesting.setFinalStatic
-import com.diskin.alon.pagoda.locations.presentation.controller.AppLocationsNavProvider
 import com.mauriciotogneri.greencoffee.GreenCoffeeConfig
 import com.mauriciotogneri.greencoffee.GreenCoffeeTest
 import com.mauriciotogneri.greencoffee.ScenarioConfig
@@ -66,8 +65,6 @@ class ShowLocationResultWeatherStepsRunner(scenario: ScenarioConfig) : GreenCoff
 
     @Inject
     lateinit var db: TestDatabase
-    @Inject
-    lateinit var navProvider: AppLocationsNavProvider
 
     @Test
     fun test() {
@@ -78,6 +75,6 @@ class ShowLocationResultWeatherStepsRunner(scenario: ScenarioConfig) : GreenCoff
         hiltRule.inject()
 
         // Start test
-        start(ShowLocationResultWeatherSteps(db,navProvider))
+        start(ShowLocationResultWeatherSteps(db))
     }
 }

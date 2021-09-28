@@ -1,15 +1,16 @@
 package com.diskin.alon.pagoda.locations.presentation
 
 import android.content.Context
-import android.os.Bundle
+import android.net.Uri
 import android.os.Looper
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.menu.ActionMenuItem
-import androidx.fragment.app.Fragment
+import androidx.core.net.toUri
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelLazy
-import androidx.navigation.fragment.findNavController
+import androidx.navigation.*
+import androidx.navigation.testing.TestNavHostController
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
 import androidx.paging.LoadStates
@@ -27,19 +28,21 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.diskin.alon.pagoda.common.appservices.AppError
 import com.diskin.alon.pagoda.common.appservices.ErrorType
-import com.diskin.alon.pagoda.common.presentation.LOCATION_LAT
-import com.diskin.alon.pagoda.common.presentation.LOCATION_LON
+import com.diskin.alon.pagoda.common.presentation.ARG_LAT
+import com.diskin.alon.pagoda.common.presentation.ARG_LON
 import com.diskin.alon.pagoda.common.presentation.SingleLiveEvent
 import com.diskin.alon.pagoda.common.uitesting.HiltTestActivity
 import com.diskin.alon.pagoda.common.uitesting.RecyclerViewMatcher.withRecyclerView
 import com.diskin.alon.pagoda.common.uitesting.launchFragmentInHiltContainer
-import com.diskin.alon.pagoda.locations.presentation.controller.AppLocationsNavProvider
 import com.diskin.alon.pagoda.locations.presentation.controller.BookmarkedLocationsAdapter.BookmarkedLocationViewHolder
 import com.diskin.alon.pagoda.locations.presentation.controller.BookmarkedLocationsFragment
 import com.diskin.alon.pagoda.locations.presentation.model.UiBookmarkedLocation
 import com.diskin.alon.pagoda.locations.presentation.viewmodel.BookmarkedLocationsViewModel
 import com.google.common.truth.Truth.assertThat
-import io.mockk.*
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.mockkConstructor
+import io.mockk.verify
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -63,7 +66,7 @@ class BookmarkedLocationsFragmentTest {
 
     // Collaborators
     private val viewModel: BookmarkedLocationsViewModel = mockk()
-    private val appNav: AppLocationsNavProvider = mockk()
+    private val navController: TestNavHostController = TestNavHostController(ApplicationProvider.getApplicationContext())
 
     // Stub data
     private val locations = MutableLiveData<PagingData<UiBookmarkedLocation>>()
@@ -80,12 +83,26 @@ class BookmarkedLocationsFragmentTest {
         every { viewModel.error } returns error
 
         // Launch fragment under test
-
-        // Fragment scenario has no action bar that needed for test so we use hilt
-        // test activity(uses activity scenario)
         scenario = launchFragmentInHiltContainer<BookmarkedLocationsFragment>()
+
+        // Set test nav controller
+        scenario.onActivity {
+            val fragment = it.supportFragmentManager.fragments.first() as BookmarkedLocationsFragment
+
+            navController.setGraph(R.navigation.locations_graph)
+            Navigation.setViewNavController(fragment.requireView(), navController)
+        }
         Shadows.shadowOf(Looper.getMainLooper()).idle()
-        scenario.onActivity { it.findViewById<RecyclerView>(R.id.bookmarked_locations).itemAnimator = null }
+    }
+
+    @Test
+    fun showBookmarksTitleInAppBarWhenResumed() {
+        // Given
+
+        // Then
+        val expectedTitle = ApplicationProvider.getApplicationContext<Context>()
+            .getString(R.string.label_bookmarks_fragment)
+        assertThat(navController.currentDestination?.label).isEqualTo(expectedTitle)
     }
 
     @Test
@@ -178,15 +195,6 @@ class BookmarkedLocationsFragmentTest {
     @Test
     fun openLocationsSearchScreenWhenAddingLocationSelected() {
         // Given
-        val destId = 10
-
-        mockkStatic(Fragment::findNavController)
-        scenario.onActivity {
-            val fragment = it.supportFragmentManager.fragments[0] as BookmarkedLocationsFragment
-            fragment.appNav = appNav
-            every { fragment.findNavController().navigate(any<Int>()) } returns Unit
-        }
-        every { appNav.getBookmarkedLocationsLocationsSearchNavRoute() } returns destId
 
         // When
         scenario.onActivity {
@@ -203,50 +211,40 @@ class BookmarkedLocationsFragmentTest {
             fragment.onOptionsItemSelected(addMenuItem)
         }
 
-
         // Then
-        verify { appNav.getBookmarkedLocationsLocationsSearchNavRoute() }
-
-        scenario.onActivity {
-            val fragment = it.supportFragmentManager.fragments[0] as BookmarkedLocationsFragment
-            verify { fragment.findNavController().navigate(destId) }
-        }
+        assertThat(navController.currentDestination?.id).isEqualTo(R.id.searchLocationsFragment)
     }
 
     @Test
     fun openWeatherDataScreenWhenResultSelected() {
         // Given
-        val destId = 10
-        val bundleSlot = slot<Bundle>()
-        mockkStatic(Fragment::findNavController)
-
-        scenario.onActivity {
-            val fragment = it.supportFragmentManager.fragments[0] as BookmarkedLocationsFragment
-            fragment.appNav = appNav
-            every { fragment.findNavController().navigate(any(),capture(bundleSlot)) } returns Unit
-        }
-
-        every { appNav.getBookmarkedLocationsToWeatherDataNavRoute() } returns destId
-
-        // When
+        val context = ApplicationProvider.getApplicationContext<Context>()
         val savedLocations = createBookmarkedLocations()
         locations.value = PagingData.from(savedLocations)
+        val weatherDestId = 10
+        navController.graph.addDestination(NavDestination("test navigator").also { dest ->
+            dest.id = weatherDestId
+            dest.addDeepLink(context.getString(R.string.uri_weather))
+        })
+
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
         // And
         onView(withId(R.id.bookmarked_locations))
             .perform(actionOnItemAtPosition<BookmarkedLocationViewHolder>(0, click()))
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
 
         // Then
-        verify { appNav.getBookmarkedLocationsToWeatherDataNavRoute() }
+        val expectedDeepLinkUri = Uri.Builder()
+            .scheme(context.getString(R.string.uri_weather).toUri().scheme)
+            .authority(context.getString(R.string.uri_weather).toUri().authority)
+            .path(context.getString(R.string.uri_weather).toUri().path)
+            .appendQueryParameter(ARG_LAT,savedLocations.first().lat.toString())
+            .appendQueryParameter(ARG_LON,savedLocations.first().lon.toString())
+            .build()
 
-        scenario.onActivity {
-            val fragment = it.supportFragmentManager.fragments[0] as BookmarkedLocationsFragment
-            verify { fragment.findNavController().navigate(destId,any()) }
-        }
-
-        assertThat(bundleSlot.captured.get(LOCATION_LAT)).isEqualTo(savedLocations.first().lat)
-        assertThat(bundleSlot.captured.get(LOCATION_LON)).isEqualTo(savedLocations.first().lon)
+        assertThat(navController.currentDestination?.id).isEqualTo(weatherDestId)
+        assertThat(navController.currentDestination?.hasDeepLink(expectedDeepLinkUri)).isTrue()
     }
 
     @Test

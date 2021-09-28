@@ -75,10 +75,10 @@ class WeatherViewModel @Inject constructor(
     }
 
     private fun initWeatherSubject(): BehaviorSubject<ModelRequest<*,Observable<AppResult<UiWeather>>>> {
-        val request = when(savedState.contains(LOCATION_LAT) && savedState.contains(LOCATION_LON)) {
+        val request = when(savedState.contains(ARG_LAT) && savedState.contains(ARG_LON)) {
             true -> WorldLocationWeatherModelRequest(
-                savedState.get(LOCATION_LAT)!!,
-                savedState.get(LOCATION_LON)!!
+                savedState.get<Float>(ARG_LAT)!!.toString().toDouble(),
+                savedState.get<Float>(ARG_LON)!!.toString().toDouble()
             )
 
             else -> UserLocationWeatherModelRequest
@@ -88,6 +88,6 @@ class WeatherViewModel @Inject constructor(
     }
 
     private fun initIsCurrentLocation(): Boolean {
-        return !(savedState.contains(LOCATION_LAT) && savedState.contains(LOCATION_LON))
+        return !(savedState.contains(ARG_LAT) && savedState.contains(ARG_LON))
     }
 }
