@@ -10,21 +10,31 @@
         android:name="com.diskin.alon.pagoda.home.presentation.BlankFragment"
         android:label="WeatherFragment"
         tools:layout="@layout/fragment_blank">
-        <action
-            android:id="@+id/action_weatherFragment_to_settingsFragment"
-            app:destination="@id/settingsFragment" />
-        <action
-            android:id="@+id/action_weatherFragment_to_searchLocationsFragment"
-            app:destination="@id/searchLocationsFragment" />
+
+        <deepLink app:uri="@string/uri_weather"/>
     </fragment>
 
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.diskin.alon.pagoda.home.presentation.BlankFragment"
-        tools:layout="@layout/fragment_blank"/>
+        tools:layout="@layout/fragment_blank">
+
+        <deepLink app:uri="@string/uri_settings"/>
+    </fragment>
 
     <fragment
         android:id="@+id/searchLocationsFragment"
         android:name="com.diskin.alon.pagoda.home.presentation.BlankFragment"
-        tools:layout="@layout/fragment_blank"/>
+        tools:layout="@layout/fragment_blank">
+
+        <deepLink app:uri="@string/uri_search"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/bookmarkedLocationsFragment"
+        android:name="com.diskin.alon.pagoda.home.presentation.BlankFragment"
+        tools:layout="@layout/fragment_blank">
+
+        <deepLink app:uri="@string/uri_bookmarks"/>
+    </fragment>
 </navigation>

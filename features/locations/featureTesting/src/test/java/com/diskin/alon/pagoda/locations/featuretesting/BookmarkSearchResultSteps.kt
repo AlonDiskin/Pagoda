@@ -88,6 +88,7 @@ class BookmarkSearchResultSteps(private val db: TestDatabase) : GreenCoffeeSteps
 
     @Then("^Bookmarked location should be listed$")
     fun bookmarked_location_should_be_listed() {
+        Thread.sleep(3000)
         val bookmarkedLocation = expectedBookmarkedUiLocation()
 
         onView(withId(R.id.bookmarked_locations))

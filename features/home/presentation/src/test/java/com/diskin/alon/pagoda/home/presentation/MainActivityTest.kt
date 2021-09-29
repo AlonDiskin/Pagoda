@@ -43,13 +43,12 @@ class MainActivityTest {
     // Collaborators
     @BindValue
     @JvmField
-    val graphProvider: AppHomeNavProvider = mockk()
+    val graphProvider: AppNavGraphProvider = mockk()
 
     @Before
     fun setUp() {
         // Stub collaborator
         every { graphProvider.getAppNavGraph() } returns getTestAppGraph()
-        every { graphProvider.getWeatherDataToSettingsNavRoute() } returns getTestSettingsGraphId()
 
         // Launch activity under test
         scenario = ActivityScenario.launch(MainActivity::class.java)
@@ -57,24 +56,24 @@ class MainActivityTest {
     }
 
     @Test
-    fun openSettingsScreenWhenUserNavigatesToIt() {
-        // Given a resumed activity
+    fun openSettingsScreenWhenUserNavigates() {
+        // Given
 
-        // When user navigates to settings screen
+        // When
         scenario.onActivity {
             val addMenuItem = ActionMenuItem(
                 it,
                 0,
-                R.id.nav_settings,
+                R.id.action_settings,
                 0,
                 0,
                 null
             )
 
-            it.onNavigationItemSelected(addMenuItem)
+            it.onOptionsItemSelected(addMenuItem)
         }
 
-        // Then settings screen should be shown
+        // Then
         scenario.onActivity {
             val controller = it.findNavController(R.id.nav_host_container)
             assertThat(controller.currentDestination!!.id).isEqualTo(R.id.settingsFragment)
@@ -82,10 +81,10 @@ class MainActivityTest {
     }
 
     @Test
-    fun showWeatherScreenAsHomeWhenResumed() {
-        // Given a resumed activity
+    fun openWeatherScreenAsHomeWhenResumed() {
+        // Given
 
-        // Then activity should set weather fragment as home destination for navigation
+        // Then
         scenario.onActivity {
             val controller = it.findNavController(R.id.nav_host_container)
             assertThat(controller.currentDestination!!.id).isEqualTo(R.id.weatherFragment)
@@ -93,21 +92,21 @@ class MainActivityTest {
     }
 
     @Test
-    fun showUpNavigationUiWhenShowingSettingsScreen() {
-        // Given a resumed activity
+    fun showUpNavigationUiWhenSettingsScreenOpen() {
+        // Given
 
-        // When user navigates to settings screen
+        // When
         scenario.onActivity {
             val addMenuItem = ActionMenuItem(
                 it,
                 0,
-                R.id.nav_settings,
+                R.id.action_settings,
                 0,
                 0,
                 null
             )
 
-            it.onNavigationItemSelected(addMenuItem)
+            it.onOptionsItemSelected(addMenuItem)
         }
 
         // Then
@@ -116,25 +115,21 @@ class MainActivityTest {
     }
 
     @Test
-    fun openLocationsSearchScreenWhenUserNavigatesToIt() {
-        // Test case fixture
-        val locationSearchDestId = getTestSearchLocationsDestId()
-        every { graphProvider.getWeatherDataSearchLocationsNavRoute() } returns locationSearchDestId
-
+    fun openSearchScreenWhenUserNavigates() {
         // Given
 
-        // When user navigates to locations search screen
+        // When
         scenario.onActivity {
             val addMenuItem = ActionMenuItem(
                 it,
                 0,
-                R.id.nav_search,
+                R.id.action_search,
                 0,
                 0,
                 null
             )
 
-            it.onNavigationItemSelected(addMenuItem)
+            it.onOptionsItemSelected(addMenuItem)
         }
 
         // Then location search should be shown
@@ -145,27 +140,75 @@ class MainActivityTest {
     }
 
     @Test
-    fun openWeatherScreenWhenUserNavigatesToIt() {
-        // Given a resumed activity
+    fun openWeatherScreenWhenUserNavigates() {
+        // Given
 
-        // When user navigates to settings screen
+        // When
         scenario.onActivity {
             val addMenuItem = ActionMenuItem(
                 it,
                 0,
-                R.id.nav_home,
+                R.id.action_current_location_weather,
                 0,
                 0,
                 null
             )
 
-            it.onNavigationItemSelected(addMenuItem)
+            it.onOptionsItemSelected(addMenuItem)
         }
 
-        // Then settings screen should be shown
+        // Then
         scenario.onActivity {
             val controller = it.findNavController(R.id.nav_host_container)
             assertThat(controller.currentDestination!!.id).isEqualTo(R.id.weatherFragment)
         }
+    }
+
+    @Test
+    fun openBookmarksScreenWhenUserNavigates() {
+        // Given
+
+        // When
+        scenario.onActivity {
+            val addMenuItem = ActionMenuItem(
+                it,
+                0,
+                R.id.action_bookmarks,
+                0,
+                0,
+                null
+            )
+
+            it.onOptionsItemSelected(addMenuItem)
+        }
+
+        // Then
+        scenario.onActivity {
+            val controller = it.findNavController(R.id.nav_host_container)
+            assertThat(controller.currentDestination!!.id).isEqualTo(R.id.bookmarkedLocationsFragment)
+        }
+    }
+
+    @Test
+    fun showUpNavigationUiWhenFavoriteLocationsScreenOpen() {
+        // Given
+
+        // When
+        scenario.onActivity {
+            val addMenuItem = ActionMenuItem(
+                it,
+                0,
+                R.id.action_bookmarks,
+                0,
+                0,
+                null
+            )
+
+            it.onOptionsItemSelected(addMenuItem)
+        }
+
+        // Then
+        onView(withContentDescription(R.string.abc_action_bar_up_description))
+            .check(matches(isDisplayed()))
     }
 }

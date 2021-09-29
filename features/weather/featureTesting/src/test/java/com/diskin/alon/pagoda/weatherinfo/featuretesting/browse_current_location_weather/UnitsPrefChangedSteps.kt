@@ -44,6 +44,7 @@ import org.joda.time.LocalDateTime
 import org.json.JSONObject
 import org.robolectric.Shadows
 import java.text.SimpleDateFormat
+import kotlin.math.roundToInt
 
 /**
  * Step definitions for 'Weather units preference changed' scenario.
@@ -274,7 +275,7 @@ class UnitsPrefChangedSteps(
 
         // check current temp
         onView(withId(R.id.currentTemp))
-            .check(matches(withText("${currentTemp.toInt()}°")))
+            .check(matches(withText("${currentTemp.roundToInt()}°")))
 
         // check current temp
         onView(withId(R.id.currentTempUnit))
@@ -282,11 +283,11 @@ class UnitsPrefChangedSteps(
 
         // check feels temp
         onView(withId(R.id.feelTemp))
-            .check(matches(withText("Feels like ${feelTemp.toInt()}°")))
+            .check(matches(withText("Feels like ${feelTemp.roundToInt()}°")))
 
         // check min max temp
         onView(withId(R.id.minMaxTemp))
-            .check(matches(withText("min ${minTemp.toInt()}°/max ${maxTemp.toInt()}°")))
+            .check(matches(withText("min ${minTemp.roundToInt()}°/max ${maxTemp.roundToInt()}°")))
 
         // check hour forecast temp
         for (i in 0 until 12) {
@@ -298,7 +299,7 @@ class UnitsPrefChangedSteps(
             Shadows.shadowOf(Looper.getMainLooper()).idle()
 
             onView(withRecyclerView(R.id.hourForecast).atPositionOnView(i, R.id.temp))
-                .check(matches(withText("${hourTemp.toInt()}°")))
+                .check(matches(withText("${hourTemp.roundToInt()}°")))
         }
 
         // check day forecast temp
@@ -307,10 +308,10 @@ class UnitsPrefChangedSteps(
             val dayMaxTemp = dailyForecast.getJSONObject(i).getJSONObject("temp").getDouble("max")
 
             onView(withRecyclerView(R.id.dailyForecast).atPositionOnView(i, R.id.minTemp))
-                .check(matches(withText("${dayMinTemp.toInt()}°")))
+                .check(matches(withText("${dayMinTemp.roundToInt()}°")))
 
             onView(withRecyclerView(R.id.dailyForecast).atPositionOnView(i, R.id.maxTemp))
-                .check(matches(withText("${dayMaxTemp.toInt()}°")))
+                .check(matches(withText("${dayMaxTemp.roundToInt()}°")))
         }
     }
 
@@ -337,7 +338,7 @@ class UnitsPrefChangedSteps(
 
         // check current temp
         onView(withId(R.id.currentTemp))
-            .check(matches(withText("${currentTemp.toInt()}°")))
+            .check(matches(withText("${currentTemp.roundToInt()}°")))
 
         // check current temp
         onView(withId(R.id.currentTempUnit))
@@ -345,11 +346,11 @@ class UnitsPrefChangedSteps(
 
         // check feels temp
         onView(withId(R.id.feelTemp))
-            .check(matches(withText("Feels like ${feelTemp.toInt()}°")))
+            .check(matches(withText("Feels like ${feelTemp.roundToInt()}°")))
 
         // check min max temp
         onView(withId(R.id.minMaxTemp))
-            .check(matches(withText("min ${minTemp.toInt()}°/max ${maxTemp.toInt()}°")))
+            .check(matches(withText("min ${minTemp.roundToInt()}°/max ${maxTemp.roundToInt()}°")))
 
         // check hour forecast temp
         for (i in 0 until 12) {
@@ -363,7 +364,7 @@ class UnitsPrefChangedSteps(
             Shadows.shadowOf(Looper.getMainLooper()).idle()
 
             onView(withRecyclerView(R.id.hourForecast).atPositionOnView(i, R.id.temp))
-                .check(matches(withText("${hourTemp.toInt()}°")))
+                .check(matches(withText("${hourTemp.roundToInt()}°")))
         }
 
         // check day forecast temp
@@ -378,10 +379,10 @@ class UnitsPrefChangedSteps(
             )
 
             onView(withRecyclerView(R.id.dailyForecast).atPositionOnView(i, R.id.minTemp))
-                .check(matches(withText("${dayMinTemp.toInt()}°")))
+                .check(matches(withText("${dayMinTemp.roundToInt()}°")))
 
             onView(withRecyclerView(R.id.dailyForecast).atPositionOnView(i, R.id.maxTemp))
-                .check(matches(withText("${dayMaxTemp.toInt()}°")))
+                .check(matches(withText("${dayMaxTemp.roundToInt()}°")))
         }
     }
 
@@ -391,7 +392,7 @@ class UnitsPrefChangedSteps(
 
         // check wind speed
         onView(withId(R.id.windSpeedValue))
-            .check(matches(withText("${windSpeed.toInt()}km/h")))
+            .check(matches(withText("${windSpeed.roundToInt()}km/h")))
     }
 
     private fun checkUiWeatherWindSpeedShownAsImperial() {
@@ -403,7 +404,7 @@ class UnitsPrefChangedSteps(
 
         // check wind speed
         onView(withId(R.id.windSpeedValue))
-            .check(matches(withText("${windSpeed.toInt()}mph")))
+            .check(matches(withText("${windSpeed.roundToInt()}mph")))
     }
 
     private fun checkUiWeatherTimeShownIn24HourFormat() {

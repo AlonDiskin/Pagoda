@@ -1,32 +1,29 @@
 package com.diskin.alon.pagoda.locations.presentation.controller
 
+import android.net.Uri
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Toast
 import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.PopupMenu
-import androidx.core.os.bundleOf
+import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
-import androidx.recyclerview.widget.RecyclerView
 import com.diskin.alon.pagoda.common.appservices.AppError
 import com.diskin.alon.pagoda.common.appservices.ErrorType
-import com.diskin.alon.pagoda.common.presentation.LOCATION_LAT
-import com.diskin.alon.pagoda.common.presentation.LOCATION_LON
+import com.diskin.alon.pagoda.common.presentation.ARG_LAT
+import com.diskin.alon.pagoda.common.presentation.ARG_LON
 import com.diskin.alon.pagoda.locations.presentation.R
 import com.diskin.alon.pagoda.locations.presentation.databinding.FragmentBookmarkedLocationsBinding
 import com.diskin.alon.pagoda.locations.presentation.model.UiBookmarkedLocation
 import com.diskin.alon.pagoda.locations.presentation.viewmodel.BookmarkedLocationsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.migration.OptionalInject
-import javax.inject.Inject
 
 @OptionalInject
 @AndroidEntryPoint
@@ -34,8 +31,6 @@ class BookmarkedLocationsFragment : Fragment() {
 
     private val viewModel: BookmarkedLocationsViewModel by viewModels()
     private lateinit var binding: FragmentBookmarkedLocationsBinding
-    @Inject
-    lateinit var appNav: AppLocationsNavProvider
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,23 +64,23 @@ class BookmarkedLocationsFragment : Fragment() {
 
         // Observe view model errors
         viewModel.error.observe(viewLifecycleOwner) { handleLocationsError(it) }
+    }
 
-        // Handle floating action button click
-        binding.addFab.setOnClickListener {
-            findNavController().navigate(appNav.getBookmarkedLocationsLocationsSearchNavRoute())
-        }
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        //super.onCreateOptionsMenu(menu, inflater)
+        menu.clear()
+        inflater.inflate(R.menu.menu_favorite_locations, menu)
+    }
 
-        // Hide/Show fab upon rv scrolling
-        binding.bookmarkedLocations.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                if (dy > 0 && binding.addFab.visibility == View.VISIBLE) {
-                    binding.addFab.hide()
-                } else if (dy < 0 && binding.addFab.visibility != View.VISIBLE) {
-                    binding.addFab.show()
-                }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId) {
+            R.id.action_add -> {
+                val searchDestUri = getString(R.string.uri_search).toUri()
+                findNavController().navigate(searchDestUri)
+                true
             }
-        })
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     private fun handleLocationsError(error: AppError) {
@@ -103,8 +98,14 @@ class BookmarkedLocationsFragment : Fragment() {
 
     private fun handleLocationClick(location: UiBookmarkedLocation) {
         // Navigate to weather info screen and pass selected location coordinates
-        val bundle = bundleOf(LOCATION_LAT to location.lat, LOCATION_LON to location.lon)
-        findNavController().navigate(appNav.getBookmarkedLocationsToWeatherDataNavRoute(), bundle)
+        val weatherDestUri = Uri.Builder()
+            .scheme(getString(R.string.uri_weather).toUri().scheme)
+            .authority(getString(R.string.uri_weather).toUri().authority)
+            .path(getString(R.string.uri_weather).toUri().path)
+            .appendQueryParameter(ARG_LAT,location.lat.toString())
+            .appendQueryParameter(ARG_LON,location.lon.toString())
+            .build()
+        findNavController().navigate(weatherDestUri)
     }
 
     private fun handleLocationOptionsClick(location: UiBookmarkedLocation, view: View) {

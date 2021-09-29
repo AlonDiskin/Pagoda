@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
+import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.contrib.DrawerActions
@@ -80,11 +81,9 @@ class ReceiveWeatherAlertNotificationSteps(
 
     @And("^Open settings screen$")
     fun open_settings_screen() {
-        onView(withId(R.id.drawerLayout))
-            .perform(DrawerActions.open())
-
-        onView(withId(R.id.nav_view))
-            .perform(NavigationViewActions.navigateTo(R.id.nav_settings))
+        Espresso.openActionBarOverflowOrOptionsMenu(getApplicationContext())
+        onView(withText(R.string.title_settings))
+            .perform(click())
     }
 
     @And("^Enable weather alert notification$")

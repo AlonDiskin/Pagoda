@@ -36,11 +36,13 @@ class WeatherStoreImpl @Inject constructor(
     override fun isUpdateAvailable(lastUpdate: Long): Boolean {
         val current = Calendar.getInstance().timeInMillis
         val lastUpdated =  LocalDateTime(lastUpdate)
-        val nextUpdate = LocalDateTime(lastUpdated.year,
+        val nextUpdate = LocalDateTime(
+            lastUpdated.year,
             lastUpdated.monthOfYear,
             lastUpdated.dayOfMonth,
-            lastUpdated.hourOfDay + 1,
-            0).toDate().time
+            lastUpdated.plusHours(1).hourOfDay,
+            0
+        ).toDate().time
 
         return current >= nextUpdate
     }

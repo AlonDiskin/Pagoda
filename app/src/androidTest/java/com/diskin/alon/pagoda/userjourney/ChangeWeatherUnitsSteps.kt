@@ -4,10 +4,9 @@ import android.content.Context
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.DrawerActions.open
-import androidx.test.espresso.contrib.NavigationViewActions.navigateTo
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItem
 import androidx.test.espresso.matcher.RootMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
@@ -24,6 +23,7 @@ import com.mauriciotogneri.greencoffee.annotations.Given
 import com.mauriciotogneri.greencoffee.annotations.Then
 import com.mauriciotogneri.greencoffee.annotations.When
 import org.json.JSONObject
+import kotlin.math.roundToInt
 
 /**
  * Step definitions for 'User changes weather units' scenario.
@@ -43,18 +43,16 @@ class ChangeWeatherUnitsSteps : GreenCoffeeSteps() {
 
     @And("^Open settings screen$")
     fun open_settings_screen() {
-        onView(withId(R.id.drawerLayout))
-            .perform(open())
-
-        onView(withId(R.id.nav_view))
-            .perform(navigateTo(R.id.nav_settings))
+        openActionBarOverflowOrOptionsMenu(ApplicationProvider.getApplicationContext())
+        onView(withText(R.string.title_settings))
+            .perform(click())
     }
 
     @When("^User change temperature and time format units$")
     fun user_change_temperature_and_time_format_units() {
         onView(withId(androidx.preference.R.id.recycler_view))
             .perform(
-                actionOnItem<RecyclerView.ViewHolder>(hasDescendant(withText("Temperature")),
+                actionOnItem<RecyclerView.ViewHolder>(hasDescendant(withText(R.string.pref_temperature_title)),
                 click())
             )
 
@@ -64,11 +62,11 @@ class ChangeWeatherUnitsSteps : GreenCoffeeSteps() {
 
         onView(withId(androidx.preference.R.id.recycler_view))
             .perform(
-                actionOnItem<RecyclerView.ViewHolder>(hasDescendant(withText("Time format")),
+                actionOnItem<RecyclerView.ViewHolder>(hasDescendant(withText(R.string.pref_time_format_title)),
                     click())
             )
 
-        onView(withText("12"))
+        onView(withText(R.string.pref_time_format_12_value))
             .inRoot(RootMatchers.isDialog())
             .perform(click())
     }
@@ -84,7 +82,7 @@ class ChangeWeatherUnitsSteps : GreenCoffeeSteps() {
         val currentTemp = JSONObject(weatherJson).getJSONObject("current")
             .getDouble("temp")
         val expectedTemp = String.format("%.1f", ((currentTemp * (9.0 / 5.0)) + 32))
-            .toDouble().toInt().toString().plus("°")
+            .toDouble().roundToInt().toString().plus("°")
 
         Thread.sleep(5000)
 

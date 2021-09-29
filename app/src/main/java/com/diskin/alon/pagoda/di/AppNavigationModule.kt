@@ -1,8 +1,7 @@
 package com.diskin.alon.pagoda.di
 
-import com.diskin.alon.pagoda.AppNavigator
-import com.diskin.alon.pagoda.home.presentation.AppHomeNavProvider
-import com.diskin.alon.pagoda.locations.presentation.controller.AppLocationsNavProvider
+import com.diskin.alon.pagoda.AppNavGraphProviderImpl
+import com.diskin.alon.pagoda.home.presentation.AppNavGraphProvider
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,19 +14,7 @@ object AppNavigationModule {
 
     @Singleton
     @Provides
-    fun provideAppNavigator(): AppNavigator {
-        return AppNavigator()
-    }
-
-    @Singleton
-    @Provides
-    fun provideAppHomeNavProvider(appNavigator: AppNavigator): AppHomeNavProvider {
-        return appNavigator
-    }
-
-    @Singleton
-    @Provides
-    fun provideAppLocationsNavProvider(appNavigator: AppNavigator): AppLocationsNavProvider {
-        return appNavigator
+    fun provideAppNavigator(): AppNavGraphProvider {
+        return AppNavGraphProviderImpl()
     }
 }

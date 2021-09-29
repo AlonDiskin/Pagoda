@@ -73,10 +73,10 @@
     <target android:name="rotationGroup">
         <aapt:attr name="android:animation">
             <objectAnimator
-                android:duration="5000"
+                android:duration="8000"
                 android:propertyName="rotation"
                 android:repeatCount="infinite"
-                android:repeatMode="reverse"
+                android:interpolator="@android:interpolator/linear"
                 android:valueFrom="0"
                 android:valueTo="360"/>
         </aapt:attr>

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="search_hint">Search locations</string>
+    <string name="search_hint">Search world locations</string>
     <string name="title_action_search">Search locations</string>
+    <string name="label_bookmarks_fragment">Locations</string>
     <string name="add_location_description">add location</string>
     <string name="title_action_location_delete">Delete</string>
     <string name="message_delete_location_dialog">Delete location?</string>
@@ -9,4 +10,5 @@
     <string name="title_dialog_positive_action">ok</string>
     <string name="title_dialog_negative_action">cancel</string>
     <string name="text_locations_db_error">Operation not available temporarily!</string>
+    <string name="title_add_location">Add location</string>
 </resources>
