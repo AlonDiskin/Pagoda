@@ -76,6 +76,10 @@ dependencies {
     implementation "androidx.room:room-rxjava2:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
 
+    // Paging
+    implementation "androidx.paging:paging-runtime-ktx:$paging_version"
+    implementation "androidx.paging:paging-rxjava2-ktx:$paging_version"
+
     // Joda Time
     implementation "joda-time:joda-time:$joda_version"
 
@@ -94,4 +98,5 @@ dependencies {
     testImplementation "org.robolectric:robolectric:$robolectric_version"
     testImplementation "androidx.room:room-testing:$room_version"
     kaptTest "androidx.room:room-compiler:$room_version"
+    testImplementation "androidx.paging:paging-common-ktx:$paging_version"
 }

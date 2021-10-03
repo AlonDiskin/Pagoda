@@ -20,6 +20,9 @@ dependencies {
     // Javax annotation
     implementation "javax.inject:javax.inject:$javax_annotation_version"
 
+    // Paging
+    api "androidx.paging:paging-common-ktx:$paging_version"
+
     // Unit testing
     testImplementation project(':features:common:localTesting')
 }

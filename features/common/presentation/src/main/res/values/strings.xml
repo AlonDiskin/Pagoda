@@ -1,10 +1,5 @@
 <resources>
     <string name="app_name">Pagoda</string>
     <string name="idling_resource_recycler_view_tag">data binding tag</string>
-    <string name="arg_lat">lat</string>
-    <string name="arg_lon">lon</string>
-    <string name="uri_weather">android-app://com.diskin.alon.pagoda/weather?lat={lat}&amp;lon={lon}</string>
-    <string name="uri_search">android-app://com.diskin.alon.pagoda/search</string>
-    <string name="uri_bookmarks">android-app://com.diskin.alon.pagoda/bookmarks</string>
     <string name="uri_settings">android-app://com.diskin.alon.pagoda/settings</string>
 </resources>

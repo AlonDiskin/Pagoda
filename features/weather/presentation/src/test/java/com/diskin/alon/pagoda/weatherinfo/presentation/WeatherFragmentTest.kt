@@ -12,16 +12,21 @@ import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
 import androidx.activity.result.contract.ActivityResultContracts.StartIntentSenderForResult
 import androidx.core.app.ActivityOptionsCompat
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
+import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelLazy
+import androidx.navigation.Navigation
+import androidx.navigation.testing.TestNavHostController
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -65,9 +70,9 @@ class WeatherFragmentTest {
 
     // Collaborators
     private val viewModel: WeatherViewModel = mockk()
+    private val navController: TestNavHostController = TestNavHostController(ApplicationProvider.getApplicationContext())
 
     // Stub data
-    private val isCurrentLocation = true
     private val weather = MutableLiveData<UiWeather>()
     private val update = MutableLiveData<UpdateViewData>()
     private val error = SingleLiveEvent<AppError>()
@@ -102,9 +107,7 @@ class WeatherFragmentTest {
         every { viewModel.weather } returns weather
         every { viewModel.update } returns update
         every { viewModel.error } returns error
-        every { viewModel.isCurrentLocation } returns isCurrentLocation
 
-        // Test require AppCompatActivity properties verification,which HiltTestActivity inherits from
         // Launch fragment under test
         scenario = launchFragmentInHiltContainer<WeatherFragment>(
             factory = object :FragmentFactory() {
@@ -113,6 +116,15 @@ class WeatherFragmentTest {
                 }
             }
         )
+
+        // Set test nav controller
+        scenario.onActivity {
+            val fragment = it.supportFragmentManager.fragments.first() as WeatherFragment
+
+            navController.setGraph(R.navigation.weather_graph)
+            Navigation.setViewNavController(fragment.requireView(), navController)
+        }
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
     }
 
     @Test
@@ -406,23 +418,6 @@ class WeatherFragmentTest {
     }
 
     @Test
-    fun showCurrentLocationIndicatorWhenShowsCurrentLocationWeather() {
-        // Test fixture
-        mockkObject(ImageLoader)
-        every { ImageLoader.loadIconResIntoImageView(any(),any()) } returns Unit
-
-        // Given
-        every { viewModel.isCurrentLocation } returns true
-
-        // When
-        scenario.recreate()
-        Shadows.shadowOf(Looper.getMainLooper()).idle()
-
-        // Then
-        verify { ImageLoader.loadIconResIntoImageView(any(),R.drawable.ic_baseline_location_24) }
-    }
-
-    @Test
     fun hideCurrentLocationIndicatorWhenShowsLocationWeather() {
         // Test fixture
         mockkObject(ImageLoader)
@@ -432,5 +427,67 @@ class WeatherFragmentTest {
 
         // Then
         verify(exactly = 0) { ImageLoader.loadIconResIntoImageView(any(),R.drawable.ic_baseline_location_24) }
+    }
+
+    @Test
+    fun openBookmarksWhenSelectedFromMenu() {
+        // Given
+
+        // When
+        onView(withId(R.id.action_bookmarks))
+            .perform(click())
+
+        // Then
+        assertThat(navController.currentDestination?.id).isEqualTo(R.id.bookmarkedLocationsFragment)
+    }
+
+    @Test
+    fun openLocationsSearchWhenSelectedFromMenu() {
+        // Given
+
+        // When
+        onView(withId(R.id.action_search))
+            .perform(click())
+
+        // Then
+        assertThat(navController.currentDestination?.id).isEqualTo(R.id.searchLocationsFragment)
+    }
+
+    @Test
+    fun showCurrentLocationWeatherWhenSelectedFromMenu() {
+        // Given
+        every { viewModel.loadCurrentLocationWeather() } returns Unit
+
+        // When
+        onView(withId(R.id.action_current_location_weather))
+            .perform(click())
+
+        // Then
+        verify { viewModel.loadCurrentLocationWeather() }
+    }
+
+    @Test
+    fun showLocationWeatherWhenLocationReturnedAsResult() {
+        // Given
+        every { viewModel.loadLocationWeather(any(),any()) } returns Unit
+
+        // When
+        val lat = 23.68
+        val lon = 67.24
+
+        scenario.onActivity {
+            val fragment = it.supportFragmentManager.fragments[0] as WeatherFragment
+            val bundle = bundleOf(
+                it.getString(R.string.arg_lat_key) to lat,
+                it.getString(R.string.arg_lon_key) to lon
+            )
+            val requestKey = it.getString(R.string.locaiton_request_key)
+
+            fragment.setFragmentResult(requestKey,bundle)
+        }
+
+
+        // Then
+        verify { viewModel.loadLocationWeather(lat,lon) }
     }
 }

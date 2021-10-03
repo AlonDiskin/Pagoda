@@ -8,11 +8,11 @@ import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.diskin.alon.pagoda.R
 import com.diskin.alon.pagoda.common.uitesting.typeSearchViewText
-import com.diskin.alon.pagoda.locations.presentation.controller.LocationSearchResultsAdapter.LocationSearchResultViewHolder
 import com.diskin.alon.pagoda.util.DeviceUtil
 import com.diskin.alon.pagoda.util.FileUtil
 import com.diskin.alon.pagoda.util.NetworkUtil
 import com.diskin.alon.pagoda.weatherinfo.data.BuildConfig
+import com.diskin.alon.pagoda.weatherinfo.presentation.controller.LocationSearchResultsAdapter.LocationSearchResultViewHolder
 import com.mauriciotogneri.greencoffee.GreenCoffeeSteps
 import com.mauriciotogneri.greencoffee.annotations.And
 import com.mauriciotogneri.greencoffee.annotations.Given
@@ -75,8 +75,8 @@ class CheckWorldLocationTemperatureSteps(server: MockWebServer) : GreenCoffeeSte
         private val selectedGeoRes = "assets/json/geocoding_2.json"
         private val weatherPath = "/data/2.5/onecall"
         private val geocodingPath = "/geo/1.0/reverse"
-        private val selectedLongitude = 34.65
-        private val selectedLatitude = 31.81667
+        private val selectedLongitude = 34.650002
+        private val selectedLatitude = 31.816669
 
         override fun dispatch(request: RecordedRequest): MockResponse {
             return when(request.requestUrl.uri().path){

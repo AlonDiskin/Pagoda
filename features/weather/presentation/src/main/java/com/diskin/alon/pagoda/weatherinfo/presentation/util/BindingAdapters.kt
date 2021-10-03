@@ -1,6 +1,7 @@
 package com.diskin.alon.pagoda.weatherinfo.presentation.util
 
 import android.graphics.drawable.AnimatedVectorDrawable
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextClock
 import androidx.annotation.DrawableRes
@@ -8,11 +9,26 @@ import androidx.databinding.BindingAdapter
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import com.diskin.alon.pagoda.common.presentation.ImageLoader
 import com.diskin.alon.pagoda.weatherinfo.presentation.R
+import com.diskin.alon.pagoda.weatherinfo.presentation.model.UiLocationSearchResult
 import java.lang.IllegalArgumentException
 
 @BindingAdapter("setImageRes")
 fun setImageRes(imageView: ImageView,@DrawableRes res: Int?) {
     res?.let { ImageLoader.loadIconResIntoImageView(imageView, res) }
+}
+
+@BindingAdapter("setAddButton")
+fun setAddButton(button: ImageButton, location: UiLocationSearchResult) {
+    when(location.bookmarked) {
+        true -> {
+            ImageLoader.loadIconResIntoImageButton(button, R.drawable.ic_baseline_done_24)
+            button.isEnabled = false
+        }
+        false -> {
+            ImageLoader.loadIconResIntoImageButton(button, R.drawable.ic_baseline_add_24)
+            button.isEnabled = true
+        }
+    }
 }
 
 @BindingAdapter("setMainWeatherIconRes")

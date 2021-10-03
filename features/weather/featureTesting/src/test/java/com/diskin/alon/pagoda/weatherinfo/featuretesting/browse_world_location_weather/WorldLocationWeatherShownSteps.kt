@@ -3,7 +3,9 @@ package com.diskin.alon.pagoda.weatherinfo.featuretesting.browse_world_location_
 import android.os.Bundle
 import android.os.Looper
 import androidx.core.os.bundleOf
+import androidx.fragment.app.setFragmentResult
 import androidx.test.core.app.ActivityScenario
+import com.diskin.alon.pagoda.common.appservices.Result
 import com.diskin.alon.pagoda.common.eventcontracts.AppEventProvider
 import com.diskin.alon.pagoda.common.eventcontracts.settings.TemperatureUnitPref
 import com.diskin.alon.pagoda.common.eventcontracts.settings.TimeFormatPref
@@ -11,11 +13,12 @@ import com.diskin.alon.pagoda.common.eventcontracts.settings.UnitPrefSystem
 import com.diskin.alon.pagoda.common.eventcontracts.settings.WindSpeedUnitPref
 import com.diskin.alon.pagoda.common.featuretesting.getJsonFromResource
 import com.diskin.alon.pagoda.common.presentation.ImageLoader
-import com.diskin.alon.pagoda.common.presentation.ARG_LAT
-import com.diskin.alon.pagoda.common.presentation.ARG_LON
 import com.diskin.alon.pagoda.common.uitesting.HiltTestActivity
 import com.diskin.alon.pagoda.common.uitesting.launchFragmentInHiltContainer
 import com.diskin.alon.pagoda.weatherinfo.data.BuildConfig
+import com.diskin.alon.pagoda.weatherinfo.data.local.interfaces.UserLocationProvider
+import com.diskin.alon.pagoda.weatherinfo.data.local.model.UserLocation
+import com.diskin.alon.pagoda.weatherinfo.presentation.R
 import com.diskin.alon.pagoda.weatherinfo.featuretesting.util.verifyServerWeatherShown
 import com.diskin.alon.pagoda.weatherinfo.presentation.controller.WeatherFragment
 import com.mauriciotogneri.greencoffee.GreenCoffeeSteps
@@ -25,6 +28,7 @@ import com.mauriciotogneri.greencoffee.annotations.When
 import io.mockk.every
 import io.mockk.mockkObject
 import io.reactivex.Observable
+import io.reactivex.subjects.SingleSubject
 import okhttp3.mockwebserver.Dispatcher
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
@@ -38,7 +42,8 @@ class WorldLocationWeatherShownSteps(
     server: MockWebServer,
     tempUnitPrefProvider: AppEventProvider<TemperatureUnitPref>,
     windSpeedUnitPrefProvider: AppEventProvider<WindSpeedUnitPref>,
-    timeFormatPrefProvider: AppEventProvider<TimeFormatPref>
+    timeFormatPrefProvider: AppEventProvider<TimeFormatPref>,
+    locationProvider: UserLocationProvider,
 ) : GreenCoffeeSteps() {
 
     private lateinit var scenario: ActivityScenario<HiltTestActivity>
@@ -48,6 +53,8 @@ class WorldLocationWeatherShownSteps(
     private lateinit var bundle: Bundle
 
     init {
+        // Stub location provider
+        every { locationProvider.getLocation() } returns SingleSubject.create()
         // Stub mock server
         server.setDispatcher(dispatcher)
 
@@ -61,17 +68,20 @@ class WorldLocationWeatherShownSteps(
         every { ImageLoader.loadIconResIntoImageView(any(),any()) } returns Unit
     }
 
-    @Given("^User select to view world location weather$")
-    fun user_select_to_view_world_location_weather() {
-        bundle = bundleOf(
-            ARG_LAT to dispatcher.locationLat,
-            ARG_LON to dispatcher.locationLon
-        )
-    }
-
-    @When("^User open weather screen for world location$")
+    @Given("^User open weather screen for world location$")
     fun user_open_weather_screen_for_world_location() {
-        scenario = launchFragmentInHiltContainer<WeatherFragment>(fragmentArgs = bundle)
+        scenario = launchFragmentInHiltContainer<WeatherFragment>()
+
+        scenario.onActivity {
+            val fragment = it.supportFragmentManager.fragments[0] as WeatherFragment
+            bundle = bundleOf(
+                it.getString(R.string.arg_lat_key) to dispatcher.locationLat,
+                it.getString(R.string.arg_lon_key) to dispatcher.locationLon
+            )
+            val requestKey = it.getString(R.string.locaiton_request_key)
+
+            fragment.setFragmentResult(requestKey,bundle)
+        }
         Shadows.shadowOf(Looper.getMainLooper()).idle()
     }
 

@@ -3,9 +3,7 @@ package com.diskin.alon.pagoda.weatherinfo.presentation.controller
 import android.Manifest
 import android.app.Activity
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Toast
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
@@ -16,7 +14,9 @@ import androidx.activity.result.contract.ActivityResultContracts.RequestPermissi
 import androidx.activity.result.contract.ActivityResultContracts.StartIntentSenderForResult
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.diskin.alon.pagoda.common.appservices.AppError
 import com.diskin.alon.pagoda.common.appservices.ErrorType
 import com.diskin.alon.pagoda.common.presentation.UpdateViewData
@@ -54,6 +54,17 @@ class WeatherFragment(
         }
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+        setFragmentResultListener(getString(R.string.locaiton_request_key)) { _, bundle ->
+            val lat = bundle.getDouble(getString(R.string.arg_lat_key))
+            val lon = bundle.getDouble(getString(R.string.arg_lon_key))
+
+            viewModel.loadLocationWeather(lat, lon)
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -65,9 +76,6 @@ class WeatherFragment(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        // Show location indicator
-        binding.weatherMain.isCurrentLocation = viewModel.isCurrentLocation
 
         // Setup forecast adapters
         val hourlyForeCastAdapter = HourlyForecastAdapter()
@@ -117,6 +125,32 @@ class WeatherFragment(
                 binding.weather?.let { (requireActivity() as AppCompatActivity).supportActionBar?.title = "" }
             }
         })
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.menu_weather, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId) {
+            R.id.action_search -> {
+                findNavController().navigate(R.id.searchLocationsFragment)
+                true
+            }
+
+            R.id.action_bookmarks -> {
+                findNavController().navigate(R.id.bookmarkedLocationsFragment)
+                true
+            }
+
+            R.id.action_current_location_weather -> {
+                viewModel.loadCurrentLocationWeather()
+                true
+            }
+
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     private fun <I,O> createActivityResultLauncher(
