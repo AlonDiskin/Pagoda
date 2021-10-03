@@ -6,11 +6,9 @@ Feature: World location bookmarking
   Scenario: User bookmark location
     Given User has no bookmarked locations
     And User launch app from device home
-    And Open locations screen
-    And Select to add a new location
-    Then App should open world locations search screen
+    And Open search locations screen
     When User find wanted location
     And Select to bookmark it
-    Then App should bookmark location and update locations list
+    Then App should bookmark location and update bookmarks list
     When User select to remove bookmark
     Then App should remove bookmark from user bookmarks listing

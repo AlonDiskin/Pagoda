@@ -7,7 +7,5 @@
 
     <include app:graph="@navigation/weather_graph" />
 
-    <include app:graph="@navigation/locations_graph" />
-
     <include app:graph="@navigation/settings_graph" />
 </navigation>

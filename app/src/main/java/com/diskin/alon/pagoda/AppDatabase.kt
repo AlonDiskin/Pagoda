@@ -4,10 +4,10 @@ import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.diskin.alon.pagoda.locations.data.local.LocationDao
-import com.diskin.alon.pagoda.locations.data.local.LocationEntity
 import com.diskin.alon.pagoda.weatherinfo.data.local.interfaces.CurrentWeatherDao
+import com.diskin.alon.pagoda.weatherinfo.data.local.interfaces.LocationDao
 import com.diskin.alon.pagoda.weatherinfo.data.local.model.CurrentWeatherEntity
+import com.diskin.alon.pagoda.weatherinfo.data.local.model.LocationEntity
 import com.diskin.alon.pagoda.weatherinfo.data.local.util.Converters
 
 @Database(entities = [LocationEntity::class,CurrentWeatherEntity::class],

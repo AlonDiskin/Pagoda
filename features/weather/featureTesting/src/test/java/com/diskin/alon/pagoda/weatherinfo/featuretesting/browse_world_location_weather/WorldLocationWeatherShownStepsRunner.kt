@@ -10,6 +10,7 @@ import com.diskin.alon.pagoda.common.eventcontracts.settings.WindSpeedUnitPref
 import com.diskin.alon.pagoda.weatherinfo.di.WeatherLocationModule
 import com.diskin.alon.pagoda.weatherinfo.di.WeatherNetworkingModule
 import com.diskin.alon.pagoda.common.featuretesting.setFinalStatic
+import com.diskin.alon.pagoda.weatherinfo.data.local.interfaces.UserLocationProvider
 import com.mauriciotogneri.greencoffee.GreenCoffeeConfig
 import com.mauriciotogneri.greencoffee.GreenCoffeeTest
 import com.mauriciotogneri.greencoffee.Scenario
@@ -85,6 +86,9 @@ class WorldLocationWeatherShownStepsRunner(scenario: ScenarioConfig) : GreenCoff
     @Inject
     lateinit var timeFormatPrefProvider: AppEventProvider<TimeFormatPref>
 
+    @Inject
+    lateinit var locationProvider: UserLocationProvider
+
     @Test
     fun test() {
         // Disable data binding Choreographer
@@ -99,7 +103,9 @@ class WorldLocationWeatherShownStepsRunner(scenario: ScenarioConfig) : GreenCoff
             mockWebServer,
             tempUnitPrefProvider,
             windSpeedUnitPrefProvider,
-            timeFormatPrefProvider)
+            timeFormatPrefProvider,
+                locationProvider
+            )
         )
     }
 

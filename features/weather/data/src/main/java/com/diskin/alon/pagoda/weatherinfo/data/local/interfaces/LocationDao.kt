@@ -1,0 +1,23 @@
+package com.diskin.alon.pagoda.weatherinfo.data.local.interfaces
+
+import androidx.paging.PagingSource
+import androidx.room.Dao
+import androidx.room.Query
+import com.diskin.alon.pagoda.weatherinfo.data.local.model.LocationEntity
+import io.reactivex.Completable
+
+@Dao
+interface LocationDao {
+
+    @Query("SELECT * FROM locations WHERE name LIKE :query || '%'")
+    fun getStartsWith(query: String): PagingSource<Int, LocationEntity>
+
+    @Query("SELECT * FROM locations WHERE bookmarked")
+    fun getBookmarked(): PagingSource<Int, LocationEntity>
+
+    @Query("UPDATE locations SET bookmarked = 1 WHERE lat = :lat AND lon = :lon")
+    fun bookmark(lat: Double, lon: Double): Completable
+
+    @Query("UPDATE locations SET bookmarked = 0 WHERE lat = :lat AND lon = :lon")
+    fun unBookmark(lat: Double, lon: Double): Completable
+}

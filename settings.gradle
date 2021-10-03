@@ -17,14 +17,6 @@ include ':features:settings:infrastructure'
 include ':features:settings:di'
 include ':features:settings:application'
 
-// Locations feature modules
-include ':features:locations:featureTesting'
-include ':features:locations:di'
-include ':features:locations:data'
-include ':features:locations:presentation'
-include ':features:locations:application'
-include ':features:locations:domain'
-
 // Home feature modules
 include ':features:home:presentation'
 

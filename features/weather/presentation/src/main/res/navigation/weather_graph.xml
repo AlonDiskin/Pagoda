@@ -11,14 +11,26 @@
         android:label=""
         tools:layout="@layout/fragment_weather">
 
-        <argument
-            android:name="@string/arg_lat"
-            app:argType="float" />
-
-        <argument
-            android:name="@string/arg_lon"
-            app:argType="float" />
-
-        <deepLink app:uri="@string/uri_weather" />
+        <action
+            android:id="@+id/action_weatherFragment_to_bookmarkedLocationsFragment"
+            app:destination="@id/bookmarkedLocationsFragment" />
+        <action
+            android:id="@+id/action_weatherFragment_to_searchLocationsFragment"
+            app:destination="@id/searchLocationsFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/bookmarkedLocationsFragment"
+        android:name="com.diskin.alon.pagoda.weatherinfo.presentation.controller.BookmarkedLocationsFragment"
+        android:label="@string/label_bookmarks_fragment"
+        tools:layout="@layout/fragment_bookmarked_locations">
+
+    </fragment>
+    <fragment
+        android:id="@+id/searchLocationsFragment"
+        android:name="com.diskin.alon.pagoda.weatherinfo.presentation.controller.SearchLocationsFragment"
+        android:label=""
+        tools:layout="@layout/fragment_search_locations">
+
+    </fragment>
+
 </navigation>

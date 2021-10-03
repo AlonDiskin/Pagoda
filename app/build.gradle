@@ -89,7 +89,6 @@ dependencies {
     implementation project(':features:common:presentation')
     implementation project(':features:common:events')
     implementation project(':features:weather:di')
-    implementation project(':features:locations:di')
     implementation project(':features:settings:di')
 
     // Multidex

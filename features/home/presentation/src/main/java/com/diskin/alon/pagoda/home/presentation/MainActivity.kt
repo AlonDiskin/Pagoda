@@ -76,24 +76,6 @@ class MainActivity : AppCompatActivity() {
                 controller.navigate(settingsDestUri)
                 true
             }
-            R.id.action_about -> {
-                true
-            }
-            R.id.action_bookmarks -> {
-                val bookmarksDestUri = getString(R.string.uri_bookmarks).toUri()
-                controller.navigate(bookmarksDestUri)
-                true
-            }
-            R.id.action_current_location_weather -> {
-                val weatherDestUri = getString(R.string.uri_weather).toUri()
-                controller.navigate(weatherDestUri)
-                true
-            }
-            R.id.action_search -> {
-                val searchDestUri = getString(R.string.uri_search).toUri()
-                controller.navigate(searchDestUri)
-                true
-            }
             else -> super.onOptionsItemSelected(item)
         }
     }

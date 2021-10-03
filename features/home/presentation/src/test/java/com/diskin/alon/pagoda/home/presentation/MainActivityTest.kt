@@ -6,7 +6,8 @@ import androidx.navigation.findNavController
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import com.google.common.truth.Truth.assertThat
@@ -56,6 +57,17 @@ class MainActivityTest {
     }
 
     @Test
+    fun setAppGraphWhenResumed() {
+        // Given
+
+        // Then
+        scenario.onActivity {
+            val controller = it.findNavController(R.id.nav_host_container)
+            assertThat(controller.graph.startDestination).isEqualTo(R.id.weatherFragment)
+        }
+    }
+
+    @Test
     fun openSettingsScreenWhenUserNavigates() {
         // Given
 
@@ -81,17 +93,6 @@ class MainActivityTest {
     }
 
     @Test
-    fun openWeatherScreenAsHomeWhenResumed() {
-        // Given
-
-        // Then
-        scenario.onActivity {
-            val controller = it.findNavController(R.id.nav_host_container)
-            assertThat(controller.currentDestination!!.id).isEqualTo(R.id.weatherFragment)
-        }
-    }
-
-    @Test
     fun showUpNavigationUiWhenSettingsScreenOpen() {
         // Given
 
@@ -101,104 +102,6 @@ class MainActivityTest {
                 it,
                 0,
                 R.id.action_settings,
-                0,
-                0,
-                null
-            )
-
-            it.onOptionsItemSelected(addMenuItem)
-        }
-
-        // Then
-        onView(withContentDescription(R.string.abc_action_bar_up_description))
-            .check(matches(isDisplayed()))
-    }
-
-    @Test
-    fun openSearchScreenWhenUserNavigates() {
-        // Given
-
-        // When
-        scenario.onActivity {
-            val addMenuItem = ActionMenuItem(
-                it,
-                0,
-                R.id.action_search,
-                0,
-                0,
-                null
-            )
-
-            it.onOptionsItemSelected(addMenuItem)
-        }
-
-        // Then location search should be shown
-        scenario.onActivity {
-            val controller = it.findNavController(R.id.nav_host_container)
-            assertThat(controller.currentDestination!!.id).isEqualTo(R.id.searchLocationsFragment)
-        }
-    }
-
-    @Test
-    fun openWeatherScreenWhenUserNavigates() {
-        // Given
-
-        // When
-        scenario.onActivity {
-            val addMenuItem = ActionMenuItem(
-                it,
-                0,
-                R.id.action_current_location_weather,
-                0,
-                0,
-                null
-            )
-
-            it.onOptionsItemSelected(addMenuItem)
-        }
-
-        // Then
-        scenario.onActivity {
-            val controller = it.findNavController(R.id.nav_host_container)
-            assertThat(controller.currentDestination!!.id).isEqualTo(R.id.weatherFragment)
-        }
-    }
-
-    @Test
-    fun openBookmarksScreenWhenUserNavigates() {
-        // Given
-
-        // When
-        scenario.onActivity {
-            val addMenuItem = ActionMenuItem(
-                it,
-                0,
-                R.id.action_bookmarks,
-                0,
-                0,
-                null
-            )
-
-            it.onOptionsItemSelected(addMenuItem)
-        }
-
-        // Then
-        scenario.onActivity {
-            val controller = it.findNavController(R.id.nav_host_container)
-            assertThat(controller.currentDestination!!.id).isEqualTo(R.id.bookmarkedLocationsFragment)
-        }
-    }
-
-    @Test
-    fun showUpNavigationUiWhenFavoriteLocationsScreenOpen() {
-        // Given
-
-        // When
-        scenario.onActivity {
-            val addMenuItem = ActionMenuItem(
-                it,
-                0,
-                R.id.action_bookmarks,
                 0,
                 0,
                 null

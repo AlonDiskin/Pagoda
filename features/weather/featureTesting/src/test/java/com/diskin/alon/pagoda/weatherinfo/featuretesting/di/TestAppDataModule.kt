@@ -3,6 +3,7 @@ package com.diskin.alon.pagoda.weatherinfo.featuretesting.di
 import android.app.Application
 import androidx.room.Room
 import com.diskin.alon.pagoda.weatherinfo.data.local.interfaces.CurrentWeatherDao
+import com.diskin.alon.pagoda.weatherinfo.data.local.interfaces.LocationDao
 import com.diskin.alon.pagoda.weatherinfo.featuretesting.util.TestDatabase
 import dagger.Module
 import dagger.Provides
@@ -27,5 +28,11 @@ object TestAppDataModule {
     @Provides
     fun provideCurrentWeatherDao(database: TestDatabase): CurrentWeatherDao {
         return database.currentWeatherDao()
+    }
+
+    @Singleton
+    @Provides
+    fun provideLocationsDao(database: TestDatabase): LocationDao {
+        return database.locationDao()
     }
 }

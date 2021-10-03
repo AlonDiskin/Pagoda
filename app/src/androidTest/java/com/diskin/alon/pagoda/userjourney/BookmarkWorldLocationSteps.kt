@@ -4,7 +4,6 @@ import androidx.appcompat.widget.SearchView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.DrawerActions.open
 import androidx.test.espresso.matcher.RootMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.diskin.alon.pagoda.R
@@ -37,22 +36,10 @@ class BookmarkWorldLocationSteps : GreenCoffeeSteps() {
         DeviceUtil.approveLocationDialogIfExist()
     }
 
-    @And("^Open locations screen$")
-    fun open_locations_screen() {
-        onView(withId(R.id.action_bookmarks))
+    @And("^Open search locations screen$")
+    fun open_search_screen() {
+        onView(withId(R.id.action_search))
             .perform(click())
-    }
-
-    @And("^Select to add a new location$")
-    fun select_to_add_a_new_location() {
-        onView(withId(R.id.action_add))
-            .perform(click())
-    }
-
-    @Then("^App should open world locations search screen$")
-    fun app_should_open_world_locations_search_screen() {
-        onView(withId(R.id.search_location_results))
-            .check(matches(isDisplayed()))
     }
 
     @When("^User find wanted location$")
@@ -71,13 +58,17 @@ class BookmarkWorldLocationSteps : GreenCoffeeSteps() {
             .perform(click())
     }
 
-    @Then("^App should bookmark location and update locations list$")
-    fun app_should_bookmark_location_and_update_locations_list() {
+    @Then("^App should bookmark location and update bookmarks list$")
+    fun app_should_bookmark_location_and_update_bookmarks_list() {
         // Close search view
         DeviceUtil.pressBack()
 
-        // Nav back to bookmarked locations screen
+        // Nav back to weather screen
         DeviceUtil.pressBack()
+
+        // Open bookmarks screen
+        onView(withId(R.id.action_bookmarks))
+            .perform(click())
 
         // Verify bookmarked listed locations ui is updated
         onView(withId(R.id.bookmarked_locations))

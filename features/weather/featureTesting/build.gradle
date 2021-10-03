@@ -96,4 +96,11 @@ dependencies {
     testImplementation 'com.squareup.okhttp3:logging-interceptor:3.9.1'
     testImplementation 'com.squareup.retrofit2:retrofit:2.6.2'
     testImplementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
+
+    // Paging
+    testImplementation "androidx.paging:paging-runtime-ktx:$paging_version"
+    testImplementation "androidx.paging:paging-common-ktx:$paging_version"
+
+    // Navigation component
+    testImplementation "androidx.navigation:navigation-testing:$nav_component_version"
 }

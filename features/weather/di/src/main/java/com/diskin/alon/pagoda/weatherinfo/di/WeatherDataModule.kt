@@ -1,19 +1,25 @@
 package com.diskin.alon.pagoda.weatherinfo.di
 
+import androidx.paging.PagingData
 import com.diskin.alon.pagoda.common.util.Mapper
 import com.diskin.alon.pagoda.common.util.Mapper2
+import com.diskin.alon.pagoda.weatherinfo.appservices.interfaces.LocationRepository
 import com.diskin.alon.pagoda.weatherinfo.appservices.interfaces.WeatherRepository
+import com.diskin.alon.pagoda.weatherinfo.data.implementations.LocationRepositoryImpl
 import com.diskin.alon.pagoda.weatherinfo.data.implementations.WeatherRepositoryImpl
 import com.diskin.alon.pagoda.weatherinfo.data.local.implementations.WeatherCacheImpl
 import com.diskin.alon.pagoda.weatherinfo.data.local.interfaces.WeatherCache
 import com.diskin.alon.pagoda.weatherinfo.data.local.model.CurrentWeatherEntity
+import com.diskin.alon.pagoda.weatherinfo.data.local.model.LocationEntity
 import com.diskin.alon.pagoda.weatherinfo.data.local.util.CurrentWeatherEntityMapper
 import com.diskin.alon.pagoda.weatherinfo.data.local.util.LocalWeatherMapper
+import com.diskin.alon.pagoda.weatherinfo.data.local.util.LocationMapper
 import com.diskin.alon.pagoda.weatherinfo.data.remote.implementations.WeatherStoreImpl
 import com.diskin.alon.pagoda.weatherinfo.data.remote.interfaces.WeatherStore
 import com.diskin.alon.pagoda.weatherinfo.data.remote.model.ApiLocationResponse
 import com.diskin.alon.pagoda.weatherinfo.data.remote.model.ApiWeatherResponse
 import com.diskin.alon.pagoda.weatherinfo.data.remote.util.RemoteWeatherMapper
+import com.diskin.alon.pagoda.weatherinfo.domain.Location
 import com.diskin.alon.pagoda.weatherinfo.domain.Weather
 import dagger.Binds
 import dagger.Module
@@ -48,4 +54,12 @@ abstract class WeatherDataModule {
     @Singleton
     @Binds
     abstract fun bindLocalWeatherMapper(mapper: LocalWeatherMapper): Mapper<CurrentWeatherEntity,Weather>
+
+    @Singleton
+    @Binds
+    abstract fun provideLocationRepository(repository: LocationRepositoryImpl): LocationRepository
+
+    @Singleton
+    @Binds
+    abstract fun provideLocationMapper(mapper: LocationMapper): Mapper<PagingData<LocationEntity>, PagingData<Location>>
 }
