@@ -145,6 +145,7 @@ fun verifyServerWeatherShown(locationWeatherRes: String,locationGeoRes: String,s
     val weatherJson = getJsonFromResource(locationWeatherRes)
     val locationJson = getJsonFromResource(locationGeoRes)
     val name = JSONArray(locationJson).getJSONObject(0).getString("name")
+    val country = JSONArray(locationJson).getJSONObject(0).getString("country")
     val timeZone = JSONObject(weatherJson).getString("timezone")
     val currentTemp = JSONObject(weatherJson).getJSONObject("current")
         .getDouble("temp")
@@ -175,7 +176,7 @@ fun verifyServerWeatherShown(locationWeatherRes: String,locationGeoRes: String,s
 
     // Verify location name
     onView(withId(R.id.location_name))
-        .check(matches(withText(name)))
+        .check(matches(withText(name.plus(", ").plus(country))))
 
     // Verify feel temp data
     onView(withId(R.id.feelTemp))
@@ -339,6 +340,7 @@ fun verifyDbWeatherShown(db: TestDatabase,scenario: ActivityScenario<HiltTestAct
     val query = SimpleSQLiteQuery("SELECT * FROM current_weather WHERE id = 1")
     val cursor = db.query(query).also { it.moveToFirst() }
     val cachedName = cursor.getString(cursor.getColumnIndex("name"))
+    val cachedCountry = cursor.getString(cursor.getColumnIndex("country"))
     val cachedCurrentTemp = cursor.getDouble(cursor.getColumnIndex("currentTemp"))
     val cachedFeelTemp = cursor.getDouble(cursor.getColumnIndex("feelTemp"))
     val cachedTimeZone = cursor.getString(cursor.getColumnIndex("timeZone"))
@@ -365,7 +367,7 @@ fun verifyDbWeatherShown(db: TestDatabase,scenario: ActivityScenario<HiltTestAct
 
     // Verify location name
     onView(withId(R.id.location_name))
-        .check(matches(withText(cachedName)))
+        .check(matches(withText(cachedName.plus(", ").plus(cachedCountry))))
 
     // Verify feel temp data
     onView(withId(R.id.feelTemp))

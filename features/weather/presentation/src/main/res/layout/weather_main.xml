@@ -40,7 +40,7 @@
             app:layout_constraintBottom_toTopOf="@+id/textClock"
             app:layout_constraintEnd_toEndOf="@+id/textClock"
             app:layout_constraintStart_toStartOf="@+id/textClock"
-            tools:text="Moscow" />
+            tools:text="Moscow, RU" />
 
         <TextClock
             android:id="@+id/textClock"

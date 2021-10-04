@@ -23,7 +23,7 @@ class UiWeatherMapper @Inject constructor(
     override fun map(source: Observable<AppResult<WeatherDto>>): Observable<AppResult<UiWeather>> {
         return source.mapAppResult {
             UiWeather(
-                it.name,
+                it.name.plus(", ").plus(it.country),
                 it.timeZone,
                 mapLocationTime24HourFormat(it.timeFormat),
                 mapLocationTime12HourFormat(it.timeFormat),

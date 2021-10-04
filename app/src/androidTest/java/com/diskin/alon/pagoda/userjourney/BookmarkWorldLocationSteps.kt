@@ -53,7 +53,7 @@ class BookmarkWorldLocationSteps : GreenCoffeeSteps() {
         onView(allOf(
             withId(R.id.add_bookmark_button),
             hasSibling(withText("London")),
-            hasSibling(withText("GB"))
+            hasSibling(withText("United Kingdom"))
         ))
             .perform(click())
     }
@@ -75,7 +75,7 @@ class BookmarkWorldLocationSteps : GreenCoffeeSteps() {
             .check(matches(isRecyclerViewItemsCount(1)))
         onView(withText("London"))
             .check(matches(isDisplayed()))
-        onView(withText("GB"))
+        onView(withText("United Kingdom"))
             .check(matches(isDisplayed()))
     }
 
