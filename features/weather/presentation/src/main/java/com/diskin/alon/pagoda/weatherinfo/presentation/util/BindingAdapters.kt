@@ -18,15 +18,17 @@ fun setImageRes(imageView: ImageView,@DrawableRes res: Int?) {
 }
 
 @BindingAdapter("setAddButton")
-fun setAddButton(button: ImageButton, location: UiLocationSearchResult) {
-    when(location.bookmarked) {
-        true -> {
-            ImageLoader.loadIconResIntoImageButton(button, R.drawable.ic_baseline_done_24)
-            button.isEnabled = false
-        }
-        false -> {
-            ImageLoader.loadIconResIntoImageButton(button, R.drawable.ic_baseline_add_24)
-            button.isEnabled = true
+fun setAddButton(button: ImageButton, location: UiLocationSearchResult?) {
+    location?.let {
+        when(it.bookmarked) {
+            true -> {
+                ImageLoader.loadIconResIntoImageButton(button, R.drawable.ic_baseline_done_24)
+                button.isEnabled = false
+            }
+            false -> {
+                ImageLoader.loadIconResIntoImageButton(button, R.drawable.ic_baseline_add_24)
+                button.isEnabled = true
+            }
         }
     }
 }
