@@ -7,6 +7,7 @@ import androidx.navigation.testing.TestNavHostController
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.ViewMatchers.*
@@ -17,8 +18,8 @@ import com.diskin.alon.pagoda.common.uitesting.launchFragmentInHiltContainer
 import com.diskin.alon.pagoda.common.uitesting.typeSearchViewText
 import com.diskin.alon.pagoda.weatherinfo.featuretesting.util.TestDatabase
 import com.diskin.alon.pagoda.weatherinfo.presentation.R
-import com.diskin.alon.pagoda.weatherinfo.presentation.controller.LocationSearchResultsAdapter.LocationSearchResultViewHolder
-import com.diskin.alon.pagoda.weatherinfo.presentation.controller.SearchLocationsFragment
+import com.diskin.alon.pagoda.weatherinfo.presentation.controller.LocationsAdapter.LocationViewHolder
+import com.diskin.alon.pagoda.weatherinfo.presentation.controller.LocationsFragment
 import com.mauriciotogneri.greencoffee.GreenCoffeeSteps
 import com.mauriciotogneri.greencoffee.annotations.Given
 import com.mauriciotogneri.greencoffee.annotations.Then
@@ -49,14 +50,14 @@ class SearchLocationSteps(db: TestDatabase) : GreenCoffeeSteps() {
     @Given("^User open location search screen$")
     fun user_open_location_search_screen() {
         // Launch search fragment
-        scenario = launchFragmentInHiltContainer<SearchLocationsFragment>()
+        scenario = launchFragmentInHiltContainer<LocationsFragment>()
 
         // Set test nav controller
         scenario.onActivity {
-            val fragment = it.supportFragmentManager.fragments.first() as SearchLocationsFragment
+            val fragment = it.supportFragmentManager.fragments.first() as LocationsFragment
 
             navController.setGraph(R.navigation.weather_graph)
-            navController.setCurrentDestination(R.id.searchLocationsFragment)
+            navController.setCurrentDestination(R.id.locationsFragment)
             Navigation.setViewNavController(fragment.requireView(), navController)
         }
         Shadows.shadowOf(Looper.getMainLooper()).idle()
@@ -65,8 +66,11 @@ class SearchLocationSteps(db: TestDatabase) : GreenCoffeeSteps() {
     @When("^User search for location with partial query$")
     fun user_search_for_location_with_partial_query() {
         // Search for location with partial query
-        onView(isAssignableFrom(SearchView::class.java))
-            .perform(typeSearchViewText(partialLocationQuery))
+        onView(withId(R.id.action_search))
+            .perform(ViewActions.click())
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+        onView(withId(R.id.search_src_text))
+            .perform(ViewActions.typeText(partialLocationQuery))
         Shadows.shadowOf(Looper.getMainLooper()).idle()
     }
 
@@ -93,18 +97,18 @@ class SearchLocationSteps(db: TestDatabase) : GreenCoffeeSteps() {
     }
 
     private fun checkUiLocationsShow(locations: List<UiLocation>) {
-        onView(withId(R.id.search_location_results))
+        onView(withId(R.id.locations))
             .check(matches(isRecyclerViewItemsCount(locations.size)))
 
         locations.forEachIndexed { index, result ->
-            onView(withId(R.id.search_location_results))
-                .perform(scrollToPosition<LocationSearchResultViewHolder>(index))
+            onView(withId(R.id.locations))
+                .perform(scrollToPosition<LocationViewHolder>(index))
             Shadows.shadowOf(Looper.getMainLooper()).idle()
 
-            onView(withRecyclerView(R.id.search_location_results).atPositionOnView(index,R.id.location_name))
+            onView(withRecyclerView(R.id.locations).atPositionOnView(index,R.id.location_name))
                 .check(matches(withText(result.name)))
 
-            onView(withRecyclerView(R.id.search_location_results).atPositionOnView(index,R.id.location_country))
+            onView(withRecyclerView(R.id.locations).atPositionOnView(index,R.id.location_country))
                 .check(matches(withText(result.country)))
         }
     }

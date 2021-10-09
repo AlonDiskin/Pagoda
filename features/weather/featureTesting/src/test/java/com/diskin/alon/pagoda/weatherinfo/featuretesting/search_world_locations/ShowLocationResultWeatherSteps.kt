@@ -10,6 +10,7 @@ import androidx.navigation.testing.TestNavHostController
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
@@ -19,8 +20,8 @@ import com.diskin.alon.pagoda.common.uitesting.launchFragmentInHiltContainer
 import com.diskin.alon.pagoda.common.uitesting.typeSearchViewText
 import com.diskin.alon.pagoda.weatherinfo.featuretesting.util.TestDatabase
 import com.diskin.alon.pagoda.weatherinfo.presentation.R
-import com.diskin.alon.pagoda.weatherinfo.presentation.controller.LocationSearchResultsAdapter.LocationSearchResultViewHolder
-import com.diskin.alon.pagoda.weatherinfo.presentation.controller.SearchLocationsFragment
+import com.diskin.alon.pagoda.weatherinfo.presentation.controller.LocationsAdapter.LocationViewHolder
+import com.diskin.alon.pagoda.weatherinfo.presentation.controller.LocationsFragment
 import com.google.common.truth.Truth.assertThat
 import com.mauriciotogneri.greencoffee.GreenCoffeeSteps
 import com.mauriciotogneri.greencoffee.annotations.And
@@ -57,14 +58,14 @@ class ShowLocationResultWeatherSteps(db: TestDatabase) : GreenCoffeeSteps() {
     @Given("^User open location search screen$")
     fun user_open_location_search_screen(){
         // Launch search locations fragment
-        scenario = launchFragmentInHiltContainer<SearchLocationsFragment>()
+        scenario = launchFragmentInHiltContainer<LocationsFragment>()
 
         scenario.onActivity {
-            val fragment = it.supportFragmentManager.fragments.first() as SearchLocationsFragment
+            val fragment = it.supportFragmentManager.fragments.first() as LocationsFragment
 
             // Set test nav controller
             navController.setGraph(R.navigation.weather_graph)
-            navController.setCurrentDestination(R.id.searchLocationsFragment)
+            navController.setCurrentDestination(R.id.locationsFragment)
             Navigation.setViewNavController(fragment.requireView(), navController)
 
             // Set fragment result listener
@@ -79,17 +80,20 @@ class ShowLocationResultWeatherSteps(db: TestDatabase) : GreenCoffeeSteps() {
 
     @When("^User search for location$")
     fun user_search_for_location(){
-        onView(isAssignableFrom(SearchView::class.java))
-            .perform(typeSearchViewText(query))
+        onView(withId(R.id.action_search))
+            .perform(click())
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+        onView(withId(R.id.search_src_text))
+            .perform(ViewActions.typeText(query))
         Shadows.shadowOf(Looper.getMainLooper()).idle()
     }
 
     @And("^Select the first search result$")
     fun select_the_first_search_result(){
         Thread.sleep(1000)
-        onView(withId(R.id.search_location_results))
+        onView(withId(R.id.locations))
             .perform(
-                actionOnItemAtPosition<LocationSearchResultViewHolder>(
+                actionOnItemAtPosition<LocationViewHolder>(
                     0,
                     click()
                 )

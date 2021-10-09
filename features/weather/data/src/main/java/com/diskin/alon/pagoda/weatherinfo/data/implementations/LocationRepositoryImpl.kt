@@ -36,21 +36,21 @@ class LocationRepositoryImpl @Inject constructor(
             .map(locationMapper::map)
     }
 
-    override fun getBookmarked(): Observable<PagingData<Location>> {
+    override fun getFavorite(): Observable<PagingData<Location>> {
         return Pager(PagingConfig(PAGE_SIZE)) { locationDao.getBookmarked() }
             .observable
             .subscribeOn(Schedulers.io())
             .map(locationMapper::map)
     }
 
-    override fun unBookmark(id: Coordinates): Single<AppResult<Unit>> {
+    override fun unfavorite(id: Coordinates): Single<AppResult<Unit>> {
         return locationDao.unBookmark(id.lat,id.lon)
             .toSingleDefault(Unit)
             .subscribeOn(Schedulers.io())
             .toSingleAppResult(::handleBookmarkRemoveError)
     }
 
-    override fun bookmark(id: Coordinates): Single<AppResult<Unit>> {
+    override fun favorite(id: Coordinates): Single<AppResult<Unit>> {
         return locationDao.bookmark(id.lat,id.lon)
             .toSingleDefault(Unit)
             .subscribeOn(Schedulers.io())

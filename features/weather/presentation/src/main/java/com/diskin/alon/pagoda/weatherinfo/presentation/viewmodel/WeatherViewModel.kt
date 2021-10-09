@@ -39,6 +39,8 @@ class WeatherViewModel @Inject constructor(
     private val _update = MutableLiveData<UpdateViewData>()
     val update: LiveData<UpdateViewData> get() = _update
     val error = SingleLiveEvent<AppError>()
+    private val _isCurrentLocationWeather = MutableLiveData<Boolean>()
+    val isCurrentLocationWeather: LiveData<Boolean> get() = _isCurrentLocationWeather
 
     init {
         // Init weather subject
@@ -89,6 +91,11 @@ class WeatherViewModel @Inject constructor(
     private fun handleWeatherSuccessfulUpdate(weather: UiWeather) {
         _update.value = UpdateViewData.EndRefresh
         _weather.value = weather
+
+        _isCurrentLocationWeather.value = when(weatherSubject.value) {
+            is UserLocationWeatherModelRequest -> true
+            else -> false
+        }
     }
 
     private fun handleWeatherUpdateError(resultError: AppError) {

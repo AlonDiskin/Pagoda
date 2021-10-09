@@ -38,62 +38,85 @@ fun createTestWeather(): UiWeather {
     )
 }
 
-fun createSearchResults() = listOf(
-    UiLocationSearchResult(
+fun createFavoriteLocations() = listOf(
+    UiLocation(
         10.0,
         20.7,
         "Location1",
         "Country1",
         true
     ),
-    UiLocationSearchResult(
+    UiLocation(
         10.0,
         20.7,
         "Location2",
         "Country2, State2",
-        false
+        true
     ),
-    UiLocationSearchResult(
+    UiLocation(
         10.0,
         20.7,
         "Location3",
         "Country3",
         true
     ),
-    UiLocationSearchResult(
+    UiLocation(
         10.0,
         20.7,
         "Location4",
-        "Country4, State 4",false
+        "Country4, State 4",
+        true
     )
 )
 
-fun createBookmarkedLocations() = listOf(
-    UiBookmarkedLocation(
+fun createSearchedLocations() = listOf(
+    UiLocation(
         10.0,
         20.7,
         "Location1",
-        "Country1"
+        "Country1",
+        false
     ),
-    UiBookmarkedLocation(
+    UiLocation(
         10.0,
         20.7,
         "Location2",
-        "Country2, State2"
+        "Country2, State2",
+        false
     ),
-    UiBookmarkedLocation(
+    UiLocation(
         10.0,
         20.7,
         "Location3",
-        "Country3, State3"
+        "Country3, State3",
+        false
     ),
-    UiBookmarkedLocation(
+    UiLocation(
         10.0,
         20.7,
         "Location4",
-        "Country4"
+        "Country4",
+        true
     )
 )
+
+fun createUnFavoriteLocation() =
+    UiLocation(
+        10.0,
+        20.7,
+        "Location3",
+        "Country3, State3",
+        false
+    )
+
+fun createFavoritedLocation() =
+    UiLocation(
+        10.0,
+        20.7,
+        "Location3",
+        "Country3, State3",
+        true
+    )
 
 fun getSearchResultsAdapterLoadStatesListener(adapter: PagingDataAdapter<*, *>): (CombinedLoadStates) -> Unit {
     val field = PagingDataAdapter::class.java.getDeclaredField("differ")

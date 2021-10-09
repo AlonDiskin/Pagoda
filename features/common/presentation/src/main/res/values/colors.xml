@@ -7,4 +7,14 @@
     <color name="colorHint">#48FFFFFF</color>
     <color name="yellow_200">#FFFF00</color>
     <color name="yellow_100">#ffff8d</color>
+    <color name="indigo_800">#283593</color>
+    <color name="teal_200">#64ffda</color>
+    <color name="gary_100">#fafafa</color>
+    <color name="green_800">#2e7d32</color>
+    <color name="green_900">#33691e</color>
+    <color name="green_200">#69f0ae</color>
+    <color name="teal_700">#00796b</color>
+    <color name="orange_400">#ff9100</color>
+    <color name="light_blue_900">#01579b</color>
+    <color name="light_blue_800">#0277bd</color>
 </resources>

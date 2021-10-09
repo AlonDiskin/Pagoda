@@ -46,8 +46,13 @@
     <string name="week_day_saturday">Sat</string>
     <string name="title_search_location">Search location</string>
     <string name="title_current_weather">Current weather</string>
-    <string name="title_bookmarks">Bookmarks</string>
+    <string name="title_locations">Locations</string>
     <string name="locaiton_request_key">location</string>
     <string name="arg_lat_key">lat</string>
     <string name="arg_lon_key">lon</string>
+    <string name="description_favorite_location">Favorite location</string>
+    <string name="message_unfavorite_dialog">remove location from favorites?</string>
+    <string name="title_unfavorite_dialog">Unfavorite</string>
+    <string name="label_locations_fragment">Locations</string>
+    <string name="text_unknown_error">Unknown error</string>
 </resources>

@@ -21,14 +21,14 @@ Feature: Search world locations
 
   #Rule: Allow to add searched locations to user manged list
 
-  @bookmark-search-result
-  Scenario: User bookmark location result
-    Given User open location search screen
+  @favorite-search-result
+  Scenario: User favorite location search result
+    Given User open locations search screen
     When User search for location
-    And Select to bookmark first result
-    Then App should bookmark select location
-    When User open bookmarked locations screen
-    Then Bookmarked location should be listed
+    And Select to favorite first result
+    Then App should favorite select location
+    When User open favorite locations screen
+    Then Favorite location should be listed
 
 
 

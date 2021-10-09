@@ -14,9 +14,9 @@ interface LocationRepository {
 
     fun search(query: String): Observable<PagingData<Location>>
 
-    fun getBookmarked(): Observable<PagingData<Location>>
+    fun getFavorite(): Observable<PagingData<Location>>
 
-    fun unBookmark(id: Coordinates): Single<AppResult<Unit>>
+    fun unfavorite(id: Coordinates): Single<AppResult<Unit>>
 
-    fun bookmark(id: Coordinates): Single<AppResult<Unit>>
+    fun favorite(id: Coordinates): Single<AppResult<Unit>>
 }

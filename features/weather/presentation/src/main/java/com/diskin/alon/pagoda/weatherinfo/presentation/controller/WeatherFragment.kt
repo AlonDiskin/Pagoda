@@ -13,6 +13,7 @@ import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
 import androidx.activity.result.contract.ActivityResultContracts.StartIntentSenderForResult
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
@@ -61,7 +62,7 @@ class WeatherFragment(
             val lat = bundle.getDouble(getString(R.string.arg_lat_key))
             val lon = bundle.getDouble(getString(R.string.arg_lon_key))
 
-            viewModel.loadLocationWeather(lat, lon)
+            showTopLayout { viewModel.loadLocationWeather(lat, lon) }
         }
     }
 
@@ -76,6 +77,11 @@ class WeatherFragment(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // Set refresh color
+        binding.swipeRefresh.setColorSchemeColors(
+            ContextCompat.getColor(requireContext(), R.color.green_900)
+        )
 
         // Setup forecast adapters
         val hourlyForeCastAdapter = HourlyForecastAdapter()
@@ -125,6 +131,14 @@ class WeatherFragment(
                 binding.weather?.let { (requireActivity() as AppCompatActivity).supportActionBar?.title = "" }
             }
         })
+
+        //  Observe view model current location weather indicator
+        viewModel.isCurrentLocationWeather.observe(viewLifecycleOwner) {
+            binding.weatherMain.locationIndicator.visibility = when (it) {
+                true -> View.VISIBLE
+                false -> View.INVISIBLE
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -134,18 +148,13 @@ class WeatherFragment(
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when(item.itemId) {
-            R.id.action_search -> {
-                findNavController().navigate(R.id.searchLocationsFragment)
-                true
-            }
-
-            R.id.action_bookmarks -> {
-                findNavController().navigate(R.id.bookmarkedLocationsFragment)
+            R.id.action_locations -> {
+                findNavController().navigate(R.id.locationsFragment)
                 true
             }
 
             R.id.action_current_location_weather -> {
-                viewModel.loadCurrentLocationWeather()
+                showTopLayout { viewModel.loadCurrentLocationWeather() }
                 true
             }
 
@@ -191,5 +200,13 @@ class WeatherFragment(
             message,
             Toast.LENGTH_LONG)
             .show()
+    }
+
+    private fun showTopLayout(action: () -> (Unit)) {
+        binding.nestedScrollView.post{
+            binding.nestedScrollView.scrollTo(0,0)
+            binding.appBar.setExpanded(true)
+            action.invoke()
+        }
     }
 }

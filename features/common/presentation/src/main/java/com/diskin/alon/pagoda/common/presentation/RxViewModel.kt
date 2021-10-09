@@ -19,7 +19,7 @@ abstract class RxViewModel : ViewModel() {
         }
     }
 
-    protected fun addSubscription(disposable: Disposable) {
-        container.add(disposable)
+    protected fun addSubscription(vararg disposable: Disposable) {
+        disposable.forEach { container.add(it) }
     }
 }

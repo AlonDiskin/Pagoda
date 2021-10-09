@@ -8,10 +8,6 @@
         <variable
             name="weather"
             type="com.diskin.alon.pagoda.weatherinfo.presentation.model.UiWeather" />
-
-        <variable
-            name="isCurrentLocation"
-            type="Boolean" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -26,8 +22,9 @@
             app:layout_constraintBottom_toBottomOf="@+id/location_name"
             app:layout_constraintEnd_toStartOf="@+id/location_name"
             app:layout_constraintTop_toTopOf="@+id/location_name"
-            app:setLocationIndicator="@{isCurrentLocation}"
-            tools:srcCompat="@drawable/ic_baseline_location_24" />
+            android:visibility="invisible"
+            app:srcCompat="@drawable/ic_baseline_place_black_24"
+            tools:visibility="visible"/>
 
         <TextView
             android:id="@+id/location_name"
@@ -132,7 +129,6 @@
             android:layout_marginTop="4dp"
             android:text="@{weather.updated}"
             android:textAppearance="?attr/textAppearanceSubtitle2"
-            android:textColor="@color/yellow_100"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/minMaxTemp"

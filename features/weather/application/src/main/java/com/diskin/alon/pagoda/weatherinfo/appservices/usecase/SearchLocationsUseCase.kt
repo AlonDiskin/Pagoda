@@ -25,7 +25,7 @@ class SearchLocationsUseCase @Inject constructor(
 
     override fun execute(param: SearchLocationsRequest): Observable<PagingData<LocationDto>> {
         return when {
-            (param.query.length <= MIN_QUERY_SIZE) -> Observable.just(PagingData.empty())
+            (param.query.length < MIN_QUERY_SIZE) -> Observable.just(PagingData.empty())
             else -> repository.search(param.query).map(locationMapper::map)
         }
     }

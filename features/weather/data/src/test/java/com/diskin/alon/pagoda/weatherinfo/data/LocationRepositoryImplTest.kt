@@ -98,7 +98,7 @@ class LocationRepositoryImplTest {
         // Given
 
         // When
-        val observer = repository.getBookmarked().test()
+        val observer = repository.getFavorite().test()
 
         // Then
         verify { locationDao.getBookmarked() }
@@ -113,7 +113,7 @@ class LocationRepositoryImplTest {
 
         // When
         val id = Coordinates(80.6,56.9)
-        val observer = repository.unBookmark(id).test()
+        val observer = repository.unfavorite(id).test()
 
         // Then
         verify { locationDao.unBookmark(id.lat,id.lon) }
@@ -129,7 +129,7 @@ class LocationRepositoryImplTest {
 
         // When
         val id = Coordinates(80.6,56.9)
-        val observer = repository.bookmark(id).test()
+        val observer = repository.favorite(id).test()
 
         // Then
         verify { locationDao.bookmark(id.lat,id.lon) }

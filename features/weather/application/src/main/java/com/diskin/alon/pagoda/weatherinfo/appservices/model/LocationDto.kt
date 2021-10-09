@@ -13,4 +13,4 @@ data class LocationDto(val id: CoordinatesDto,
                        val name: String,
                        val country: String,
                        val state: String,
-                       val bookmarked: Boolean)
+                       val isFavorite: Boolean)

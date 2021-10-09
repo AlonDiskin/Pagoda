@@ -12,25 +12,13 @@
         tools:layout="@layout/fragment_weather">
 
         <action
-            android:id="@+id/action_weatherFragment_to_bookmarkedLocationsFragment"
-            app:destination="@id/bookmarkedLocationsFragment" />
-        <action
-            android:id="@+id/action_weatherFragment_to_searchLocationsFragment"
-            app:destination="@id/searchLocationsFragment" />
+            android:id="@+id/action_weatherFragment_to_locationsFragment"
+            app:destination="@id/locationsFragment" />
     </fragment>
     <fragment
-        android:id="@+id/bookmarkedLocationsFragment"
-        android:name="com.diskin.alon.pagoda.weatherinfo.presentation.controller.BookmarkedLocationsFragment"
-        android:label="@string/label_bookmarks_fragment"
-        tools:layout="@layout/fragment_bookmarked_locations">
-
-    </fragment>
-    <fragment
-        android:id="@+id/searchLocationsFragment"
-        android:name="com.diskin.alon.pagoda.weatherinfo.presentation.controller.SearchLocationsFragment"
-        android:label=""
-        tools:layout="@layout/fragment_search_locations">
-
-    </fragment>
+        android:id="@+id/locationsFragment"
+        android:name="com.diskin.alon.pagoda.weatherinfo.presentation.controller.LocationsFragment"
+        android:label="@string/label_locations_fragment"
+        tools:layout="@layout/fragment_locations"/>
 
 </navigation>
