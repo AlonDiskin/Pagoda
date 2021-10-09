@@ -29,8 +29,7 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
-import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.diskin.alon.pagoda.common.appservices.AppError
@@ -74,6 +73,7 @@ class WeatherFragmentTest {
 
     // Stub data
     private val weather = MutableLiveData<UiWeather>()
+    private val isCurrentLocationWeather = MutableLiveData<Boolean>()
     private val update = MutableLiveData<UpdateViewData>()
     private val error = SingleLiveEvent<AppError>()
     private val testRegistry = object : ActivityResultRegistry() {
@@ -107,6 +107,10 @@ class WeatherFragmentTest {
         every { viewModel.weather } returns weather
         every { viewModel.update } returns update
         every { viewModel.error } returns error
+        every { viewModel.isCurrentLocationWeather } returns isCurrentLocationWeather
+
+        mockkObject(ImageLoader)
+        every { ImageLoader.loadIconResIntoImageView(any(),any()) } returns Unit
 
         // Launch fragment under test
         scenario = launchFragmentInHiltContainer<WeatherFragment>(
@@ -128,19 +132,15 @@ class WeatherFragmentTest {
     }
 
     @Test
-    fun showWeatherWhenDataAvailable() {
-        // Test fixture
-        mockkObject(ImageLoader)
-        every { ImageLoader.loadIconResIntoImageView(any(),any()) } returns Unit
+    fun showWeather_WhenDataAvailable() {
+        // Given
 
-        // Given a resumed fragment
-
-        // When view model update weather state
+        // When
         val weatherData = createTestWeather()
-        this.weather.value = weatherData
+        weather.value = weatherData
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
-        // Then fragment should show weather data in ui
+        // Then
 
         // Verify main weather icon loaded
         scenario.onActivity {
@@ -254,24 +254,24 @@ class WeatherFragmentTest {
     }
 
     @Test
-    fun showRefreshIndicatorWhenWeatherDataRefreshed() {
-        // Given a resumed fragment
+    fun showRefreshIndicator_WhenWeatherDataRefreshed() {
+        // Given
 
-        // When view model is refresh weather data
+        // When
         update.value = UpdateViewData.Refresh
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
-        // Then fragment should show refresh indicator
+        // Then
         scenario.onActivity {
             val refreshLayout = it.findViewById<SwipeRefreshLayout>(R.id.swipeRefresh)
             assertThat(refreshLayout.isRefreshing).isTrue()
         }
 
-        // When view model finished weather data refresh
+        // When
         update.value = UpdateViewData.EndRefresh
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
-        // Then fragment should hide refresh indicator
+        // Then
         scenario.onActivity {
             val refreshLayout = it.findViewById<SwipeRefreshLayout>(R.id.swipeRefresh)
             assertThat(refreshLayout.isRefreshing).isFalse()
@@ -279,27 +279,23 @@ class WeatherFragmentTest {
     }
 
     @Test
-    fun refreshWeatherDataWhenSwipedToRefresh() {
-        // Test case fixture
+    fun refreshWeatherData_WhenSwipedToRefresh() {
+        // Given
         every { viewModel.refresh() } returns Unit
 
-        // Given a resumed fragment
-
-        // When user swipe to refresh
+        // When
         onView(withId(R.id.swipeRefresh))
             .perform(swipeToRefresh())
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
-        // Then fragment should ask view model to refresh data
+        // Then
         verify { viewModel.refresh() }
     }
 
     @Test
-    fun askUserForLocationPermissionUponPermissionError() {
-        // Test case fixture
+    fun askUserForLocationPermission_UponPermissionError() {
+        // Given
         every { viewModel.refresh() } returns Unit
-
-        // Given a resumed fragment
 
         // When view model update a device network error
         error.value = AppError(LOCATION_PERMISSION)
@@ -325,59 +321,51 @@ class WeatherFragmentTest {
     }
 
     @Test
-    fun notifyUserOfNetworkErrorWhenDeviceNetworkFail() {
-        // Test case fixture
+    fun notifyUserOfNetworkError_WhenDeviceNetworkFail() {
+        // Given
         every { viewModel.refresh() } returns Unit
 
-        // Given a resumed fragment
-
-        // When view model update a device network error
+        // When
         error.value = AppError(DEVICE_NETWORK)
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
-        // Then fragment should show toast message with error description
+        // Then
         val expectedToastMessage = ApplicationProvider.getApplicationContext<Context>()
             .getString(R.string.device_network_error)
         assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo(expectedToastMessage)
     }
 
     @Test
-    fun notifyUserOfRemoteServerErrorWhenRemoteServerFailFail() {
-        // Test case fixture
+    fun notifyUserOfRemoteServerError_WhenRemoteServerFailFail() {
+        // Given
         every { viewModel.refresh() } returns Unit
 
-        // Given a resumed fragment
-
-        // When view model update a remote server error
+        // When
         error.value = AppError(REMOTE_SERVER)
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
-        // Then fragment should show toast message with error description
+        // Then
         val expectedToastMessage = ApplicationProvider.getApplicationContext<Context>()
             .getString(R.string.remote_server_error)
         assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo(expectedToastMessage)
     }
 
     @Test
-    fun notifyUserErrorMessageUponUnknownError() {
-        // Given a resumed fragment
+    fun notifyUserErrorMessage_UponUnknownError() {
+        // Given
 
-        // When view model update an unknown error
+        // When
         error.value = AppError(UNKNOWN_ERR)
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
-        // Then fragment should show toast message with error description
+        // Then
         val expectedToastMessage = ApplicationProvider.getApplicationContext<Context>()
             .getString(R.string.unknown_error)
         assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo(expectedToastMessage)
     }
 
     @Test
-    fun showLocationNameAsAppbarTitleWheAppbarCollapses() {
-        // Test fixture
-        mockkObject(ImageLoader)
-        every { ImageLoader.loadIconResIntoImageView(any(),any()) } returns Unit
-
+    fun showLocationNameAsAppbarTitle_WhenAppbarCollapses() {
         // Given
         val weatherData = createTestWeather()
         this.weather.value = weatherData
@@ -396,11 +384,7 @@ class WeatherFragmentTest {
     }
 
     @Test
-    fun hideLocationNameAsAppbarTitleWheAppbarExpanded() {
-        // Test fixture
-        mockkObject(ImageLoader)
-        every { ImageLoader.loadIconResIntoImageView(any(),any()) } returns Unit
-
+    fun hideLocationNameAsAppbarTitle_WheAppbarExpanded() {
         // Given
         weather.value = createTestWeather()
         Shadows.shadowOf(Looper.getMainLooper()).idle()
@@ -418,11 +402,7 @@ class WeatherFragmentTest {
     }
 
     @Test
-    fun hideCurrentLocationIndicatorWhenShowsLocationWeather() {
-        // Test fixture
-        mockkObject(ImageLoader)
-        every { ImageLoader.loadIconResIntoImageView(any(),any()) } returns Unit
-
+    fun hideCurrentLocationIndicator_WhenShowsLocationWeather() {
         // Given
 
         // Then
@@ -430,31 +410,19 @@ class WeatherFragmentTest {
     }
 
     @Test
-    fun openBookmarksWhenSelectedFromMenu() {
+    fun navigateToLocationsScreen_WhenSelectedFromMenu() {
         // Given
 
         // When
-        onView(withId(R.id.action_bookmarks))
+        onView(withId(R.id.action_locations))
             .perform(click())
 
         // Then
-        assertThat(navController.currentDestination?.id).isEqualTo(R.id.bookmarkedLocationsFragment)
+        assertThat(navController.currentDestination?.id).isEqualTo(R.id.locationsFragment)
     }
 
     @Test
-    fun openLocationsSearchWhenSelectedFromMenu() {
-        // Given
-
-        // When
-        onView(withId(R.id.action_search))
-            .perform(click())
-
-        // Then
-        assertThat(navController.currentDestination?.id).isEqualTo(R.id.searchLocationsFragment)
-    }
-
-    @Test
-    fun showCurrentLocationWeatherWhenSelectedFromMenu() {
+    fun showCurrentLocationWeather_WhenSelectedFromMenu() {
         // Given
         every { viewModel.loadCurrentLocationWeather() } returns Unit
 
@@ -467,7 +435,7 @@ class WeatherFragmentTest {
     }
 
     @Test
-    fun showLocationWeatherWhenLocationReturnedAsResult() {
+    fun showLocationWeather_WhenLocationReturnedAsResult() {
         // Given
         every { viewModel.loadLocationWeather(any(),any()) } returns Unit
 
@@ -486,8 +454,33 @@ class WeatherFragmentTest {
             fragment.setFragmentResult(requestKey,bundle)
         }
 
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
 
         // Then
         verify { viewModel.loadLocationWeather(lat,lon) }
+    }
+
+    @Test
+    fun resolveCurrentWeatherIndicatorUiVisibility_WhenIndicatorUpdated() {
+        // Given
+        weather.value = createTestWeather()
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // When
+        isCurrentLocationWeather.value = true
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // Then
+        onView(withId(R.id.locationIndicator))
+            .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
+
+        // When
+        isCurrentLocationWeather.value = false
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // Then
+        onView(withId(R.id.locationIndicator))
+            .check(matches(withEffectiveVisibility(Visibility.INVISIBLE)))
     }
 }

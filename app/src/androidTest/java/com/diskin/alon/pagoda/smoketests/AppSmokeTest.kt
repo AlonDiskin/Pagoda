@@ -66,6 +66,7 @@ class AppSmokeTest {
         val countryName = JSONArray(FileUtil.readStringFromFile(NetworkUtil.dispatcher.geoRes))
             .getJSONObject(0).getString("country")
 
+        Thread.sleep(2000)
         onView(withId(R.id.location_name))
             .check(matches(withText(locationName.plus(", ").plus(countryName))))
         assertThat(NetworkUtil.server.requestCount).isEqualTo(2)

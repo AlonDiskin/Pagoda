@@ -87,7 +87,6 @@
                     <androidx.cardview.widget.CardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:cardBackgroundColor="@color/blue_400"
                         app:cardCornerRadius="5dp">
 
                         <androidx.recyclerview.widget.RecyclerView
@@ -112,7 +111,6 @@
                     <androidx.cardview.widget.CardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:cardBackgroundColor="@color/blue_400"
                         app:cardCornerRadius="5dp">
 
                         <androidx.recyclerview.widget.RecyclerView
@@ -120,6 +118,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                            android:overScrollMode="never"
                             tools:listitem="@layout/daily_forecast" />
 
                     </androidx.cardview.widget.CardView>
@@ -136,7 +135,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/item_margin"
-                        app:cardBackgroundColor="@color/blue_400"
                         app:cardCornerRadius="5dp">
 
                         <include

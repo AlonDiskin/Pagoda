@@ -1,18 +1,18 @@
 package com.diskin.alon.pagoda.userjourney
 
-import androidx.appcompat.widget.SearchView
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.diskin.alon.pagoda.R
-import com.diskin.alon.pagoda.common.uitesting.typeSearchViewText
 import com.diskin.alon.pagoda.util.DeviceUtil
 import com.diskin.alon.pagoda.util.FileUtil
 import com.diskin.alon.pagoda.util.NetworkUtil
 import com.diskin.alon.pagoda.weatherinfo.data.BuildConfig
-import com.diskin.alon.pagoda.weatherinfo.presentation.controller.LocationSearchResultsAdapter.LocationSearchResultViewHolder
+import com.diskin.alon.pagoda.weatherinfo.presentation.controller.LocationsAdapter.LocationViewHolder
 import com.mauriciotogneri.greencoffee.GreenCoffeeSteps
 import com.mauriciotogneri.greencoffee.annotations.And
 import com.mauriciotogneri.greencoffee.annotations.Given
@@ -44,19 +44,22 @@ class CheckWorldLocationTemperatureSteps(server: MockWebServer) : GreenCoffeeSte
     @And("^User search for a world location$")
     fun user_search_for_a_world_location() {
         // Open search screen
-        onView(withId(R.id.action_search))
+        onView(withId(R.id.action_locations))
             .perform(click())
 
         // Perform search
-        onView(isAssignableFrom(SearchView::class.java))
-            .perform(typeSearchViewText("ashdod"))
+        onView(withId(R.id.action_search))
+            .perform(click())
+
+        onView(withId(R.id.search_src_text))
+            .perform(ViewActions.typeText("ashdod"))
     }
 
     @When("^User select to browse location result weather$")
     fun user_select_to_browse_result() {
         // Click on first search result as it is expected one for result
-        onView(withId(R.id.search_location_results))
-            .perform(actionOnItemAtPosition<LocationSearchResultViewHolder>(0, click()))
+        onView(withId(R.id.locations))
+            .perform(actionOnItemAtPosition<LocationViewHolder>(0, click()))
     }
 
     @Then("^Selected location temperature should be shown$")

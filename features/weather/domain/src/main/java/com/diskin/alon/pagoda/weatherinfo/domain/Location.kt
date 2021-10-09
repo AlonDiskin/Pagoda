@@ -11,7 +11,7 @@ data class Location(val id: Coordinates,
                     var name: String,
                     var country: String,
                     var state: String,
-                    var bookmarked: Boolean) {
+                    var isFavorite: Boolean) {
 
     init {
         require(name.isNotEmpty())

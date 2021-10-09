@@ -9,7 +9,7 @@ import androidx.databinding.BindingAdapter
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import com.diskin.alon.pagoda.common.presentation.ImageLoader
 import com.diskin.alon.pagoda.weatherinfo.presentation.R
-import com.diskin.alon.pagoda.weatherinfo.presentation.model.UiLocationSearchResult
+import com.diskin.alon.pagoda.weatherinfo.presentation.model.UiLocation
 import java.lang.IllegalArgumentException
 
 @BindingAdapter("setImageRes")
@@ -17,18 +17,12 @@ fun setImageRes(imageView: ImageView,@DrawableRes res: Int?) {
     res?.let { ImageLoader.loadIconResIntoImageView(imageView, res) }
 }
 
-@BindingAdapter("setAddButton")
-fun setAddButton(button: ImageButton, location: UiLocationSearchResult?) {
+@BindingAdapter("setFavoriteButton")
+fun setFavoriteButton(button: ImageButton, location: UiLocation?) {
     location?.let {
-        when(it.bookmarked) {
-            true -> {
-                ImageLoader.loadIconResIntoImageButton(button, R.drawable.ic_baseline_done_24)
-                button.isEnabled = false
-            }
-            false -> {
-                ImageLoader.loadIconResIntoImageButton(button, R.drawable.ic_baseline_add_24)
-                button.isEnabled = true
-            }
+        when(it.isFavorite) {
+            true -> ImageLoader.loadIconResIntoImageButton(button, R.drawable.ic_baseline_star_24)
+            false -> ImageLoader.loadIconResIntoImageButton(button, R.drawable.ic_baseline_star_border_24)
         }
     }
 }
@@ -61,15 +55,6 @@ fun setMainWeatherIconRes(imageView: ImageView,@DrawableRes res: Int?) {
             }
 
             else -> throw IllegalArgumentException("Main weather icon image view tag should be null or int")
-        }
-    }
-}
-
-@BindingAdapter("setLocationIndicator")
-fun setLocationIndicator(iv: ImageView,isCurrent: Boolean?) {
-    isCurrent?.let {
-        when(it) {
-            true -> ImageLoader.loadIconResIntoImageView(iv,R.drawable.ic_baseline_location_24)
         }
     }
 }
