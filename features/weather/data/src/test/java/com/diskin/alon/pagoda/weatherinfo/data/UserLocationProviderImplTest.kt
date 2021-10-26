@@ -1,7 +1,7 @@
 package com.diskin.alon.pagoda.weatherinfo.data
 
-import com.diskin.alon.pagoda.common.appservices.AppError
-import com.diskin.alon.pagoda.common.appservices.Result
+import com.diskin.alon.pagoda.common.appservices.results.AppError
+import com.diskin.alon.pagoda.common.appservices.results.Result
 import com.diskin.alon.pagoda.common.util.Mapper
 import com.diskin.alon.pagoda.weatherinfo.data.local.implementations.UserLocationProviderImpl
 import com.diskin.alon.pagoda.weatherinfo.data.local.model.UserLocation

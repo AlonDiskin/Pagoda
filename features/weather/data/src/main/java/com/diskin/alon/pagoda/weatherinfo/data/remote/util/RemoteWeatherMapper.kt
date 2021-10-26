@@ -10,6 +10,7 @@ import org.joda.time.LocalDate
 import org.joda.time.LocalDateTime
 import java.util.*
 import javax.inject.Inject
+import kotlin.math.roundToInt
 
 class RemoteWeatherMapper @Inject constructor() :
     Mapper2<ApiWeatherResponse, ApiLocationResponse, Weather> {
@@ -23,16 +24,16 @@ class RemoteWeatherMapper @Inject constructor() :
             source2.name,
             source2.country,
             source1.timezone,
-            source1.current.temp,
-            source1.current.feels_like,
-            source1.daily[0].temp.min,
-            source1.daily[0].temp.max,
+            source1.current.temp.roundToInt().toDouble(),
+            source1.current.feels_like.roundToInt().toDouble(),
+            source1.daily[0].temp.min.roundToInt().toDouble(),
+            source1.daily[0].temp.max.roundToInt().toDouble(),
             WeatherCondition(
                 mapConditionCode(source1.current.weather[0].id),
                 mapIsDay(source1.current.weather[0].icon)
             ),
-            source1.current.humidity,
-            source1.current.wind_speed,
+            source1.current.humidity.roundToInt().toDouble(),
+            source1.current.wind_speed.roundToInt().toDouble(),
             mapTimeStamp(source1.current.sunrise, source1.timezone).toDate().time,
             mapTimeStamp(source1.current.sunset, source1.timezone).toDate().time,
             source1.current.uvi,
@@ -46,7 +47,7 @@ class RemoteWeatherMapper @Inject constructor() :
                             mapConditionCode(it.weather[0].id),
                             mapIsDay(it.weather[0].icon)
                         ),
-                        it.temp
+                        it.temp.roundToInt().toDouble()
                     )
                 },
             source1.daily
@@ -61,8 +62,8 @@ class RemoteWeatherMapper @Inject constructor() :
                         mapConditionCode(it.weather[0].id),
                         mapIsDay(it.weather[0].icon)
                     ),
-                    it.temp.min,
-                    it.temp.max
+                    it.temp.min.roundToInt().toDouble(),
+                    it.temp.max.roundToInt().toDouble()
                 )
             },
             createUpdateStamp()

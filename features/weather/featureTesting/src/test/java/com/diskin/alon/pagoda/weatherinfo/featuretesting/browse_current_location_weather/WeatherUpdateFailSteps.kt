@@ -10,17 +10,17 @@ import androidx.core.app.ActivityOptionsCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.test.core.app.ActivityScenario
-import com.diskin.alon.pagoda.common.appservices.AppError
-import com.diskin.alon.pagoda.common.appservices.ErrorType
-import com.diskin.alon.pagoda.common.appservices.Result
-import com.diskin.alon.pagoda.common.eventcontracts.AppEventProvider
-import com.diskin.alon.pagoda.common.eventcontracts.settings.TemperatureUnitPref
-import com.diskin.alon.pagoda.common.eventcontracts.settings.TimeFormatPref
-import com.diskin.alon.pagoda.common.eventcontracts.settings.UnitPrefSystem
-import com.diskin.alon.pagoda.common.eventcontracts.settings.WindSpeedUnitPref
+import com.diskin.alon.pagoda.common.appservices.results.AppError
+import com.diskin.alon.pagoda.common.appservices.results.ErrorType
+import com.diskin.alon.pagoda.common.appservices.results.Result
 import com.diskin.alon.pagoda.common.presentation.ImageLoader
+import com.diskin.alon.pagoda.common.shared.AppDataProvider
 import com.diskin.alon.pagoda.common.uitesting.HiltTestActivity
 import com.diskin.alon.pagoda.common.uitesting.launchFragmentInHiltContainer
+import com.diskin.alon.pagoda.settings.shared.TempUnit
+import com.diskin.alon.pagoda.settings.shared.TimeFormat
+import com.diskin.alon.pagoda.settings.shared.UnitSystem
+import com.diskin.alon.pagoda.settings.shared.WindSpeedUnit
 import com.diskin.alon.pagoda.weatherinfo.data.local.interfaces.UserLocationProvider
 import com.diskin.alon.pagoda.weatherinfo.data.local.model.UserLocation
 import com.diskin.alon.pagoda.weatherinfo.featuretesting.util.TestDatabase
@@ -53,9 +53,9 @@ class WeatherUpdateFailSteps(
     private val server: MockWebServer,
     private val db: TestDatabase,
     private val locationProvider: UserLocationProvider,
-    private val tempUnitPrefProvider: AppEventProvider<TemperatureUnitPref>,
-    private val windSpeedUnitPrefProvider: AppEventProvider<WindSpeedUnitPref>,
-    private val timeFormatPrefProvider: AppEventProvider<TimeFormatPref>
+    private val tempUnitProvider: AppDataProvider<Observable<TempUnit>>,
+    private val windSpeedUnitProvider: AppDataProvider<Observable<WindSpeedUnit>>,
+    private val timeFormatProvider: AppDataProvider<Observable<TimeFormat>>
 ) : GreenCoffeeSteps() {
 
     private lateinit var scenario: ActivityScenario<HiltTestActivity>
@@ -89,11 +89,18 @@ class WeatherUpdateFailSteps(
 
     init {
         // Stub mock app prefs providers
-        every { tempUnitPrefProvider.get() } returns Observable.just(TemperatureUnitPref(
-            UnitPrefSystem.METRIC))
-        every { windSpeedUnitPrefProvider.get() } returns Observable.just(WindSpeedUnitPref(
-            UnitPrefSystem.METRIC))
-        every { timeFormatPrefProvider.get() } returns Observable.just(TimeFormatPref(TimeFormatPref.HourFormat.HOUR_24))
+        every { tempUnitProvider.get() } returns Observable.just(
+            TempUnit(
+            UnitSystem.METRIC)
+        )
+        every { windSpeedUnitProvider.get() } returns Observable.just(
+            WindSpeedUnit(
+            UnitSystem.METRIC)
+        )
+        every { timeFormatProvider.get() } returns Observable.just(
+            TimeFormat(
+                TimeFormat.HourFormat.HOUR_24)
+        )
 
         // Stub static image loader
         mockkObject(ImageLoader)
@@ -110,7 +117,7 @@ class WeatherUpdateFailSteps(
     fun weather_update_for_user_location_is_available() {
         location = UserLocation(cachedWeather.lat,cachedWeather.lon)
         val calendar = mockk<Calendar>()
-        val current = LocalDateTime(cachedWeather.updated).plusHours(5).toDate().time
+        val current = LocalDateTime(cachedWeather.updated).plusHours(1).toDate().time
 
         mockkStatic(Calendar::class)
         every { Calendar.getInstance() } returns calendar

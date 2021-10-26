@@ -41,11 +41,9 @@ dependencies {
     implementation "androidx.core:core-ktx:$androidx_core_version"
 
     // Project modules
-    api project(':features:settings:application')
     api project(':features:settings:presentation')
-    api project(':features:settings:data')
-    api project(':features:settings:infrastructure')
-    api project(':features:common:eventContracts')
+    api project(':features:settings:shared')
+    api project(':features:common:application')
     api project(':features:common:util')
 
     // Retrofit

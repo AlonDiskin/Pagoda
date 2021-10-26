@@ -67,6 +67,9 @@ dependencies {
     implementation "com.google.dagger:hilt-android:$hilt_version"
     kapt "com.google.dagger:hilt-compiler:$hilt_version"
 
+    // Preferences
+    implementation 'androidx.preference:preference-ktx:1.1.1'
+
     // Local\Unit testing
     testImplementation project(':features:common:uiTesting')
     testImplementation project(':features:common:localTesting')

@@ -1,6 +1,6 @@
 package com.diskin.alon.pagoda.common.presentation
 
-import com.diskin.alon.pagoda.common.appservices.UseCase
+import com.diskin.alon.pagoda.common.appservices.usecase.UseCase
 import com.diskin.alon.pagoda.common.util.Mapper
 
 /**
@@ -18,8 +18,8 @@ class ModelDispatcher(
         map[request::class.java]?.let { pair ->
             try {
                 @Suppress("UNCHECKED_CAST")
-                val useCase: UseCase<P,*> = pair.first as UseCase<P,*>
-                val useCaseRes = useCase.execute(request.useCaseParam)
+                val useCase: UseCase<P, *> = pair.first as UseCase<P, *>
+                val useCaseRes = useCase.execute(request.param)
 
                 if (pair.second != null) {
                     try {

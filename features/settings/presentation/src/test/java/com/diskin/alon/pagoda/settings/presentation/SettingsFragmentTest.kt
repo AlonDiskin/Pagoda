@@ -17,18 +17,15 @@ import androidx.preference.SwitchPreference
 import androidx.preference.get
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.matcher.RootMatchers
-import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
-import com.diskin.alon.pagoda.common.appservices.AppError
-import com.diskin.alon.pagoda.common.appservices.ErrorType.LOCATION_BACKGROUND_PERMISSION
+import com.diskin.alon.pagoda.common.appservices.results.AppError
+import com.diskin.alon.pagoda.common.appservices.results.ErrorType.LOCATION_BACKGROUND_PERMISSION
 import com.diskin.alon.pagoda.common.presentation.SingleLiveEvent
 import com.diskin.alon.pagoda.common.uitesting.HiltTestActivity
 import com.diskin.alon.pagoda.common.uitesting.launchFragmentInHiltContainer
-import com.diskin.alon.pagoda.settings.appservices.model.WeatherUnit.*
+import com.diskin.alon.pagoda.settings.presentation.controller.SettingsFragment
+import com.diskin.alon.pagoda.settings.presentation.viewmodel.SettingsViewModel
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
@@ -54,7 +51,7 @@ class SettingsFragmentTest {
     private lateinit var scenario: ActivityScenario<HiltTestActivity>
 
     // Collaborators
-    private val viewModel = mockk<SettingsViewModel>()
+    private val viewModel: SettingsViewModel = mockk()
 
     // Stub data
     private val error = SingleLiveEvent<AppError>()
@@ -125,27 +122,6 @@ class SettingsFragmentTest {
     }
 
     @Test
-    fun changeTemperatureUnitWhenPreferenceChanged() {
-        // Test cas fixture
-        every { viewModel.changeWeatherUnits(any()) } returns Unit
-
-        // Given
-
-        // When
-        onView(withText(R.string.pref_temperature_title))
-            .perform(click())
-        Shadows.shadowOf(Looper.getMainLooper()).idle()
-
-        onView(withText(R.string.pref_temperature_imperial_entry))
-            .inRoot(RootMatchers.isDialog())
-            .perform(click())
-        Shadows.shadowOf(Looper.getMainLooper()).idle()
-
-        // Then
-        verify { viewModel.changeWeatherUnits(Temperature(UnitSystem.IMPERIAL)) }
-    }
-
-    @Test
     fun showTimeFormatUnitSelectionPreference() {
         // Given
 
@@ -162,27 +138,6 @@ class SettingsFragmentTest {
             // And d
             assertThat(prefUi.value).isEqualTo(prefValue)
         }
-    }
-
-    @Test
-    fun changeTimeFormatUnitWhenPreferenceChanged() {
-        // Test cas fixture
-        every { viewModel.changeWeatherUnits(any()) } returns Unit
-
-        // Given
-
-        // When
-        onView(withText(R.string.pref_time_format_title))
-            .perform(click())
-        Shadows.shadowOf(Looper.getMainLooper()).idle()
-
-        onView(withText(R.string.pref_time_format_12_value))
-            .inRoot(RootMatchers.isDialog())
-            .perform(click())
-        Shadows.shadowOf(Looper.getMainLooper()).idle()
-
-        // Then
-        verify { viewModel.changeWeatherUnits(TimeFormat(HourFormat.HOUR_12)) }
     }
 
     @Test
@@ -206,27 +161,6 @@ class SettingsFragmentTest {
     }
 
     @Test
-    fun changeWindUnitWhenPreferenceChanged() {
-        // Test cas fixture
-        every { viewModel.changeWeatherUnits(any()) } returns Unit
-
-        // Given
-
-        // When
-        onView(withText(R.string.pref_wind_speed_title))
-            .perform(click())
-        Shadows.shadowOf(Looper.getMainLooper()).idle()
-
-        onView(withText(R.string.pref_wind_speed_imperial_entry))
-            .inRoot(RootMatchers.isDialog())
-            .perform(click())
-        Shadows.shadowOf(Looper.getMainLooper()).idle()
-
-        // Then
-        verify { viewModel.changeWeatherUnits(WindSpeed(UnitSystem.IMPERIAL)) }
-    }
-
-    @Test
     fun showWeatherAlertsNotificationPreference() {
         // Given
 
@@ -247,32 +181,47 @@ class SettingsFragmentTest {
     }
 
     @Test
-    fun setWeatherAlertNotificationWhenPreferenceChanged() {
-        // Test cas fixture
-        every { viewModel.enableWeatherAlertNotification(any()) } returns Unit
-
+    fun showDarkModeEnablingPreference() {
         // Given
+
+        scenario.onActivity {
+            val fragment = it.supportFragmentManager.fragments.first()!! as SettingsFragment
+            val key = fragment.getString(R.string.pref_dark_mode_key)
+            val prefUi = fragment.preferenceScreen.get<SwitchPreference>(key)!!
+            val prefValue = fragment.getString(R.string.pref_dark_mode_default_value).toBoolean()
+
+            // Then
+            assertThat(prefUi.isShown).isTrue()
+
+            // And
+            assertThat(prefUi.isChecked).isEqualTo(prefValue)
+        }
+    }
+
+    @Test
+    fun enableAppDarkMode_WhenUserEnablePref() {
+        // Given
+        every { viewModel.enableDarkMode(any()) } returns Unit
 
         // When (since pref ui is hidden in scrollable ui and not present in hierarchy,click via
         // preference api directly
         scenario.onActivity {
             val fragment = it.supportFragmentManager.fragments.first()!! as SettingsFragment
-            val key = fragment.getString(R.string.pref_alert_notification_key)
+            val key = fragment.getString(R.string.pref_dark_mode_key)
             val prefUi = fragment.preferenceScreen.get<SwitchPreference>(key)!!
 
+            prefUi.performClick()
             prefUi.performClick()
         }
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
         // Then
-        verify { viewModel.enableWeatherAlertNotification(true) }
+        verify { viewModel.enableDarkMode(true)}
+        verify { viewModel.enableDarkMode(false)}
     }
 
     @Test
-    fun askUserForLocationPermissionUponPermissionError() {
-        // Test cas fixture
-        every { viewModel.enableWeatherAlertNotification(any()) } returns Unit
-
+    fun askUserForLocationPermission_UponPermissionError() {
         // Given
 
         // When
@@ -281,18 +230,11 @@ class SettingsFragmentTest {
 
         // Then
         //assertThat(testRegistry.isLocationAccessRequested).isTrue()
-
-        // And
-        //verify { viewModel.enableWeatherAlertNotification(true) }
         //TODO add support for sdk 29 in robolectric
     }
 
     @Test
-    fun setAlertNotificationPrefAsDisabledWhenUserDenyLocationPermission() {
-        // Test case fixture
-        this.testRegistry.locationPermissionResult = false
-        every { viewModel.enableWeatherAlertNotification(any()) } returns Unit
-
+    fun setAlertNotificationPrefAsDisabled_UponAlertError() {
         // Given
 
         // When
@@ -312,10 +254,9 @@ class SettingsFragmentTest {
     }
 
     @Test
-    fun notifyThatPermissionNeededWhenUserDenyLocationPermission() {
+    fun notifyThatPermissionNeeded_WhenUserDenyLocationPermission() {
         // Test case fixture
         this.testRegistry.locationPermissionResult = false
-        every { viewModel.enableWeatherAlertNotification(any()) } returns Unit
 
         // Given
 

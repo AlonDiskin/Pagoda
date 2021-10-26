@@ -1,9 +1,11 @@
 package com.diskin.alon.pagoda.home.presentation
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.net.toUri
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.findNavController
@@ -13,6 +15,9 @@ import androidx.navigation.ui.setupWithNavController
 import com.diskin.alon.pagoda.home.presentation.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
+import android.R.attr.button
+import android.graphics.drawable.Drawable
+
 
 /**
  * Application home screen.
@@ -76,6 +81,7 @@ class MainActivity : AppCompatActivity() {
                 controller.navigate(settingsDestUri)
                 true
             }
+
             else -> super.onOptionsItemSelected(item)
         }
     }

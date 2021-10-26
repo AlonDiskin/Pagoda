@@ -9,7 +9,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.rule.GrantPermissionRule
 import com.diskin.alon.pagoda.R
-import com.diskin.alon.pagoda.settings.di.SettingsNetworkingModule
 import com.diskin.alon.pagoda.util.DeviceUtil
 import com.diskin.alon.pagoda.util.FileUtil
 import com.diskin.alon.pagoda.util.NetworkUtil
@@ -30,7 +29,7 @@ import javax.inject.Inject
  * App e2e smoke tests for crucial app functionality verification.
  */
 @HiltAndroidTest
-@UninstallModules(SettingsNetworkingModule::class, WeatherNetworkingModule::class)
+@UninstallModules(WeatherNetworkingModule::class)
 @RunWith(AndroidJUnit4::class)
 @LargeTest
 class AppSmokeTest {

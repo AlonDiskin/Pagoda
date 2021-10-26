@@ -11,6 +11,7 @@
             app:entries="@array/pref_temperature_list_entries"
             app:entryValues="@array/pref_temperature_list_values"
             app:title="@string/pref_temperature_title"
+            app:icon="@drawable/ic_outline_ac_unit_24"
             app:useSimpleSummaryProvider="true"
             tools:summary="\u2103"/>
 
@@ -21,6 +22,7 @@
             app:entries="@array/pref_wind_speed_list_entries"
             app:entryValues="@array/pref_wind_speed_list_values"
             app:title="@string/pref_wind_speed_title"
+            app:icon="@drawable/ic_outline_assistant_photo_24"
             app:useSimpleSummaryProvider="true"
             tools:summary="km\h"/>
 
@@ -31,6 +33,7 @@
             app:entries="@array/pref_time_format_list_entries"
             app:entryValues="@array/pref_time_format_list_values"
             app:title="@string/pref_time_format_title"
+            app:icon="@drawable/ic_outline_access_time_24"
             app:useSimpleSummaryProvider="true"
             tools:summary="24"/>
 
@@ -43,7 +46,18 @@
             app:title="@string/pref_alert_notification_title"
             app:summary="@string/pref_alert_notification_summary"
             app:defaultValue="@string/pref_alert_notification_default_value"
+            app:icon="@drawable/ic_outline_notifications_active_24"
             tools:defaultValue="true" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="Visual">
+
+        <androidx.preference.SwitchPreference
+            app:defaultValue="@string/pref_dark_mode_default_value"
+            app:key="@string/pref_dark_mode_key"
+            app:icon="@drawable/ic_outline_nights_stay_24"
+            app:title="@string/pref_dark_mode_title" />
 
     </PreferenceCategory>
 

@@ -4,15 +4,17 @@ import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
-import com.diskin.alon.pagoda.common.appservices.AppError
-import com.diskin.alon.pagoda.common.appservices.AppResult
-import com.diskin.alon.pagoda.common.presentation.*
-import com.diskin.alon.pagoda.weatherinfo.presentation.model.WorldLocationWeatherModelRequest
+import com.diskin.alon.pagoda.common.appservices.results.AppError
+import com.diskin.alon.pagoda.common.appservices.results.AppResult
+import com.diskin.alon.pagoda.common.presentation.Model
+import com.diskin.alon.pagoda.common.presentation.RxViewModel
+import com.diskin.alon.pagoda.common.presentation.SingleLiveEvent
+import com.diskin.alon.pagoda.common.presentation.UpdateViewData
+import com.diskin.alon.pagoda.weatherinfo.presentation.model.LocationWeatherModelRequest
+import com.diskin.alon.pagoda.weatherinfo.presentation.model.LocationWeatherModelRequest.*
 import com.diskin.alon.pagoda.weatherinfo.presentation.model.UiWeather
-import com.diskin.alon.pagoda.weatherinfo.presentation.model.UserLocationWeatherModelRequest
 import com.diskin.alon.pagoda.weatherinfo.presentation.util.WeatherModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.BehaviorSubject
@@ -33,7 +35,7 @@ class WeatherViewModel @Inject constructor(
     @VisibleForTesting
     data class CoordinatesState(val lat: Double,val lon: Double) : Serializable
 
-    private val weatherSubject: BehaviorSubject<ModelRequest<*,Observable<AppResult<UiWeather>>>>
+    private val weatherSubject: BehaviorSubject<LocationWeatherModelRequest>
     private val _weather = MutableLiveData<UiWeather>()
     val weather: LiveData<UiWeather> get() = _weather
     private val _update = MutableLiveData<UpdateViewData>()

@@ -1,7 +1,7 @@
 package com.diskin.alon.pagoda.weatherinfo.data.remote.implementations
 
-import com.diskin.alon.pagoda.common.appservices.Result
-import com.diskin.alon.pagoda.common.appservices.toSingleResult
+import com.diskin.alon.pagoda.common.appservices.results.Result
+import com.diskin.alon.pagoda.common.appservices.results.toSingleResult
 import com.diskin.alon.pagoda.common.util.Mapper2
 import com.diskin.alon.pagoda.weatherinfo.data.remote.interfaces.OpenWeatherMapApi
 import com.diskin.alon.pagoda.weatherinfo.data.remote.interfaces.WeatherStore

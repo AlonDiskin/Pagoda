@@ -1,6 +1,7 @@
 package com.diskin.alon.pagoda.weatherinfo.data.remote.interfaces
 
 import com.diskin.alon.pagoda.weatherinfo.data.remote.model.ApiLocationResponse
+import com.diskin.alon.pagoda.weatherinfo.data.remote.model.ApiWeatherAlertResponse
 import com.diskin.alon.pagoda.weatherinfo.data.remote.model.ApiWeatherResponse
 import com.diskin.alon.pagoda.weatherinfo.data.remote.util.*
 import io.reactivex.Single
@@ -23,4 +24,10 @@ interface OpenWeatherMapApi {
         @Query(LAT_PARAM) lat: Double,
         @Query(LON_PARAM) lon: Double,
     ): Single<List<ApiLocationResponse>>
+
+    @GET("$ALERT_DATA_PATH?$ALERT_DATA_QUERY")
+    fun getWeatherAlert(
+        @Query(LAT_PARAM) lat: Double,
+        @Query(LON_PARAM) lon: Double,
+    ): Single<ApiWeatherAlertResponse>
 }

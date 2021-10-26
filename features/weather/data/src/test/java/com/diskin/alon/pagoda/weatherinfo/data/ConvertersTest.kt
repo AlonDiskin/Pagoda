@@ -8,6 +8,8 @@ import com.diskin.alon.pagoda.weatherinfo.domain.WeatherCondition
 import com.diskin.alon.pagoda.weatherinfo.domain.WeatherDescription
 import com.google.common.truth.Truth.assertThat
 import com.google.gson.Gson
+import io.reactivex.Flowable
+import io.reactivex.Observable
 import junitparams.JUnitParamsRunner
 import junitparams.Parameters
 import org.junit.Before

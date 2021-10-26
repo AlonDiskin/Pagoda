@@ -1,6 +1,6 @@
 package com.diskin.alon.pagoda.weatherinfo.data.local.implementations
 
-import com.diskin.alon.pagoda.common.appservices.*
+import com.diskin.alon.pagoda.common.appservices.results.*
 import com.diskin.alon.pagoda.common.util.Mapper
 import com.diskin.alon.pagoda.weatherinfo.data.local.interfaces.CurrentWeatherDao
 import com.diskin.alon.pagoda.weatherinfo.data.local.interfaces.WeatherCache

@@ -7,8 +7,6 @@ import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.contrib.DrawerActions
-import androidx.test.espresso.contrib.NavigationViewActions
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItem
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.uiautomator.UiSelector
@@ -16,20 +14,19 @@ import androidx.work.*
 import androidx.work.testing.SynchronousExecutor
 import androidx.work.testing.WorkManagerTestInitHelper
 import com.diskin.alon.pagoda.R
-import com.diskin.alon.pagoda.settings.infrastructure.implementation.WeatherAlertNotificationSchedulerImpl
-import com.diskin.alon.pagoda.settings.infrastructure.implementation.WeatherAlertWorker
-import com.diskin.alon.pagoda.settings.infrastructure.interfaces.WeatherAlertProvider
 import com.diskin.alon.pagoda.util.DeviceUtil
 import com.diskin.alon.pagoda.util.FileUtil
 import com.diskin.alon.pagoda.util.NetworkUtil
+import com.diskin.alon.pagoda.weather.infrastructure.WeatherAlertNotificationSchedulerImpl
+import com.diskin.alon.pagoda.weather.infrastructure.WeatherAlertWorker
 import com.diskin.alon.pagoda.weatherinfo.data.BuildConfig
+import com.diskin.alon.pagoda.weatherinfo.data.remote.interfaces.WeatherAlertProvider
 import com.google.common.truth.Truth
 import com.mauriciotogneri.greencoffee.GreenCoffeeSteps
 import com.mauriciotogneri.greencoffee.annotations.And
 import com.mauriciotogneri.greencoffee.annotations.Given
 import com.mauriciotogneri.greencoffee.annotations.Then
 import com.mauriciotogneri.greencoffee.annotations.When
-import okhttp3.mockwebserver.Dispatcher
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import okhttp3.mockwebserver.RecordedRequest
@@ -91,7 +88,7 @@ class ReceiveWeatherAlertNotificationSteps(
         onView(withId(androidx.preference.R.id.recycler_view))
             .perform(
                 actionOnItem<RecyclerView.ViewHolder>(
-                    hasDescendant(withText("Weather alerts")),
+                    hasDescendant(withText("Weather Alerts")),
                     click()
                 )
             )

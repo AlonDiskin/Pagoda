@@ -1,8 +1,8 @@
 package com.diskin.alon.pagoda.weatherinfo.presentation.util
 
 import android.app.Application
-import com.diskin.alon.pagoda.common.appservices.AppResult
-import com.diskin.alon.pagoda.common.appservices.mapAppResult
+import com.diskin.alon.pagoda.common.appservices.results.AppResult
+import com.diskin.alon.pagoda.common.appservices.results.mapAppResult
 import com.diskin.alon.pagoda.common.util.Mapper
 import com.diskin.alon.pagoda.weatherinfo.appservices.model.*
 import com.diskin.alon.pagoda.weatherinfo.appservices.model.WeatherDescriptionDto.*

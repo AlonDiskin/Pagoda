@@ -1,6 +1,6 @@
 package com.diskin.alon.pagoda.weatherinfo.appservices
 
-import com.diskin.alon.pagoda.common.appservices.AppResult
+import com.diskin.alon.pagoda.common.appservices.results.AppResult
 import com.diskin.alon.pagoda.common.util.Mapper
 import com.diskin.alon.pagoda.weatherinfo.appservices.interfaces.LocationRepository
 import com.diskin.alon.pagoda.weatherinfo.appservices.model.UnfavoriteLocationRequest

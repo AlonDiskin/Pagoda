@@ -1,6 +1,6 @@
 package com.diskin.alon.pagoda.weatherinfo.appservices.interfaces
 
-import com.diskin.alon.pagoda.common.appservices.AppResult
+import com.diskin.alon.pagoda.common.appservices.results.AppResult
 import com.diskin.alon.pagoda.weatherinfo.domain.Weather
 import io.reactivex.Observable
 

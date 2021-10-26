@@ -65,6 +65,7 @@ class FavoriteWorldLocationSteps : GreenCoffeeSteps() {
         // Close search view
         DeviceUtil.pressBack()
         DeviceUtil.pressBack()
+        Thread.sleep(1000)
 
         // Verify favorite listed locations ui is updated
         onView(withId(R.id.locations))

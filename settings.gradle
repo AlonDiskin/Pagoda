@@ -1,7 +1,5 @@
 // Common modules
-include ':features:common:eventContracts'
 include ':features:common:application'
-include ':features:common:events'
 include ':features:common:util'
 include ':features:common:instrumentationTesting'
 include ':features:common:presentation'
@@ -10,12 +8,8 @@ include ':features:common:localTesting'
 include ':features:common:uiTesting'
 
 // Settings feature modules
-include ':features:settings:featureTesting'
 include ':features:settings:presentation'
-include ':features:settings:data'
-include ':features:settings:infrastructure'
 include ':features:settings:di'
-include ':features:settings:application'
 
 // Home feature modules
 include ':features:home:presentation'
@@ -27,7 +21,12 @@ include ':features:weather:application'
 include ':features:weather:domain'
 include ':features:weather:presentation'
 include ':features:weather:di'
+include ':features:weather:infrastructure'
 
 // App module
 include ':app'
 rootProject.name = "Pagoda"
+
+include ':features:common:shared'
+include ':features:settings:shared'
+include ':features:weather:shared'

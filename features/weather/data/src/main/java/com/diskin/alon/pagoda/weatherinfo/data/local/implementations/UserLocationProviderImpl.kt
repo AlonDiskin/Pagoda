@@ -2,8 +2,8 @@ package com.diskin.alon.pagoda.weatherinfo.data.local.implementations
 
 import android.annotation.SuppressLint
 import android.os.Looper
-import com.diskin.alon.pagoda.common.appservices.Result
-import com.diskin.alon.pagoda.common.appservices.toSingleResult
+import com.diskin.alon.pagoda.common.appservices.results.Result
+import com.diskin.alon.pagoda.common.appservices.results.toSingleResult
 import com.diskin.alon.pagoda.common.util.Mapper
 import com.diskin.alon.pagoda.weatherinfo.data.local.interfaces.UserLocationProvider
 import com.diskin.alon.pagoda.weatherinfo.data.local.model.UserLocation

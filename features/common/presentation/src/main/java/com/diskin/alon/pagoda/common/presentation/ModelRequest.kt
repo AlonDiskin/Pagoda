@@ -7,4 +7,4 @@ package com.diskin.alon.pagoda.common.presentation
  * @param P use case param type
  * @param R model result type
  */
-abstract class ModelRequest<P : Any,R : Any>(val useCaseParam: P)
+abstract class ModelRequest<P : Any,R : Any>(val param: P)

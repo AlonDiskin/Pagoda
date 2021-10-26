@@ -18,8 +18,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.diskin.alon.pagoda.common.appservices.AppError
-import com.diskin.alon.pagoda.common.appservices.ErrorType
+import com.diskin.alon.pagoda.common.appservices.results.AppError
+import com.diskin.alon.pagoda.common.appservices.results.ErrorType
 import com.diskin.alon.pagoda.common.presentation.UpdateViewData
 import com.diskin.alon.pagoda.weatherinfo.presentation.R
 import com.diskin.alon.pagoda.weatherinfo.presentation.databinding.FragmentWeatherBinding
@@ -36,7 +36,7 @@ import dagger.hilt.android.migration.OptionalInject
 @AndroidEntryPoint
 class WeatherFragment(
     registry: ActivityResultRegistry? = null
-) : Fragment(){
+) : Fragment() {
 
     private val viewModel: WeatherViewModel by viewModels()
     private lateinit var binding: FragmentWeatherBinding
@@ -80,7 +80,7 @@ class WeatherFragment(
 
         // Set refresh color
         binding.swipeRefresh.setColorSchemeColors(
-            ContextCompat.getColor(requireContext(), R.color.green_900)
+            ContextCompat.getColor(requireContext(), R.color.colorSecondary)
         )
 
         // Setup forecast adapters

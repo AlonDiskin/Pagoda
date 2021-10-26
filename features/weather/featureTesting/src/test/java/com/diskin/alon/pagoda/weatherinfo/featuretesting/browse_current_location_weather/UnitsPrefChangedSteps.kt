@@ -7,18 +7,18 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
-import com.diskin.alon.pagoda.common.appservices.Result
-import com.diskin.alon.pagoda.common.eventcontracts.AppEventProvider
-import com.diskin.alon.pagoda.common.eventcontracts.settings.TemperatureUnitPref
-import com.diskin.alon.pagoda.common.eventcontracts.settings.TimeFormatPref
-import com.diskin.alon.pagoda.common.eventcontracts.settings.UnitPrefSystem
-import com.diskin.alon.pagoda.common.eventcontracts.settings.WindSpeedUnitPref
+import com.diskin.alon.pagoda.common.appservices.results.Result
 import com.diskin.alon.pagoda.common.featuretesting.getJsonFromResource
+import com.diskin.alon.pagoda.common.shared.AppDataProvider
 import com.diskin.alon.pagoda.common.uitesting.HiltTestActivity
 import com.diskin.alon.pagoda.common.uitesting.RecyclerViewMatcher.withRecyclerView
 import com.diskin.alon.pagoda.common.uitesting.launchFragmentInHiltContainer
 import com.diskin.alon.pagoda.common.uitesting.withTimeFormat12
 import com.diskin.alon.pagoda.common.uitesting.withTimeFormat24
+import com.diskin.alon.pagoda.settings.shared.TempUnit
+import com.diskin.alon.pagoda.settings.shared.TimeFormat
+import com.diskin.alon.pagoda.settings.shared.UnitSystem
+import com.diskin.alon.pagoda.settings.shared.WindSpeedUnit
 import com.diskin.alon.pagoda.weatherinfo.data.BuildConfig
 import com.diskin.alon.pagoda.weatherinfo.data.local.interfaces.UserLocationProvider
 import com.diskin.alon.pagoda.weatherinfo.data.local.model.UserLocation
@@ -33,6 +33,7 @@ import com.mauriciotogneri.greencoffee.annotations.Given
 import com.mauriciotogneri.greencoffee.annotations.Then
 import com.mauriciotogneri.greencoffee.annotations.When
 import io.mockk.every
+import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.subjects.BehaviorSubject
 import okhttp3.mockwebserver.Dispatcher
@@ -53,16 +54,16 @@ class UnitsPrefChangedSteps(
     private val locationProvider: UserLocationProvider,
     server: MockWebServer,
     private val db: TestDatabase,
-    private val tempUnitPrefProvider: AppEventProvider<TemperatureUnitPref>,
-    private val windSpeedUnitPrefProvider: AppEventProvider<WindSpeedUnitPref>,
-    private val timeFormatPrefProvider: AppEventProvider<TimeFormatPref>
+    private val tempUnitProvider: AppDataProvider<Observable<TempUnit>>,
+    private val windSpeedUnitProvider: AppDataProvider<Observable<WindSpeedUnit>>,
+    private val timeFormatProvider: AppDataProvider<Observable<TimeFormat>>
 ) : GreenCoffeeSteps() {
 
     private lateinit var scenario: ActivityScenario<HiltTestActivity>
     private val dispatcher = TestDispatcher()
-    private lateinit var tempUnitPrefProviderSubject: BehaviorSubject<TemperatureUnitPref>
-    private lateinit var windUnitPrefProviderSubject: BehaviorSubject<WindSpeedUnitPref>
-    private lateinit var timeFormatPrefProviderSubject: BehaviorSubject<TimeFormatPref>
+    private lateinit var tempUnitProviderSubject: BehaviorSubject<TempUnit>
+    private lateinit var windUnitProviderSubject: BehaviorSubject<WindSpeedUnit>
+    private lateinit var timeFormatProviderSubject: BehaviorSubject<TimeFormat>
 
     init {
         // Stub mock server
@@ -78,55 +79,61 @@ class UnitsPrefChangedSteps(
         // Prepare app prefs according to test arguments
         when(unit){
             "temperature" -> {
-                windUnitPrefProviderSubject = BehaviorSubject.createDefault(
-                    WindSpeedUnitPref(
-                        UnitPrefSystem.METRIC
+                windUnitProviderSubject = BehaviorSubject.createDefault(
+                    WindSpeedUnit(
+                        UnitSystem.METRIC
                     )
                 )
-                timeFormatPrefProviderSubject = BehaviorSubject.createDefault(
-                    TimeFormatPref(
-                        TimeFormatPref.HourFormat.HOUR_24
+                timeFormatProviderSubject = BehaviorSubject.createDefault(
+                    TimeFormat(
+                        TimeFormat.HourFormat.HOUR_24
                     )
                 )
-                tempUnitPrefProviderSubject = when (current) {
-                    "metric" -> BehaviorSubject.createDefault(TemperatureUnitPref(UnitPrefSystem.METRIC))
-                    "imperial" -> BehaviorSubject.createDefault(TemperatureUnitPref(UnitPrefSystem.IMPERIAL))
+                tempUnitProviderSubject = when (current) {
+                    "metric" -> BehaviorSubject.createDefault(TempUnit(UnitSystem.METRIC))
+                    "imperial" -> BehaviorSubject.createDefault(TempUnit(UnitSystem.IMPERIAL))
                     else -> throw IllegalArgumentException("Unknown step arg: $current")
                 }
             }
 
             "wind speed" -> {
-                timeFormatPrefProviderSubject = BehaviorSubject.createDefault(
-                    TimeFormatPref(
-                        TimeFormatPref.HourFormat.HOUR_24
+                timeFormatProviderSubject = BehaviorSubject.createDefault(
+                    TimeFormat(
+                        TimeFormat.HourFormat.HOUR_24
                     )
                 )
-                tempUnitPrefProviderSubject = BehaviorSubject.createDefault(
-                    TemperatureUnitPref(
-                        UnitPrefSystem.METRIC
+                tempUnitProviderSubject = BehaviorSubject.createDefault(
+                    TempUnit(
+                        UnitSystem.METRIC
                     )
                 )
-                windUnitPrefProviderSubject = when (current) {
-                    "metric" -> BehaviorSubject.createDefault(WindSpeedUnitPref(UnitPrefSystem.METRIC))
-                    "imperial" -> BehaviorSubject.createDefault(WindSpeedUnitPref(UnitPrefSystem.IMPERIAL))
+                windUnitProviderSubject = when (current) {
+                    "metric" -> BehaviorSubject.createDefault(WindSpeedUnit(UnitSystem.METRIC))
+                    "imperial" -> BehaviorSubject.createDefault(WindSpeedUnit(UnitSystem.IMPERIAL))
                     else -> throw IllegalArgumentException("Unknown step arg: $current")
                 }
             }
 
             "time format" -> {
-                tempUnitPrefProviderSubject = BehaviorSubject.createDefault(
-                    TemperatureUnitPref(
-                        UnitPrefSystem.METRIC
+                tempUnitProviderSubject = BehaviorSubject.createDefault(
+                    TempUnit(
+                        UnitSystem.METRIC
                     )
                 )
-                windUnitPrefProviderSubject = BehaviorSubject.createDefault(
-                    WindSpeedUnitPref(
-                        UnitPrefSystem.METRIC
+                windUnitProviderSubject = BehaviorSubject.createDefault(
+                    WindSpeedUnit(
+                        UnitSystem.METRIC
                     )
                 )
-                timeFormatPrefProviderSubject = when (current) {
-                    "24 hour" -> BehaviorSubject.createDefault(TimeFormatPref(TimeFormatPref.HourFormat.HOUR_24))
-                    "12 hour" -> BehaviorSubject.createDefault(TimeFormatPref(TimeFormatPref.HourFormat.HOUR_12))
+                timeFormatProviderSubject = when (current) {
+                    "24 hour" -> BehaviorSubject.createDefault(
+                        TimeFormat(
+                            TimeFormat.HourFormat.HOUR_24)
+                    )
+                    "12 hour" -> BehaviorSubject.createDefault(
+                        TimeFormat(
+                            TimeFormat.HourFormat.HOUR_12)
+                    )
                     else -> throw IllegalArgumentException("Unknown step arg: $current")
                 }
             }
@@ -134,9 +141,9 @@ class UnitsPrefChangedSteps(
             else -> throw IllegalArgumentException("Unknown step arg: $unit")
         }
 
-        every { tempUnitPrefProvider.get() } returns tempUnitPrefProviderSubject
-        every { windSpeedUnitPrefProvider.get() } returns windUnitPrefProviderSubject
-        every { timeFormatPrefProvider.get() } returns timeFormatPrefProviderSubject
+        every { tempUnitProvider.get() } returns tempUnitProviderSubject
+        every { windSpeedUnitProvider.get() } returns windUnitProviderSubject
+        every { timeFormatProvider.get() } returns timeFormatProviderSubject
     }
 
     @And("^App has no cached weather$")
@@ -191,14 +198,14 @@ class UnitsPrefChangedSteps(
         when(unit){
             "temperature" -> {
                 when (changed) {
-                    "metric" -> tempUnitPrefProviderSubject.onNext(
-                        TemperatureUnitPref(
-                            UnitPrefSystem.METRIC
+                    "metric" -> tempUnitProviderSubject.onNext(
+                        TempUnit(
+                            UnitSystem.METRIC
                         )
                     )
-                    "imperial" -> tempUnitPrefProviderSubject.onNext(
-                        TemperatureUnitPref(
-                            UnitPrefSystem.IMPERIAL
+                    "imperial" -> tempUnitProviderSubject.onNext(
+                        TempUnit(
+                            UnitSystem.IMPERIAL
                         )
                     )
                     else -> throw IllegalArgumentException("Unknown step arg: $changed")
@@ -207,10 +214,10 @@ class UnitsPrefChangedSteps(
 
             "wind speed" -> {
                 when (changed) {
-                    "metric" -> windUnitPrefProviderSubject.onNext(WindSpeedUnitPref(UnitPrefSystem.METRIC))
-                    "imperial" -> windUnitPrefProviderSubject.onNext(
-                        WindSpeedUnitPref(
-                            UnitPrefSystem.IMPERIAL
+                    "metric" -> windUnitProviderSubject.onNext(WindSpeedUnit(UnitSystem.METRIC))
+                    "imperial" -> windUnitProviderSubject.onNext(
+                        WindSpeedUnit(
+                            UnitSystem.IMPERIAL
                         )
                     )
                     else -> throw IllegalArgumentException("Unknown step arg: $changed")
@@ -219,8 +226,14 @@ class UnitsPrefChangedSteps(
 
             "time format" -> {
                 when (changed) {
-                    "24 hour" -> timeFormatPrefProviderSubject.onNext(TimeFormatPref(TimeFormatPref.HourFormat.HOUR_24))
-                    "12 hour" -> timeFormatPrefProviderSubject.onNext(TimeFormatPref(TimeFormatPref.HourFormat.HOUR_12))
+                    "24 hour" -> timeFormatProviderSubject.onNext(
+                        TimeFormat(
+                            TimeFormat.HourFormat.HOUR_24)
+                    )
+                    "12 hour" -> timeFormatProviderSubject.onNext(
+                        TimeFormat(
+                            TimeFormat.HourFormat.HOUR_12)
+                    )
                     else -> throw IllegalArgumentException("Unknown step arg: $changed")
                 }
             }
@@ -506,11 +519,11 @@ class UnitsPrefChangedSteps(
     }
 
     private fun celsiusToFahrenheit(celsius: Double): Double {
-        return String.format("%.1f", ((celsius * (9.0 / 5.0)) + 32)).toDouble()
+        return ((celsius.roundToInt() * (9.0 / 5.0)) + 32)
     }
 
     private fun kphToMph(kph: Double): Double {
-        return String.format("%.1f", (kph / 1.6)).toDouble()
+        return (kph / 1.6)
     }
 
     private class TestDispatcher: Dispatcher() {

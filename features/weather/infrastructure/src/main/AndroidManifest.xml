@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.diskin.alon.pagoda.weather.infrastructure">
+
+    <application>
+        <service
+            android:name=".WeatherAlertSettingHandlerService"
+            android:enabled="true"
+            android:exported="false"></service>
+    </application>
+
+</manifest>
