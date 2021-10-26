@@ -2,6 +2,7 @@ package com.diskin.alon.pagoda.weatherinfo.data
 
 import com.diskin.alon.pagoda.weatherinfo.data.remote.interfaces.OpenWeatherMapApi
 import com.diskin.alon.pagoda.weatherinfo.data.remote.model.ApiLocationResponse
+import com.diskin.alon.pagoda.weatherinfo.data.remote.model.ApiWeatherAlertResponse
 import com.diskin.alon.pagoda.weatherinfo.data.remote.model.ApiWeatherResponse
 import com.google.gson.Gson
 import okhttp3.OkHttpClient
@@ -152,6 +153,51 @@ class OpenWeatherMapApiTest {
         // Then api should map server response to expected data model
         val serverJson = getJsonFromResource(dispatcher.locationRes)
         val expectedApiResponse = gson.fromJson(serverJson, Array<ApiLocationResponse>::class.java).toList()
+        observer.assertValue { it == expectedApiResponse }
+    }
+
+    @Test
+    fun loadWeatherAlertFromApiAndMapResponse() {
+        // Test case fixture
+        val dispatcher = object : Dispatcher() {
+            val alertRes = "weather_alert.json"
+            val locationLat = 55.7558
+            val locationLon = 37.6173
+            private val path = "/data/2.5/onecall"
+
+            override fun dispatch(request: RecordedRequest): MockResponse {
+                return when(request.method) {
+                    "GET" -> {
+                        if (request.requestUrl.uri().path == path &&
+                            request.requestUrl.queryParameter("lat") == locationLat.toString() &&
+                            request.requestUrl.queryParameter("lon") == locationLon.toString() &&
+                            request.requestUrl.queryParameter("exclude") == "current,minutely,hourly,daily" &&
+                            request.requestUrl.queryParameter("units") == "metric" &&
+                            request.requestUrl.queryParameter("appid") == BuildConfig.OPEN_WEATHER_MAP_API_KEY) {
+                            MockResponse()
+                                .setBody(getJsonFromResource(alertRes))
+                                .setResponseCode(200)
+
+                        } else {
+                            MockResponse().setResponseCode(404)
+                        }
+                    }
+
+                    else -> MockResponse().setResponseCode(404)
+                }
+            }
+
+        }
+
+        // Given remote api server is running and api client is initialized
+        server.setDispatcher(dispatcher)
+
+        // When api sends get request to server for weather alert data
+        val observer = api.getWeatherAlert(dispatcher.locationLat,dispatcher.locationLon).test()
+
+        // Then api should map server response to expected data model
+        val serverJson = getJsonFromResource(dispatcher.alertRes)
+        val expectedApiResponse = gson.fromJson(serverJson, ApiWeatherAlertResponse::class.java)
         observer.assertValue { it == expectedApiResponse }
     }
 

@@ -1,7 +1,7 @@
 package com.diskin.alon.pagoda.weatherinfo.appservices.interfaces
 
 import androidx.paging.PagingData
-import com.diskin.alon.pagoda.common.appservices.AppResult
+import com.diskin.alon.pagoda.common.appservices.results.AppResult
 import com.diskin.alon.pagoda.weatherinfo.domain.Coordinates
 import com.diskin.alon.pagoda.weatherinfo.domain.Location
 import io.reactivex.Observable

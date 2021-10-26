@@ -64,7 +64,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:setMainWeatherIconRes="@{weather.conditionIconRes}"
-            tools:srcCompat="@drawable/ic_weather_fog_96" />
+            tools:srcCompat="@drawable/ic_weather_haze_night_96" />
 
         <Space
             android:id="@+id/space"

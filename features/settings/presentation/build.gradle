@@ -57,7 +57,8 @@ dependencies {
 
     // Project modules
     api project(':features:common:presentation')
-    implementation project(':features:settings:application')
+    implementation project(':features:settings:shared')
+    implementation project(':features:weather:shared')
 
     // View model
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"

@@ -62,6 +62,7 @@ dependencies {
     // Project modules
     implementation project(':features:weather:application')
     implementation project(':features:weather:domain')
+    implementation project(':features:settings:shared')
     implementation project(':features:common:util')
 
     // Javax annotation

@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/settingsFragment"
-        android:name="com.diskin.alon.pagoda.settings.presentation.SettingsFragment"
+        android:name="com.diskin.alon.pagoda.settings.presentation.controller.SettingsFragment"
         android:label="@string/label_settings_fragment">
 
         <deepLink app:uri="@string/uri_settings" />

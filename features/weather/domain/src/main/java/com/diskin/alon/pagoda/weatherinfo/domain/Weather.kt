@@ -1,5 +1,7 @@
 package com.diskin.alon.pagoda.weatherinfo.domain
 
+import kotlin.math.roundToInt
+
 /**
  * Entity class that represent the distinct weather conditions and info for a geographical location.
  */
@@ -106,18 +108,18 @@ data class Weather(val id: Coordinates,
     }
 
     private fun celsiusToFahrenheit(celsius: Double): Double {
-        return String.format("%.1f", ((celsius * (9.0/5.0)) + 32)).toDouble()
+        return ((celsius * (9.0 / 5.0)) + 32).roundToInt().toDouble()
     }
 
     private fun fahrenheitToCelsius(fahrenheit: Double): Double {
-        return String.format("%.1f", (fahrenheit -32) * (5.0/9.0)).toDouble()
+        return ((fahrenheit - 32) * (5.0 / 9.0)).roundToInt().toDouble()
     }
 
     private fun kphToMph(kph: Double): Double {
-        return String.format("%.1f", (kph / 1.6)).toDouble()
+        return (kph / 1.6).roundToInt().toDouble()
     }
 
     private fun mphToKph(mph: Double): Double {
-        return String.format("%.1f", (mph * 1.6) ).toDouble()
+        return (mph * 1.6).roundToInt().toDouble()
     }
 }

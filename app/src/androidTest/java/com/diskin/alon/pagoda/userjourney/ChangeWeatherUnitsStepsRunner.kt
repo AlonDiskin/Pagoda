@@ -8,7 +8,7 @@ import androidx.test.rule.GrantPermissionRule
 import androidx.work.Configuration
 import androidx.work.impl.utils.SynchronousExecutor
 import androidx.work.testing.WorkManagerTestInitHelper
-import com.diskin.alon.pagoda.settings.di.SettingsNetworkingModule
+import com.diskin.alon.pagoda.util.DeviceUtil
 import com.diskin.alon.pagoda.weatherinfo.di.WeatherNetworkingModule
 import com.mauriciotogneri.greencoffee.GreenCoffeeConfig
 import com.mauriciotogneri.greencoffee.GreenCoffeeTest
@@ -27,7 +27,7 @@ import java.util.*
  * Step definitions runner for 'User changes weather units' scenario.
  */
 @HiltAndroidTest
-@UninstallModules(SettingsNetworkingModule::class,WeatherNetworkingModule::class)
+@UninstallModules(WeatherNetworkingModule::class)
 @RunWith(Parameterized::class)
 @LargeTest
 class ChangeWeatherUnitsStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTest(scenario) {
@@ -48,22 +48,21 @@ class ChangeWeatherUnitsStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTest(
     @get:Rule
     val permissionRule = GrantPermissionRule.grant(Manifest.permission.ACCESS_FINE_LOCATION)!!
 
-    private lateinit var scenarioSteps: ChangeWeatherUnitsSteps
-
     @Test
     fun test() {
+        // Set test work manager,since work manager is created and injected, when settings screen
+        // is opened and alert enabling listener service is created
         val config = Configuration.Builder()
             .setMinimumLoggingLevel(Log.DEBUG)
             .setExecutor(SynchronousExecutor())
             .build()
 
         WorkManagerTestInitHelper.initializeTestWorkManager(getApplicationContext(), config)
-        scenarioSteps = ChangeWeatherUnitsSteps()
-        start(scenarioSteps)
+        start(ChangeWeatherUnitsSteps())
     }
 
     override fun afterScenarioEnds(scenario: Scenario?, locale: Locale?) {
         super.afterScenarioEnds(scenario, locale)
-        scenarioSteps.clearSharedPrefs()
+        DeviceUtil.clearSharedPrefs()
     }
 }

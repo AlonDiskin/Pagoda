@@ -1,7 +1,7 @@
 package com.diskin.alon.pagoda.weatherinfo.appservices.usecase
 
 import androidx.paging.PagingData
-import com.diskin.alon.pagoda.common.appservices.UseCase
+import com.diskin.alon.pagoda.common.appservices.usecase.UseCase
 import com.diskin.alon.pagoda.common.util.Mapper
 import com.diskin.alon.pagoda.weatherinfo.appservices.interfaces.LocationRepository
 import com.diskin.alon.pagoda.weatherinfo.appservices.model.LocationDto
@@ -17,7 +17,7 @@ import javax.inject.Inject
 class SearchLocationsUseCase @Inject constructor(
     private val repository: LocationRepository,
     private val locationMapper: Mapper<PagingData<Location>, PagingData<LocationDto>>
-) : UseCase<SearchLocationsRequest,Observable<PagingData<LocationDto>>>{
+) : UseCase<SearchLocationsRequest, Observable<PagingData<LocationDto>>> {
 
     companion object {
         const val MIN_QUERY_SIZE = 2

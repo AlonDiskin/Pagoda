@@ -3,7 +3,7 @@ package com.diskin.alon.pagoda.weatherinfo.data
 import androidx.paging.PagingData
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.diskin.alon.pagoda.common.appservices.AppResult
+import com.diskin.alon.pagoda.common.appservices.results.AppResult
 import com.diskin.alon.pagoda.common.util.Mapper
 import com.diskin.alon.pagoda.weatherinfo.data.implementations.LocationRepositoryImpl
 import com.diskin.alon.pagoda.weatherinfo.data.local.interfaces.LocationDao

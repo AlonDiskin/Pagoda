@@ -5,26 +5,23 @@ import android.os.Looper
 import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
 import androidx.test.core.app.ActivityScenario
-import com.diskin.alon.pagoda.common.appservices.Result
-import com.diskin.alon.pagoda.common.eventcontracts.AppEventProvider
-import com.diskin.alon.pagoda.common.eventcontracts.settings.TemperatureUnitPref
-import com.diskin.alon.pagoda.common.eventcontracts.settings.TimeFormatPref
-import com.diskin.alon.pagoda.common.eventcontracts.settings.UnitPrefSystem
-import com.diskin.alon.pagoda.common.eventcontracts.settings.WindSpeedUnitPref
 import com.diskin.alon.pagoda.common.featuretesting.getJsonFromResource
 import com.diskin.alon.pagoda.common.presentation.ImageLoader
+import com.diskin.alon.pagoda.common.shared.AppDataProvider
 import com.diskin.alon.pagoda.common.uitesting.HiltTestActivity
 import com.diskin.alon.pagoda.common.uitesting.launchFragmentInHiltContainer
+import com.diskin.alon.pagoda.settings.shared.TempUnit
+import com.diskin.alon.pagoda.settings.shared.TimeFormat
+import com.diskin.alon.pagoda.settings.shared.UnitSystem
+import com.diskin.alon.pagoda.settings.shared.WindSpeedUnit
 import com.diskin.alon.pagoda.weatherinfo.data.BuildConfig
 import com.diskin.alon.pagoda.weatherinfo.data.local.interfaces.UserLocationProvider
-import com.diskin.alon.pagoda.weatherinfo.data.local.model.UserLocation
 import com.diskin.alon.pagoda.weatherinfo.presentation.R
 import com.diskin.alon.pagoda.weatherinfo.featuretesting.util.verifyServerWeatherShown
 import com.diskin.alon.pagoda.weatherinfo.presentation.controller.WeatherFragment
 import com.mauriciotogneri.greencoffee.GreenCoffeeSteps
 import com.mauriciotogneri.greencoffee.annotations.Given
 import com.mauriciotogneri.greencoffee.annotations.Then
-import com.mauriciotogneri.greencoffee.annotations.When
 import io.mockk.every
 import io.mockk.mockkObject
 import io.reactivex.Observable
@@ -40,9 +37,9 @@ import org.robolectric.Shadows
  */
 class WorldLocationWeatherShownSteps(
     server: MockWebServer,
-    tempUnitPrefProvider: AppEventProvider<TemperatureUnitPref>,
-    windSpeedUnitPrefProvider: AppEventProvider<WindSpeedUnitPref>,
-    timeFormatPrefProvider: AppEventProvider<TimeFormatPref>,
+    tempUnitProvider: AppDataProvider<Observable<TempUnit>>,
+    windSpeedUnitProvider: AppDataProvider<Observable<WindSpeedUnit>>,
+    timeFormatProvider: AppDataProvider<Observable<TimeFormat>>,
     locationProvider: UserLocationProvider,
 ) : GreenCoffeeSteps() {
 
@@ -59,9 +56,9 @@ class WorldLocationWeatherShownSteps(
         server.setDispatcher(dispatcher)
 
         // Stub app prefs providers
-        every { tempUnitPrefProvider.get() } returns Observable.just(TemperatureUnitPref(UnitPrefSystem.METRIC))
-        every { windSpeedUnitPrefProvider.get() } returns Observable.just(WindSpeedUnitPref(UnitPrefSystem.METRIC))
-        every { timeFormatPrefProvider.get() } returns Observable.just(TimeFormatPref(TimeFormatPref.HourFormat.HOUR_24))
+        every { tempUnitProvider.get() } returns Observable.just(TempUnit(UnitSystem.METRIC))
+        every { windSpeedUnitProvider.get() } returns Observable.just(WindSpeedUnit(UnitSystem.METRIC))
+        every { timeFormatProvider.get() } returns Observable.just(TimeFormat(TimeFormat.HourFormat.HOUR_24))
 
         // Mock and stub image loader
         mockkObject(ImageLoader)

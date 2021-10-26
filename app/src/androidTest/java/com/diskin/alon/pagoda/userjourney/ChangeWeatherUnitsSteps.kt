@@ -1,6 +1,5 @@
 package com.diskin.alon.pagoda.userjourney
 
-import android.content.Context
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -11,7 +10,6 @@ import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItem
 import androidx.test.espresso.matcher.RootMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.diskin.alon.pagoda.R
-import com.diskin.alon.pagoda.common.events.SharedPrefsEventHandler
 import com.diskin.alon.pagoda.common.uitesting.withTimeFormat12
 import com.diskin.alon.pagoda.common.uitesting.withTimeFormat24
 import com.diskin.alon.pagoda.util.DeviceUtil
@@ -32,7 +30,7 @@ class ChangeWeatherUnitsSteps : GreenCoffeeSteps() {
 
     @Given("^User has not changed default units preferences$")
     fun user_has_not_changed_default_units_preferences() {
-        clearSharedPrefs()
+        DeviceUtil.clearSharedPrefs()
     }
 
     @Given("^User launch app from device home$")
@@ -100,13 +98,5 @@ class ChangeWeatherUnitsSteps : GreenCoffeeSteps() {
 
         onView(withId(R.id.textClock))
             .check(matches(withTimeFormat24(null)))
-    }
-
-    fun clearSharedPrefs() {
-        val context = ApplicationProvider.getApplicationContext<Context>()
-        val prefs = context.getSharedPreferences(SharedPrefsEventHandler.EVENTS_FILE,Context.MODE_PRIVATE)
-        val editor = prefs.edit()
-        editor.clear()
-        editor.commit()
     }
 }

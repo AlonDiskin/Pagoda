@@ -31,7 +31,6 @@
                     android:id="@+id/collapsingToolBar"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:popupTheme="@style/AppTheme.PopupOverlay"
                     app:titleEnabled="false"
                     app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
 

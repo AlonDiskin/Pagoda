@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorBackground">#121212</color>
+    <color name="colorCardBackground">#212121</color>
+    <color name="colorPrimary">@color/indigo_800</color>
+    <color name="colorPrimaryDark">@color/indigo_800</color>
+    <color name="colorSecondary">@color/indigo_500</color>
+</resources>

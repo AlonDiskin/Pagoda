@@ -1,8 +1,8 @@
 package com.diskin.alon.pagoda.weatherinfo.data.local.util
 
-import com.diskin.alon.pagoda.common.appservices.AppError
-import com.diskin.alon.pagoda.common.appservices.AppErrorHandler
-import com.diskin.alon.pagoda.common.appservices.ErrorType
+import com.diskin.alon.pagoda.common.appservices.results.AppError
+import com.diskin.alon.pagoda.common.appservices.results.AppErrorHandler
+import com.diskin.alon.pagoda.common.appservices.results.ErrorType
 import com.google.android.gms.common.api.ResolvableApiException
 import javax.inject.Inject
 import javax.inject.Singleton

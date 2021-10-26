@@ -2,18 +2,15 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar"> // Theme.MaterialComponents.Light.NoActionBar
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/light_blue_800</item> //
-        <item name="colorPrimaryDark">@color/light_blue_800</item> // @color/green_800
-        <item name="colorOnPrimary">@color/white</item> //
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/light_blue_900</item>
-        <item name="colorOnSecondary">@android:color/black</item>
+        <item name="colorSecondary">@color/colorSecondary</item>
         <!-- Surfaces -->
-        <item name="android:colorBackground">@color/gary_100</item>
-        <item name="colorSurface">@color/white</item>
-        <item name="colorOnBackground">@android:color/black</item>
+        <item name="android:colorBackground">@color/colorBackground</item>
         <!-- Fonts -->
         <item name="textAppearanceHeadline6">@style/TextAppearance.Headline6</item>
         <item name="textAppearanceHeadline5">@style/TextAppearance.Headline5</item>
@@ -26,25 +23,19 @@
         <item name="android:editTextColor">@color/white</item>
     </style>
 
-    <style name="AlertDialogStyle" parent="Theme.MaterialComponents.Light.Dialog.Alert">
-        <item name="colorAccent">@color/light_blue_900</item>
+    <style name="AlertDialogStyle" parent="Theme.MaterialComponents.DayNight.Dialog.Alert"> // Theme.MaterialComponents.Light.Dialog.Alert
+        <item name="colorAccent">@color/colorSecondary</item>
         <item name="buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>
         <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
     </style>
 
     <style name="NegativeButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
-        <item name="android:textColor">@color/light_blue_900</item>
+        <item name="android:textColor">@color/colorSecondary</item>
     </style>
 
     <style name="PositiveButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
-        <item name="android:textColor">@color/light_blue_900</item>
+        <item name="android:textColor">@color/colorSecondary</item>
     </style>
-
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.MaterialComponents.Dark">
-        <item name="colorOnPrimary">@color/white</item>
-    </style>
-
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.MaterialComponents.Light" />
 
     <!-- Theme text attributes customization. -->
     <style name="TextAppearance.Headline6" parent="TextAppearance.MaterialComponents.Headline6">

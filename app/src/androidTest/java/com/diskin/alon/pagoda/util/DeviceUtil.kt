@@ -6,6 +6,8 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.SystemClock
+import androidx.preference.PreferenceManager
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
@@ -133,5 +135,13 @@ object DeviceUtil {
             getDevice().findObject(UiSelector().text("OK")).click()
         }
 
+    }
+
+    fun clearSharedPrefs() {
+        val context = getApplicationContext<Context>()
+        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+        val editor = prefs.edit()
+        editor.clear()
+        editor.commit()
     }
 }

@@ -14,8 +14,8 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
-import com.diskin.alon.pagoda.common.appservices.AppError
-import com.diskin.alon.pagoda.common.appservices.ErrorType
+import com.diskin.alon.pagoda.common.appservices.results.AppError
+import com.diskin.alon.pagoda.common.appservices.results.ErrorType
 import com.diskin.alon.pagoda.weatherinfo.presentation.R
 import com.diskin.alon.pagoda.weatherinfo.presentation.databinding.FragmentLocationsBinding
 import com.diskin.alon.pagoda.weatherinfo.presentation.model.UiLocation

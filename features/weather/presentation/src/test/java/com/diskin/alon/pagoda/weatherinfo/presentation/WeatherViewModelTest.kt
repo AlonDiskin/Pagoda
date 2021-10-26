@@ -2,14 +2,14 @@ package com.diskin.alon.pagoda.weatherinfo.presentation
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.SavedStateHandle
-import com.diskin.alon.pagoda.common.appservices.AppError
-import com.diskin.alon.pagoda.common.appservices.AppResult
+import com.diskin.alon.pagoda.common.appservices.results.AppError
+import com.diskin.alon.pagoda.common.appservices.results.AppResult
 import com.diskin.alon.pagoda.common.presentation.Model
 import com.diskin.alon.pagoda.common.presentation.ModelRequest
 import com.diskin.alon.pagoda.common.presentation.UpdateViewData
+import com.diskin.alon.pagoda.weatherinfo.presentation.model.LocationWeatherModelRequest.UserLocationWeatherModelRequest
+import com.diskin.alon.pagoda.weatherinfo.presentation.model.LocationWeatherModelRequest.WorldLocationWeatherModelRequest
 import com.diskin.alon.pagoda.weatherinfo.presentation.model.UiWeather
-import com.diskin.alon.pagoda.weatherinfo.presentation.model.UserLocationWeatherModelRequest
-import com.diskin.alon.pagoda.weatherinfo.presentation.model.WorldLocationWeatherModelRequest
 import com.diskin.alon.pagoda.weatherinfo.presentation.viewmodel.WeatherViewModel
 import com.diskin.alon.pagoda.weatherinfo.presentation.viewmodel.WeatherViewModel.CoordinatesState
 import com.google.common.truth.Truth.assertThat
@@ -79,7 +79,12 @@ class WeatherViewModelTest {
         viewModel = WeatherViewModel(model,savedState)
 
         // Then
-        verify { model.execute(WorldLocationWeatherModelRequest(coordinates.lat,coordinates.lon)) }
+        verify { model.execute(
+            WorldLocationWeatherModelRequest(
+                coordinates.lat,
+                coordinates.lon
+            )
+        ) }
     }
 
     @Test
@@ -151,7 +156,12 @@ class WeatherViewModelTest {
         viewModel.loadLocationWeather(lat, lon)
 
         // Then
-        verify { model.execute(WorldLocationWeatherModelRequest(lat, lon)) }
+        verify { model.execute(
+            WorldLocationWeatherModelRequest(
+                lat,
+                lon
+            )
+        ) }
     }
 
     @Test

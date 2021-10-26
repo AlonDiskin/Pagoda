@@ -3,11 +3,13 @@ package com.diskin.alon.pagoda.runner
 import android.app.Activity
 import android.app.Application
 import android.content.Context
+import android.content.Intent
 import android.location.Location
 import android.os.Bundle
 import android.os.SystemClock
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.FragmentActivity
+import androidx.navigation.Navigation
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.runner.AndroidJUnitRunner
@@ -18,6 +20,7 @@ import com.diskin.alon.pagoda.home.presentation.MainActivity
 import com.diskin.alon.pagoda.util.DeviceUtil
 import com.diskin.alon.pagoda.util.FileUtil
 import com.diskin.alon.pagoda.util.NetworkUtil
+import com.diskin.alon.pagoda.weather.infrastructure.WeatherAlertSettingHandlerService
 import com.google.android.gms.location.LocationServices
 import com.squareup.rx2.idler.Rx2Idler
 import dagger.hilt.android.testing.HiltTestApplication
@@ -33,6 +36,7 @@ class TestRunner : AndroidJUnitRunner() {
         className: String?,
         context: Context?
     ): Application {
+        var hasNavListener = false
         val app =  super.newApplication(cl, HiltTestApplication::class.java.name, context)
 
         // Register loading idling resource
@@ -46,6 +50,7 @@ class TestRunner : AndroidJUnitRunner() {
                         R.id.progress_bar,R.id.swipeRefresh
                     )
                     IdlingRegistry.getInstance().register(loadingIdlingResource)
+
                 }
             }
 
@@ -54,6 +59,27 @@ class TestRunner : AndroidJUnitRunner() {
             }
 
             override fun onActivityResumed(activity: Activity) {
+                if(activity is MainActivity) {
+                    if (!hasNavListener) {
+                        Navigation.findNavController(activity,R.id.nav_host_container)
+                            .addOnDestinationChangedListener { _, destination, _ ->
+                                if (destination.id == R.id.settingsFragment) {
+                                    context!!.startService(Intent(
+                                        context,
+                                        WeatherAlertSettingHandlerService::class.java)
+                                    )
+                                } else {
+                                    context!!.stopService(
+                                        Intent(
+                                            context,
+                                            WeatherAlertSettingHandlerService::class.java)
+                                    )
+                                }
+                            }
+
+                        hasNavListener = true
+                    }
+                }
 
             }
 

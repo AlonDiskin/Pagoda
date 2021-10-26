@@ -41,6 +41,9 @@ dependencies {
     api project(':features:weather:application')
     api project(':features:weather:domain')
     api project(':features:weather:presentation')
+    api project(':features:weather:infrastructure')
+    api project(':features:weather:shared')
+    api project(':features:settings:shared')
     api project(':features:common:presentation')
     api project(':features:common:util')
 
@@ -52,6 +55,9 @@ dependencies {
 
     // Google play services
     implementation 'com.google.android.gms:play-services-location:18.0.0'
+
+    // WorkManager
+    implementation "androidx.work:work-runtime-ktx:$work_version"
 
     // Hilt
     implementation "com.google.dagger:hilt-android:$hilt_version"

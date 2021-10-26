@@ -3,15 +3,15 @@ package com.diskin.alon.pagoda.weatherinfo.featuretesting.browse_current_locatio
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.databinding.ViewDataBinding
 import androidx.test.filters.MediumTest
-import com.diskin.alon.pagoda.common.eventcontracts.AppEventProvider
-import com.diskin.alon.pagoda.common.eventcontracts.settings.TemperatureUnitPref
-import com.diskin.alon.pagoda.common.eventcontracts.settings.TimeFormatPref
-import com.diskin.alon.pagoda.common.eventcontracts.settings.WindSpeedUnitPref
 import com.diskin.alon.pagoda.weatherinfo.data.local.interfaces.UserLocationProvider
 import com.diskin.alon.pagoda.weatherinfo.di.WeatherLocationModule
 import com.diskin.alon.pagoda.weatherinfo.di.WeatherNetworkingModule
 import com.diskin.alon.pagoda.weatherinfo.featuretesting.util.TestDatabase
 import com.diskin.alon.pagoda.common.featuretesting.setFinalStatic
+import com.diskin.alon.pagoda.common.shared.AppDataProvider
+import com.diskin.alon.pagoda.settings.shared.TempUnit
+import com.diskin.alon.pagoda.settings.shared.TimeFormat
+import com.diskin.alon.pagoda.settings.shared.WindSpeedUnit
 import com.mauriciotogneri.greencoffee.GreenCoffeeConfig
 import com.mauriciotogneri.greencoffee.GreenCoffeeTest
 import com.mauriciotogneri.greencoffee.Scenario
@@ -20,6 +20,7 @@ import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.HiltTestApplication
 import dagger.hilt.android.testing.UninstallModules
+import io.reactivex.Observable
 import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.schedulers.Schedulers
 import okhttp3.mockwebserver.MockWebServer
@@ -85,13 +86,13 @@ class WeatherUpdateFailStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTest(s
     lateinit var locationProvider: UserLocationProvider
 
     @Inject
-    lateinit var tempUnitPrefProvider: AppEventProvider<TemperatureUnitPref>
+    lateinit var tempUnitPrefProvider: AppDataProvider<Observable<TempUnit>>
 
     @Inject
-    lateinit var windSpeedUnitPrefProvider: AppEventProvider<WindSpeedUnitPref>
+    lateinit var windSpeedUnitPrefProvider: AppDataProvider<Observable<WindSpeedUnit>>
 
     @Inject
-    lateinit var timeFormatPrefProvider: AppEventProvider<TimeFormatPref>
+    lateinit var timeFormatPrefProvider: AppDataProvider<Observable<TimeFormat>>
 
     @Test
     fun test() {

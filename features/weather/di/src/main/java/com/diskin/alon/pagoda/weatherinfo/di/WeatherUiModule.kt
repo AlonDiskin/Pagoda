@@ -1,8 +1,8 @@
 package com.diskin.alon.pagoda.weatherinfo.di
 
 import androidx.paging.PagingData
-import com.diskin.alon.pagoda.common.appservices.AppResult
-import com.diskin.alon.pagoda.common.appservices.UseCase
+import com.diskin.alon.pagoda.common.appservices.results.AppResult
+import com.diskin.alon.pagoda.common.appservices.usecase.UseCase
 import com.diskin.alon.pagoda.common.presentation.Model
 import com.diskin.alon.pagoda.common.presentation.ModelDispatcher
 import com.diskin.alon.pagoda.common.presentation.ModelRequest
@@ -28,8 +28,7 @@ abstract class WeatherUiModule {
         @WeatherModel
         @Provides
         fun provideModelDispatcherMap(
-            getLocationWeather: GetWorldLocationWeatherUseCase,
-            getUserLocationWeather: GetUserLocationWeatherUseCase,
+            getLocationWeather: GetLocationWeatherUseCase,
             uiWeatherMapper: Mapper<Observable<AppResult<WeatherDto>>, Observable<AppResult<UiWeather>>>,
             searchLocationUseCase: SearchLocationsUseCase,
             favoriteLocationsUseCase: GetFavoriteLocationsUseCase,
@@ -39,8 +38,8 @@ abstract class WeatherUiModule {
         ): Model {
             val map = HashMap<Class<out ModelRequest<*, *>>,Pair<UseCase<*, *>, Mapper<*, *>?>>()
 
-            map[UserLocationWeatherModelRequest::class.java] = Pair(getUserLocationWeather,uiWeatherMapper)
-            map[WorldLocationWeatherModelRequest::class.java] = Pair(getLocationWeather,uiWeatherMapper)
+            map[LocationWeatherModelRequest.UserLocationWeatherModelRequest::class.java] = Pair(getLocationWeather,uiWeatherMapper)
+            map[LocationWeatherModelRequest.WorldLocationWeatherModelRequest::class.java] = Pair(getLocationWeather,uiWeatherMapper)
             map[SearchLocationsModelRequest::class.java] = Pair(searchLocationUseCase,uiLocationMapper)
             map[UnfavoriteLocationModelRequest::class.java] = Pair(unfavoriteLocationUseCase,null)
             map[FavoriteLocationModelRequest::class.java] = Pair(favoriteLocationUseCase,null)

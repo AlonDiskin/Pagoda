@@ -1,7 +1,7 @@
 package com.diskin.alon.pagoda.weatherinfo.appservices.usecase
 
-import com.diskin.alon.pagoda.common.appservices.AppResult
-import com.diskin.alon.pagoda.common.appservices.UseCase
+import com.diskin.alon.pagoda.common.appservices.results.AppResult
+import com.diskin.alon.pagoda.common.appservices.usecase.UseCase
 import com.diskin.alon.pagoda.common.util.Mapper
 import com.diskin.alon.pagoda.weatherinfo.appservices.interfaces.LocationRepository
 import com.diskin.alon.pagoda.weatherinfo.appservices.model.UnfavoriteLocationRequest
@@ -15,7 +15,7 @@ import javax.inject.Inject
 class UnfavoriteLocationUseCase @Inject constructor(
     private val repository: LocationRepository,
     private val mapper: Mapper<UnfavoriteLocationRequest, Coordinates>
-) : UseCase<UnfavoriteLocationRequest,Single<AppResult<Unit>>> {
+) : UseCase<UnfavoriteLocationRequest, Single<AppResult<Unit>>> {
 
     override fun execute(param: UnfavoriteLocationRequest): Single<AppResult<Unit>> {
         return repository.unfavorite(mapper.map(param))

@@ -7,7 +7,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.rxjava2.cachedIn
-import com.diskin.alon.pagoda.common.appservices.AppError
+import com.diskin.alon.pagoda.common.appservices.results.AppError
 import com.diskin.alon.pagoda.common.presentation.Model
 import com.diskin.alon.pagoda.common.presentation.RxViewModel
 import com.diskin.alon.pagoda.common.presentation.SingleLiveEvent

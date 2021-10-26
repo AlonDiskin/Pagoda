@@ -1,6 +1,6 @@
 package com.diskin.alon.pagoda.weatherinfo.data.remote.interfaces
 
-import com.diskin.alon.pagoda.common.appservices.Result
+import com.diskin.alon.pagoda.common.appservices.results.Result
 import com.diskin.alon.pagoda.weatherinfo.domain.Weather
 import io.reactivex.Single
 

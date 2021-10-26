@@ -1,7 +1,7 @@
 package com.diskin.alon.pagoda.weatherinfo.data
 
-import com.diskin.alon.pagoda.common.appservices.AppResult
-import com.diskin.alon.pagoda.common.appservices.Result
+import com.diskin.alon.pagoda.common.appservices.results.AppResult
+import com.diskin.alon.pagoda.common.appservices.results.Result
 import com.diskin.alon.pagoda.weatherinfo.data.implementations.WeatherRepositoryImpl
 import com.diskin.alon.pagoda.weatherinfo.data.local.interfaces.UserLocationProvider
 import com.diskin.alon.pagoda.weatherinfo.data.local.interfaces.WeatherCache
@@ -48,7 +48,7 @@ class WeatherRepositoryImplTest {
 
         // Then
         observer.assertValueAt(0) { it is AppResult.Loading }
-        observer.assertValueAt(1,AppResult.Success(weather))
+        observer.assertValueAt(1, AppResult.Success(weather))
     }
 
     @Test
@@ -65,14 +65,15 @@ class WeatherRepositoryImplTest {
             Single.just(Result.Success(Unit))
         }
         every { locationProvider.getLocation() } returns Single.just(Result.Success(currentLocation))
-        every { weatherStore.getWeather(currentLocation.lat,currentLocation.lon) } returns Single.just(Result.Success(weatherUpdate))
+        every { weatherStore.getWeather(currentLocation.lat,currentLocation.lon) } returns Single.just(
+            Result.Success(weatherUpdate))
 
         // When
         val observer = repository.getCurrentLocationWeather().test()
 
         // Then
         observer.assertValueAt(0) { it is AppResult.Loading }
-        observer.assertValueAt(1,AppResult.Success(weatherUpdate))
+        observer.assertValueAt(1, AppResult.Success(weatherUpdate))
         assertThat(observer.valueCount()).isEqualTo(2)
         assertThat(observer.errorCount()).isEqualTo(0)
     }
@@ -92,16 +93,17 @@ class WeatherRepositoryImplTest {
             Single.just(Result.Success(Unit))
         }
         every { locationProvider.getLocation() } returns Single.just(Result.Success(currentLocation))
-        every { weatherStore.getWeather(currentLocation.lat,currentLocation.lon) } returns Single.just(Result.Success(weatherUpdate))
+        every { weatherStore.getWeather(currentLocation.lat,currentLocation.lon) } returns Single.just(
+            Result.Success(weatherUpdate))
 
         // When
         val observer = repository.getCurrentLocationWeather().test()
 
         // Then
         observer.assertValueAt(0) { it is AppResult.Loading }
-        observer.assertValueAt(1,AppResult.Success(weather))
+        observer.assertValueAt(1, AppResult.Success(weather))
         observer.assertValueAt(2) { it is AppResult.Loading }
-        observer.assertValueAt(3,AppResult.Success(weatherUpdate))
+        observer.assertValueAt(3, AppResult.Success(weatherUpdate))
         assertThat(observer.valueCount()).isEqualTo(4)
         assertThat(observer.errorCount()).isEqualTo(0)
     }
@@ -122,16 +124,17 @@ class WeatherRepositoryImplTest {
         }
         every { locationProvider.getLocation() } returns Single.just(Result.Success(currentLocation))
         every { weatherStore.isUpdateAvailable(weather.updated) } returns true
-        every { weatherStore.getWeather(currentLocation.lat,currentLocation.lon) } returns Single.just(Result.Success(weatherUpdate))
+        every { weatherStore.getWeather(currentLocation.lat,currentLocation.lon) } returns Single.just(
+            Result.Success(weatherUpdate))
 
         // When
         val observer = repository.getCurrentLocationWeather().test()
 
         // Then
         observer.assertValueAt(0) { it is AppResult.Loading }
-        observer.assertValueAt(1,AppResult.Success(weather))
+        observer.assertValueAt(1, AppResult.Success(weather))
         observer.assertValueAt(2) { it is AppResult.Loading }
-        observer.assertValueAt(3,AppResult.Success(weatherUpdate))
+        observer.assertValueAt(3, AppResult.Success(weatherUpdate))
         assertThat(observer.valueCount()).isEqualTo(4)
         assertThat(observer.errorCount()).isEqualTo(0)
     }
@@ -153,7 +156,7 @@ class WeatherRepositoryImplTest {
 
         // Then
         observer.assertValueAt(0) { it is AppResult.Loading }
-        observer.assertValueAt(1,AppResult.Success(weather))
+        observer.assertValueAt(1, AppResult.Success(weather))
         assertThat(observer.valueCount()).isEqualTo(2)
         assertThat(observer.errorCount()).isEqualTo(0)
     }

@@ -31,7 +31,6 @@
                     android:id="@+id/collapsingToolBar"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:popupTheme="@style/AppTheme.PopupOverlay"
                     app:titleEnabled="false"
                     app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
 
@@ -85,8 +84,10 @@
                         android:text="@string/title_hourly_forecast" />
 
                     <androidx.cardview.widget.CardView
+                        android:id="@+id/hourlyForecastCard"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        app:cardBackgroundColor="@color/colorCardBackground"
                         app:cardCornerRadius="5dp">
 
                         <androidx.recyclerview.widget.RecyclerView
@@ -109,8 +110,10 @@
                         android:text="@string/title_daily_forecast" />
 
                     <androidx.cardview.widget.CardView
+                        android:id="@+id/dailyForecastCard"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        app:cardBackgroundColor="@color/colorCardBackground"
                         app:cardCornerRadius="5dp">
 
                         <androidx.recyclerview.widget.RecyclerView
@@ -132,9 +135,11 @@
                         android:text="@string/title_weather_detail" />
 
                     <androidx.cardview.widget.CardView
+                        android:id="@+id/weatherDetailCard"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/item_margin"
+                        app:cardBackgroundColor="@color/colorCardBackground"
                         app:cardCornerRadius="5dp">
 
                         <include

@@ -4,10 +4,10 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.rxjava2.observable
-import com.diskin.alon.pagoda.common.appservices.AppError
-import com.diskin.alon.pagoda.common.appservices.AppResult
-import com.diskin.alon.pagoda.common.appservices.ErrorType
-import com.diskin.alon.pagoda.common.appservices.toSingleAppResult
+import com.diskin.alon.pagoda.common.appservices.results.AppError
+import com.diskin.alon.pagoda.common.appservices.results.AppResult
+import com.diskin.alon.pagoda.common.appservices.results.ErrorType
+import com.diskin.alon.pagoda.common.appservices.results.toSingleAppResult
 import com.diskin.alon.pagoda.common.util.Mapper
 import com.diskin.alon.pagoda.weatherinfo.appservices.interfaces.LocationRepository
 import com.diskin.alon.pagoda.weatherinfo.data.local.interfaces.LocationDao

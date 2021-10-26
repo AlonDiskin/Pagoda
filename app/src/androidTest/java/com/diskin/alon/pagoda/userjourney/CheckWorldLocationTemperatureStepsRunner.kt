@@ -3,7 +3,6 @@ package com.diskin.alon.pagoda.userjourney
 import android.Manifest
 import androidx.test.filters.LargeTest
 import androidx.test.rule.GrantPermissionRule
-import com.diskin.alon.pagoda.settings.di.SettingsNetworkingModule
 import com.diskin.alon.pagoda.util.NetworkUtil
 import com.diskin.alon.pagoda.weatherinfo.di.WeatherNetworkingModule
 import com.mauriciotogneri.greencoffee.GreenCoffeeConfig
@@ -21,7 +20,7 @@ import org.junit.runners.Parameterized
  * Step definitions runner for 'User browse world location temperature' scenario.
  */
 @HiltAndroidTest
-@UninstallModules(SettingsNetworkingModule::class, WeatherNetworkingModule::class)
+@UninstallModules(WeatherNetworkingModule::class)
 @RunWith(Parameterized::class)
 @LargeTest
 class CheckWorldLocationTemperatureStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTest(scenario) {
